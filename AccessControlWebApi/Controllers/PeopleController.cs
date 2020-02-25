@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AccessControlWebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccessControlWebApi.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PeopleController : ControllerBase
@@ -31,6 +33,12 @@ namespace AccessControlWebApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<Person> Get(int id)
         {
+            var re = Request;
+            if(!re.Headers.ContainsKey("pass"))
+            {
+                return Forbid();
+            }
+
             Person foundPerson = repo.GetPersonById(id);
             if(foundPerson == null)
             {

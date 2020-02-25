@@ -36,7 +36,7 @@ namespace AccessControl.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public async Task <IActionResult> Test()
+        public async Task<IActionResult> Test()
         {
             //var response = await client.GetAsync($"api/values/5");
             var response = await client.GetAsync($"animals");
@@ -55,5 +55,27 @@ namespace AccessControl.Controllers
             return View("Index");
         }
 
+        public async Task<IActionResult> Test2()
+        {
+            var req = new HttpRequestMessage(HttpMethod.Get, "https://login.microsoftonline.com/0475dfa7-xxxxxxxx-896cf5e31efc/oauth2/token");
+            req.Headers.Add("Referer", "login.microsoftonline.com");
+            req.Headers.Add("Accept", "application/x-www-form-urlencoded");
+            req.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
+
+            // This is the important part:
+            req.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                { "grant_type", "password" },
+                { "client_id", "6e97fc60-xxxxxxxxx-a9bxxxxxb2d" },
+                { "client_secret", "4lSxxxxxxxxxxxmqF4Q" },
+                { "resource", "https://graph.microsoft.com" },
+                { "username", "xxxx@xxxxx.onmicrosoft.com" },
+                { "password", "xxxxxxxxxxxxx" }
+            });
+
+            HttpClient httpClient = new HttpClient();
+            var resp = await httpClient.SendAsync(req);
+            return View();
+        }
     }
 }

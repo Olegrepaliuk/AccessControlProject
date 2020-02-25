@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AccessControl.Models;
@@ -21,6 +22,8 @@ namespace AccessControl.Controllers
             //client.BaseAddress = new Uri("https://localhost:44330/");
             client = cl;
         }
+
+        private string baseAdress = "https://localhost:44330/api/people/";
 
         public IActionResult Privacy()
         {
@@ -88,5 +91,34 @@ namespace AccessControl.Controllers
             return RedirectToAction("Index");
         }
 
+        public async Task<IActionResult> Test2()
+        {
+            var client = new HttpClient();
+            var httpRequestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(baseAdress+""),
+                Headers = {
+                { HttpRequestHeader.Accept.ToString(), "application/json" },
+                { "X-Version", "1" }
+            }
+            };
+            await client.SendAsync(httpRequestMessage);
+            return View();
+        }
+
+        private HttpRequestMessage GenerateHttpMessage(HttpMethod method, string uri, Tuple<string, string> userInfo)
+        {
+            var httpRequestMessage = new HttpRequestMessage
+            {
+                Method = method,
+                RequestUri = new Uri(uri),
+                Headers = {
+                { HttpRequestHeader.Accept.ToString(), "application/json" },
+                { userInfo.Item1, userInfo.Item2 }
+            }
+            };
+            return httpRequestMessage;
+        }
     }
 }

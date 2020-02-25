@@ -11,10 +11,6 @@ namespace AccessControl.Controllers
 {
     public class AccountController : Controller
     {
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
 
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -26,6 +22,12 @@ namespace AccessControl.Controllers
             _signInManager = signInManager;
             _rolemanager = rolemanager;
         }
+
+        public IActionResult Index()
+        {
+            return RedirectToAction("Login");
+        }
+
         [HttpGet]
         public IActionResult Register()
         {
