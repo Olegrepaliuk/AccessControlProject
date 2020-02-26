@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AccessControlWebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccessControlWebApi.Controllers
@@ -25,6 +26,7 @@ namespace AccessControlWebApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Person>> GetAll()
         {
+            var re = CheckAuthorization();
             List<Person> people = repo.People.ToList();
             return people;
         }
@@ -33,12 +35,7 @@ namespace AccessControlWebApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<Person> Get(int id)
         {
-            var re = Request;
-            if(!re.Headers.ContainsKey("pass"))
-            {
-                return Forbid();
-            }
-
+            var re = CheckAuthorization();
             Person foundPerson = repo.GetPersonById(id);
             if(foundPerson == null)
             {
@@ -86,6 +83,15 @@ namespace AccessControlWebApi.Controllers
             {
                 return NotFound();
             }
+        }
+        private IdentityUser CheckAuthorization()
+        {
+            var req = Request;
+            if (!req.Headers.ContainsKey("password"))
+            {
+                return null;
+            }
+            return null;
         }
     }
 }

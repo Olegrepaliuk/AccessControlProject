@@ -23,7 +23,7 @@ namespace AccessControl.Controllers
             client = cl;
         }
 
-        private string baseAdress = "https://localhost:44330/api/people/";
+        private string baseAdress = "https://localhost:44330/api/people";
 
         public IActionResult Privacy()
         {
@@ -93,32 +93,17 @@ namespace AccessControl.Controllers
 
         public async Task<IActionResult> Test2()
         {
-            var client = new HttpClient();
-            var httpRequestMessage = new HttpRequestMessage
-            {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri(baseAdress+""),
-                Headers = {
-                { HttpRequestHeader.Accept.ToString(), "application/json" },
-                { "X-Version", "1" }
-            }
-            };
-            await client.SendAsync(httpRequestMessage);
-            return View();
+            var message = RequestBuider.GenerateHttpMessage
+                (
+                    method: HttpMethod.Get,
+                    uri: baseAdress,
+                    username: "hello",
+                    password: "pass"
+                );
+
+            await client.SendAsync(message);
+            return View("Index");
         }
 
-        private HttpRequestMessage GenerateHttpMessage(HttpMethod method, string uri, Tuple<string, string> userInfo)
-        {
-            var httpRequestMessage = new HttpRequestMessage
-            {
-                Method = method,
-                RequestUri = new Uri(uri),
-                Headers = {
-                { HttpRequestHeader.Accept.ToString(), "application/json" },
-                { userInfo.Item1, userInfo.Item2 }
-            }
-            };
-            return httpRequestMessage;
-        }
     }
 }
