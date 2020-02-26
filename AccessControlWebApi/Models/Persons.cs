@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AccessControlWebApi.Models
 {
-    public class Person
+    public class Persons
     {
         [Key]
         public int Id { get; set; }
@@ -18,7 +18,7 @@ namespace AccessControlWebApi.Models
         public DateTime CardValidTil { get; set; }
         public int CardNum { get; set; }
 
-        public Person()
+        public Persons()
         {
 
         }

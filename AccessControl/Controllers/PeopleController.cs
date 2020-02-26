@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AccessControl.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccessControl.Controllers
@@ -17,10 +18,17 @@ namespace AccessControl.Controllers
         static HttpClient client;
         //private static HttpClient client2 = new HttpClient();
 
-        public PeopleController(HttpClient cl)
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<IdentityRole> _rolemanager;
+
+        public PeopleController(HttpClient cl, UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> rolemanager)
         {
             //client.BaseAddress = new Uri("https://localhost:44330/");
             client = cl;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _rolemanager = rolemanager;
         }
 
         private string baseAdress = "https://localhost:44330/api/people";
@@ -39,8 +47,17 @@ namespace AccessControl.Controllers
         public async Task<IActionResult> Index()
         {
             List<Person> allPeople = new List<Person>();
-            var response = await Task.Run(()=>client.GetAsync($"api/people"));
-            //var response = await Task.Run(() => client2.GetAsync("https://localhost:44330/api/people"));
+            //var response = await Task.Run(()=>client.GetAsync($"api/people"));
+            var currUser = await _userManager.GetUserAsync(User);
+            var message = RequestBuider.GenerateHttpMessage
+                (
+                    method: HttpMethod.Get,
+                    uri: baseAdress,
+                    username: currUser.UserName,
+                    password: currUser.PasswordHash
+                );
+
+            var response = await client.SendAsync(message);
             if (response.IsSuccessStatusCode)
             {
                 var people = await response.Content.ReadAsAsync<IEnumerable<Person>>();
@@ -52,7 +69,17 @@ namespace AccessControl.Controllers
         [HttpDelete]
         public async Task<bool> Delete(int id)
         {
-            var response = await client.DeleteAsync($"api/people/{id}");
+            //var response = await client.DeleteAsync($"api/people/{id}");
+            var currUser = await _userManager.GetUserAsync(User);
+            var message = RequestBuider.GenerateHttpMessage
+                (
+                    method: HttpMethod.Delete,
+                    uri: baseAdress+"/"+id,
+                    username: currUser.UserName,
+                    password: currUser.PasswordHash
+                );
+
+            var response = await client.SendAsync(message);
             if (response.IsSuccessStatusCode)
             {
                 return true;
@@ -69,13 +96,34 @@ namespace AccessControl.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Person person)
         {
-            var response = await client.PostAsJsonAsync($"api/people", person);
+            //var response = await client.PostAsJsonAsync($"api/people", person);
+            var currUser = await _userManager.GetUserAsync(User);
+            var message = RequestBuider.GenerateHttpMessageWithObj
+                (
+                    method: HttpMethod.Post,
+                    uri: baseAdress,
+                    username: currUser.UserName,
+                    password: currUser.PasswordHash,
+                    obj: person
+                );
+
+            var response = await client.SendAsync(message);
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Update(int id)
         {
-            var response = await client.GetAsync($"api/people/{id}");
+            //var response = await client.GetAsync($"api/people/{id}");
+            var currUser = await _userManager.GetUserAsync(User);
+            var message = RequestBuider.GenerateHttpMessage
+                (
+                    method: HttpMethod.Get,
+                    uri: baseAdress + "/" + id,
+                    username: currUser.UserName,
+                    password: currUser.PasswordHash
+                );
+
+            var response = await client.SendAsync(message);
             if (response.IsSuccessStatusCode)
             {
                 var person = await response.Content.ReadAsAsync<Person>();
@@ -87,21 +135,35 @@ namespace AccessControl.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(Person person)
         {
-            var response = await client.PutAsJsonAsync($"api/people/{person.Id}", person);
+            //var response = await client.PutAsJsonAsync($"api/people/{person.Id}", person);
+            var currUser = await _userManager.GetUserAsync(User);
+            var message = RequestBuider.GenerateHttpMessageWithObj
+                (
+                    method: HttpMethod.Put,
+                    uri: baseAdress,
+                    username: currUser.UserName,
+                    password: currUser.PasswordHash,
+                    obj: person
+                );
+
+            var response = await client.SendAsync(message);
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Test2()
         {
+
+            int a = 0;
+            var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: baseAdress,
-                    username: "hello",
-                    password: "pass"
+                    username: currUser.UserName,
+                    password: currUser.PasswordHash
                 );
 
-            await client.SendAsync(message);
+            var resp = await client.SendAsync(message);
             return View("Index");
         }
 

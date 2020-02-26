@@ -19,7 +19,7 @@ namespace AccessControl.Models
                 Headers = {
                 { HttpRequestHeader.Accept.ToString(), "application/json" },
                 { "username", username},
-                { "password", password}
+                { "passhash", password},
             }
             };
             return httpRequestMessage;

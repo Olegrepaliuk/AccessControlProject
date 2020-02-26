@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AccessControl.Models;
 using AccessControlWebApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -31,6 +33,12 @@ namespace AccessControlWebApi
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AccessCtrlContext>(options => options.UseSqlServer(connection));
             //services.AddControllersWithViews();
+
+            services.AddDbContext<AppUsersContext>(options =>
+                 options.UseSqlServer(Configuration.GetConnectionString("UsersConnection")));
+
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<AppUsersContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +53,9 @@ namespace AccessControlWebApi
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            //app.UseAuthentication();   
+            //app.UseAuthorization();
 
             app.UseHttpsRedirection();
             app.UseMvc();
