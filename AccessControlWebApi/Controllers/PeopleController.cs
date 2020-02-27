@@ -56,8 +56,12 @@ namespace AccessControlWebApi.Controllers
 
         // POST api/people
         [HttpPost]
-        public ActionResult Post(Person person)
+        public async Task<ActionResult> Post([FromBody]Person person)
         {
+            var user = await CheckAuthorization();
+            if (user == null) return Unauthorized();
+            var hasRight = await CheckRights(user);
+            if (!hasRight) return Forbid();
             repo.AddPerson(person);
             //return CreatedAtAction(nameof(Get), new { id = person.Id }, person.Id);
             return StatusCode(201);
@@ -65,12 +69,17 @@ namespace AccessControlWebApi.Controllers
 
         // PUT api/people/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, Person person)
+        public async Task<ActionResult> Put(int id, [FromBody]Person person)
         {
             if (id != person.Id)
             {
                 return BadRequest();
             }
+
+            var user = await CheckAuthorization();
+            if (user == null) return Unauthorized();
+            var hasRight = await CheckRights(user);
+            if (!hasRight) return Forbid();
 
             repo.PutPerson(person);
 
@@ -79,8 +88,12 @@ namespace AccessControlWebApi.Controllers
 
         // DELETE api/people/5
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
+            var user = await CheckAuthorization();
+            if (user == null) return Unauthorized();
+            var hasRight = await CheckRights(user);
+            if (!hasRight) return Forbid();
             var result = repo.DeletePerson(id);
             if (result == "deleted")
             {
@@ -101,14 +114,14 @@ namespace AccessControlWebApi.Controllers
             }
             if(req.Headers.ContainsKey("password"))
             {
-                var retrievedUser = await FindUser(req.Headers["username"], req.Headers["password"], false);
+                var retrievedUser = await UsersInfo.FindUser(req.Headers["username"], req.Headers["password"], _userManager, false);
                 return retrievedUser;
             }
             else
             {
                 if (req.Headers.ContainsKey("passhash"))
                 {
-                    var retrievedUser = await FindUser(req.Headers["username"], req.Headers["passhash"]);
+                    var retrievedUser = await UsersInfo.FindUser(req.Headers["username"], req.Headers["passhash"], _userManager);
                     return retrievedUser;
                 }
                 return null;
@@ -116,24 +129,11 @@ namespace AccessControlWebApi.Controllers
 
         }
 
-        private async Task<User> FindUser(string username, string password, bool hash = true)
+        private async Task<bool> CheckRights(User user)
         {
-            var user = await _userManager.FindByNameAsync(username);
-            bool successAuth = false;
-            if (user != null)
-            {
-                if(hash)
-                {
-                    successAuth = (password == user.PasswordHash);
-                }
-                else
-                {
-                    var result = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
-                    if (result == PasswordVerificationResult.Success) successAuth = true;
-                }
-            }
-            if (successAuth) return user;
-            return null;
+            var hasRight = await UsersInfo.CheckAdminRights(user, _userManager);
+            return hasRight;
         }
+
     }
 }

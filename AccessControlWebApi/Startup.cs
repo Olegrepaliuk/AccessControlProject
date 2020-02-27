@@ -54,7 +54,7 @@ namespace AccessControlWebApi
                 app.UseHsts();
             }
 
-            //app.UseAuthentication();   
+            //app.UseAuthentication();   how 
             //app.UseAuthorization();
 
             app.UseHttpsRedirection();

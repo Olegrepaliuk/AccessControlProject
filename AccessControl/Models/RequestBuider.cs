@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace AccessControl.Models
@@ -33,11 +34,15 @@ namespace AccessControl.Models
                 RequestUri = new Uri(uri),
                 Headers = {
                 { HttpRequestHeader.Accept.ToString(), "application/json" },
+                { HttpRequestHeader.ContentType.ToString(), "application/json;charset=utf-8"},
                 { "username", username},
-                { "password", password}
+                { "passhash", password}
             },
             Content = new StringContent(JsonConvert.SerializeObject(obj))
             };
+            int a = 10;
+            httpRequestMessage.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json;charset=utf-8");
+            //httpRequestMessage.Content.Headers.ContentType = "application/json;charset=utf-8";
             return httpRequestMessage;
         }
     }

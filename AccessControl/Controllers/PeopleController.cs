@@ -106,7 +106,6 @@ namespace AccessControl.Controllers
                     password: currUser.PasswordHash,
                     obj: person
                 );
-
             var response = await client.SendAsync(message);
             return RedirectToAction("Index");
         }
@@ -140,7 +139,7 @@ namespace AccessControl.Controllers
             var message = RequestBuider.GenerateHttpMessageWithObj
                 (
                     method: HttpMethod.Put,
-                    uri: baseAdress,
+                    uri: baseAdress + "/" + person.Id,
                     username: currUser.UserName,
                     password: currUser.PasswordHash,
                     obj: person
