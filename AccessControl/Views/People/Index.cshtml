@@ -40,7 +40,7 @@
                                     <td>@Html.DisplayFor(modelItem => item.Email)</td>
                                     <td>@Html.DisplayFor(modelItem => item.CardNum)</td>
                                     <td>@Html.DisplayFor(modelItem => item.CardValidTil)</td>
-                                    <td><a href="Update/@item.Id">Update</a> | <a href="" class="row-remove" onclick="Delete('@item.Id')">Delete</a></td>
+                                    <td><a asp-action="Update" asp-controller="People" asp-route-id="@item.Id">Update</a> | <a href="" class="row-remove" onclick="Delete('@item.Id')">Delete</a></td>
                                 </tr>
                             }
                     </table>
