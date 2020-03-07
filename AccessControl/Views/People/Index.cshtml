@@ -40,7 +40,7 @@
                                     <td>@Html.DisplayFor(modelItem => item.Email)</td>
                                     <td>@Html.DisplayFor(modelItem => item.CardNum)</td>
                                     <td>@Html.DisplayFor(modelItem => item.CardValidTil)</td>
-                                    <td><a asp-action="Update" asp-controller="People" asp-route-id="@item.Id">Update</a> | <a href="" class="row-remove" onclick="Delete('@item.Id')">Delete</a></td>
+                                    <td><a asp-action="Update" asp-controller="People" asp-route-id="@item.Id">Update</a> | <a href="" onclick="Delete('@item.Id')">Delete</a></td>
                                 </tr>
                             }
                     </table>
@@ -62,41 +62,40 @@
     $(function () {
         $('#example1').DataTable();
     });
-    function Delete(id){
+    function Delete(id) {
+        //event.preventDefault();
         var txt;
         var r = confirm("Are you sure you want to Delete?");
         if (r == true) {
 
             $.ajax(
-            {
-                type: "DELETE",
-                url: '@Url.Action("Delete", "People")',
-                data: {
-                    id: id
-                },
-                error: function (result) {
-                    alert("error");
-                },
-                success: function (result) {
-                    if (result == true) {
-                        var baseUrl="/People";
-                        window.location.reload();
+                {
+                    type: "DELETE",
+                    url: '@Url.Action("Delete", "People")',
+                    data: {
+                        id: id
+                    },
+                    error: function (result) {
+                        alert("Error");
+                    },
+                    success: function (result) {
+                        var res = JSON.parse(result.toLowerCase());
+                        if (res == true) {
+                            debugger;
+                            var baseUrl = "/People";
+                            window.location.reload();
+                        }
+                        else {
+                            alert("Error while deleting");
+                        }
                     }
-                    else {
-                        alert("There is a problem, Try Later!");
-                    }
-                }
-            });
+                });
+        }
+        else {
+            event.preventDefault();
         }
     }
 
-    (function($) {
-    $(document).ready(function() {
-        $('.row-remove').click(function(e) {
-            e.preventDefault();
-            $(this).closest('tr').remove();
-        });
-    });
-}(jQuery));
+
 </script>
 

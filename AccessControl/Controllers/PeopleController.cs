@@ -70,6 +70,7 @@ namespace AccessControl.Controllers
         public async Task<bool> Delete(int id)
         {
             //var response = await client.DeleteAsync($"api/people/{id}");
+
             var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessage
                 (
@@ -84,6 +85,7 @@ namespace AccessControl.Controllers
             {
                 return true;
             }
+
             return false;
 
         }
@@ -96,6 +98,10 @@ namespace AccessControl.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Person person)
         {
+            if(!ModelState.IsValid)
+            {
+                return RedirectToAction("Create");
+            }
             //var response = await client.PostAsJsonAsync($"api/people", person);
             var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessageWithObj
