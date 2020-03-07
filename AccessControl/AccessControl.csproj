@@ -3070,6 +3070,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="2.2.0" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.7.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -3085,6 +3086,11 @@
 
   <ItemGroup>
     <Folder Include="Views\Users\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\AccessControlModels\AccessControlModels.csproj" />
   </ItemGroup>
 
 </Project>
