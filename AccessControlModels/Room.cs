@@ -13,7 +13,9 @@ namespace AccessControlModels
         public string Name { get; set; }
         public int? Number { get; set; }
         public RoomType Type { get; set; }
-        //public bool MainEntrance { get; set; }
+        
+        public Building Building { get; set; }
+        public int? BuildingId { get; set; }
     }
 
     public enum RoomType
