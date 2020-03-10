@@ -26,6 +26,22 @@ namespace AccessControlWebApi.Models
 
         }
 
+        public IEnumerable<Room> Rooms
+        {
+            get
+            {
+                return db.Rooms;
+            }
+        }
+
+        public IEnumerable<Building> Buildings
+        {
+            get
+            {
+                return db.Buildings;
+            }
+        }
+
         public void PutPerson(Person person)
         {
             db.Entry(person).State = EntityState.Modified;
@@ -57,6 +73,17 @@ namespace AccessControlWebApi.Models
                 return "NotFound";
             }
             
+        }
+        
+        public Room GetRoomById(int id)
+        {
+            return db.Rooms.Where(r => r.Id == id).FirstOrDefault();
+        }
+
+
+        public Building GetBuildingById(int id)
+        {
+            return db.Buildings.Where(b => b.Id == id).FirstOrDefault();
         }
     }
 }
