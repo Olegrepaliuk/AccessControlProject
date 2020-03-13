@@ -77,13 +77,72 @@ namespace AccessControlWebApi.Models
         
         public Room GetRoomById(int id)
         {
-            return db.Rooms.Where(r => r.Id == id).FirstOrDefault();
+            return db.Rooms.Include(r => r.Building).Where(r => r.Id == id).FirstOrDefault();
+            //return db.Rooms.Where(r => r.Id == id).FirstOrDefault();
+        }
+        public void AddRoom(Room room)
+        {
+            db.Rooms.Add(room);
+            db.SaveChanges();
+        }
+        public void PutRoom(Room room)
+        {
+            db.Entry(room).State = EntityState.Modified;
+            db.SaveChanges();
+        }
+        public string DeleteRoom(int id)
+        {
+            var room = db.Rooms.Where(r => r.Id == id).FirstOrDefault();
+            if (room != null)
+            {
+                db.Rooms.Remove(room);
+                db.SaveChanges();
+                return "deleted";
+            }
+            else
+            {
+                return "NotFound";
+            }
+
         }
 
+        public void AddBuilding(Building building)
+        {
+            db.Buildings.Add(building);
+            db.SaveChanges();
+        }
 
         public Building GetBuildingById(int id)
         {
+            //return db.Buildings.Include(b => b.Rooms).Where(b => b.Id ==id).FirstOrDefault();
             return db.Buildings.Where(b => b.Id == id).FirstOrDefault();
+        }
+
+        public void PutBuilding(Building building)
+        {
+            db.Entry(building).State = EntityState.Modified;
+            db.SaveChanges();
+        }
+
+        public string DeleteBuilding(int id)
+        {
+            var building = db.Buildings.Where(b => b.Id == id).FirstOrDefault();
+            if (building != null)
+            {
+                db.Buildings.Remove(building);
+                db.SaveChanges();
+                return "deleted";
+            }
+            else
+            {
+                return "NotFound";
+            }
+
+        }
+
+        public IEnumerable<Room> GetRoomsOfBuilding(int id)
+        {
+            return db.Rooms.Include(r => r.Building).Where(r => r.BuildingId == id);
         }
     }
 }

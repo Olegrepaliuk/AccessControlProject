@@ -49,6 +49,60 @@ namespace AccessControlWebApi.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody]Room room)
+        {
+            var user = await CheckAuthorization();
+            if (user == null) return Unauthorized();
+            var hasRight = await CheckRights(user);
+            if (!hasRight) return Forbid();
+            /*
+            var b = repo.GetBuildingById(1);
+            room.Building = b;
+
+            repo.AddRoom(room);
+            */
+            //return CreatedAtAction(nameof(Get), new { id = person.Id }, person.Id);
+            return StatusCode(201);
+        }
+
+        // PUT api/rooms/5
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(int id, [FromBody]Room room)
+        {
+            if (id != room.Id)
+            {
+                return BadRequest();
+            }
+
+            var user = await CheckAuthorization();
+            if (user == null) return Unauthorized();
+            var hasRight = await CheckRights(user);
+            if (!hasRight) return Forbid();
+
+            repo.PutRoom(room);
+
+            return NoContent();
+        }
+
+        // DELETE api/rooms/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var user = await CheckAuthorization();
+            if (user == null) return Unauthorized();
+            var hasRight = await CheckRights(user);
+            if (!hasRight) return Forbid();
+            var result = repo.DeleteRoom(id);
+            if (result == "deleted")
+            {
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
         private async Task<User> CheckAuthorization()
         {

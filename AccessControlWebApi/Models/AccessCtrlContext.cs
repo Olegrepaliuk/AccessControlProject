@@ -20,7 +20,7 @@ namespace AccessControlWebApi.Models
 
         public AccessCtrlContext():base()
         {
-
+            
         }
     }
 }

@@ -51,6 +51,71 @@ namespace AccessControlWebApi.Controllers
             }
         }
 
+        [HttpGet("{id}/rooms")]
+        public async Task<ActionResult<IEnumerable<Room>>> GetRooms(int id)
+        {
+            var user = await CheckAuthorization();
+            if (user == null) return Unauthorized();
+            var foundBuilding = repo.GetBuildingById(id);
+            if (foundBuilding == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var rooms = repo.GetRoomsOfBuilding(id).ToList();
+                return rooms;
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody]Building building)
+        {
+            var user = await CheckAuthorization();
+            if (user == null) return Unauthorized();
+            var hasRight = await CheckRights(user);
+            if (!hasRight) return Forbid();
+            repo.AddBuilding(building);
+            //return CreatedAtAction(nameof(Get), new { id = person.Id }, person.Id);
+            return StatusCode(201);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(int id, [FromBody]Building building)
+        {
+            if (id != building.Id)
+            {
+                return BadRequest();
+            }
+
+            var user = await CheckAuthorization();
+            if (user == null) return Unauthorized();
+            var hasRight = await CheckRights(user);
+            if (!hasRight) return Forbid();
+
+            repo.PutRoom(building);
+
+            return NoContent();
+        }
+
+        // DELETE api/rooms/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var user = await CheckAuthorization();
+            if (user == null) return Unauthorized();
+            var hasRight = await CheckRights(user);
+            if (!hasRight) return Forbid();
+            var result = repo.DeleteRoom(id);
+            if (result == "deleted")
+            {
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
         private async Task<User> CheckAuthorization()
         {
             var req = Request;

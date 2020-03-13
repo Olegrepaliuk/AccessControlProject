@@ -156,21 +156,25 @@ namespace AccessControl.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Test2()
+        public async Task<IActionResult> Test()
         {
-
-            int a = 0;
+            Room room = new Room();
+            //var response = await Task.Run(()=>client.GetAsync($"api/people"));
             var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
-                    uri: baseAdress,
+                    uri: "https://localhost:44330/api/rooms/1",
                     username: currUser.UserName,
                     password: currUser.PasswordHash
                 );
 
-            var resp = await client.SendAsync(message);
-            return View("Index");
+            var response = await client.SendAsync(message);
+            if (response.IsSuccessStatusCode)
+            {
+                room = await response.Content.ReadAsAsync<Room>();
+            }
+            return View(room);
         }
 
     }
