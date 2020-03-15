@@ -93,7 +93,7 @@ namespace AccessControlWebApi.Controllers
             var hasRight = await CheckRights(user);
             if (!hasRight) return Forbid();
 
-            repo.PutRoom(building);
+            repo.PutBuilding(building);
 
             return NoContent();
         }
