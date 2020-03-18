@@ -50,7 +50,8 @@ namespace AccessControlWebApi.Models
 
         public Person GetPersonById(int id)
         {
-            return db.People.Where(p => p.Id == id).FirstOrDefault();
+            //return db.People.Where(p => p.Id == id).FirstOrDefault();
+            return db.People.Find(id);
         }
 
         public void AddPerson(Person person)
@@ -61,7 +62,8 @@ namespace AccessControlWebApi.Models
 
         public string DeletePerson(int id)
         {
-            var person = db.People.Where(p => p.Id == id).FirstOrDefault();
+            //var person = db.People.Where(p => p.Id == id).FirstOrDefault();
+            var person = db.People.Find(id);
             if(person != null)
             {
                 db.People.Remove(person);
@@ -92,7 +94,8 @@ namespace AccessControlWebApi.Models
         }
         public string DeleteRoom(int id)
         {
-            var room = db.Rooms.Where(r => r.Id == id).FirstOrDefault();
+            //var room = db.Rooms.Where(r => r.Id == id).FirstOrDefault();
+            var room = db.Rooms.Find(id);
             if (room != null)
             {
                 db.Rooms.Remove(room);
@@ -115,7 +118,8 @@ namespace AccessControlWebApi.Models
         public Building GetBuildingById(int id)
         {
             //return db.Buildings.Include(b => b.Rooms).Where(b => b.Id ==id).FirstOrDefault();
-            return db.Buildings.Where(b => b.Id == id).FirstOrDefault();
+            //return db.Buildings.Where(b => b.Id == id).FirstOrDefault();
+            return db.Buildings.Find(id);
         }
 
         public void PutBuilding(Building building)
@@ -126,7 +130,8 @@ namespace AccessControlWebApi.Models
 
         public string DeleteBuilding(int id)
         {
-            var building = db.Buildings.Where(b => b.Id == id).FirstOrDefault();
+            //var building = db.Buildings.Where(b => b.Id == id).FirstOrDefault();
+            var building = db.Buildings.Find(id);
             if (building != null)
             {
                 db.Buildings.Remove(building);
