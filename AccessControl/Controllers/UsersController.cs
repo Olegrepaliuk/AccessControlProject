@@ -23,10 +23,6 @@ namespace AccessControl.Controllers
         public IActionResult Index()
         {
             var simpleUsers = new List<User>();
-            foreach (var user in _userManager.Users)
-            {
-
-            }
             return View(_userManager.Users.ToList());
         }
 

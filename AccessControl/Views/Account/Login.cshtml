@@ -1,6 +1,8 @@
 ﻿
 @model AccessControl.ViewModels.LoginViewModel
-
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 <h2>Log in</h2>
 <form method="post" asp-controller="Account" asp-action="Login"
       asp-route-returnUrl="@Model.ReturnUrl">

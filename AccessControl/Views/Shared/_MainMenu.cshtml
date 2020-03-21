@@ -1,6 +1,6 @@
 ﻿<ul class="sidebar-menu" data-widget="tree">
-    <li class="header">HEADER</li>
-    <!-- Optionally, you can add icons to the links -->
+    <li class="header">MENU</li>
+    <!-- Optionally, you can add icons to the links
     <li class="treeview">
         <a href="#">
             <i class="fa fa-user"></i> <span>Doctors</span>
@@ -13,6 +13,23 @@
             <li><a href="/Doctors/Index">All Doctors</a></li>
         </ul>
     </li>
+     -->
+    @if (ViewContext.HttpContext.User.IsInRole("Admin"))
+    {
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-user"></i> <span>Accounts</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="/Users/Create">Add New</a></li>
+                <li><a href="/Users/Index">All accounts</a></li>
+            </ul>
+        </li>
+    }
+
     <li class="treeview">
         <a href="#">
             <i class="fa fa-user"></i> <span>People</span>
@@ -21,8 +38,26 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="/People/Create">Add New</a></li>
+            @if (ViewContext.HttpContext.User.IsInRole("Admin"))
+            {
+                <li><a href="/People/Create">Add New</a></li>
+            }
             <li><a href="/People/Index">All People</a></li>
+        </ul>
+    </li>
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-user"></i> <span>Rooms</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            @if (ViewContext.HttpContext.User.IsInRole("Admin"))
+            {
+                <li><a href="/Rooms/Create">Add New</a></li>
+            }
+            <li><a href="/Rooms/Index">All People</a></li>
         </ul>
     </li>
 </ul>
