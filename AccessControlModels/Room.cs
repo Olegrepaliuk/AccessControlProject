@@ -16,7 +16,23 @@ namespace AccessControlModels
         
         public Building Building { get; set; }
         public int? BuildingId { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            if (!(obj is Room))
+            {
+                return false;
+            }
+            return (this.Id == ((Room)obj).Id);
+
+        }
     }
+
+
 
     public enum RoomType
     {

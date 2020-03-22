@@ -151,12 +151,13 @@ namespace AccessControl.Controllers
                     username: currUser.UserName,
                     password: currUser.PasswordHash
                 );
-                var personRoomsResponse = await client.SendAsync(allRoomsMessage);
+                var personRoomsResponse = await client.SendAsync(pesonRoomsMessage);
                 
                 if(allRoomsResponse.IsSuccessStatusCode&&personRoomsResponse.IsSuccessStatusCode)
                 {
                     var person = await response.Content.ReadAsAsync<Person>();
                     var personRooms = await personRoomsResponse.Content.ReadAsAsync<IEnumerable<Room>>();
+                    //personRooms.Where(pr => pr.Id == id).
                     var allRooms = await allRoomsResponse.Content.ReadAsAsync<IEnumerable<Room>>();
                     ViewBag.AllRooms = allRooms;
                     ViewBag.PersonRooms = personRooms;
@@ -190,6 +191,30 @@ namespace AccessControl.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(Person person, List<int> rooms)
         {
+            //var response = await client.PutAsJsonAsync($"api/people/{person.Id}", person);
+            var currUser = await _userManager.GetUserAsync(User);
+            var message = RequestBuider.GenerateHttpMessageWithObj
+                (
+                    method: HttpMethod.Put,
+                    uri: baseAdress + "/" + person.Id,
+                    username: currUser.UserName,
+                    password: currUser.PasswordHash,
+                    obj: person
+                );
+
+            var response = await client.SendAsync(message);
+
+            var roomsMessage = RequestBuider.GenerateHttpMessageWithObj
+            (
+                method: HttpMethod.Post,
+                uri: baseAdress + "/" + person.Id+"/rooms",
+                username: currUser.UserName,
+                password: currUser.PasswordHash,
+                obj: rooms
+            );
+
+            var roomsResponse = await client.SendAsync(roomsMessage);
+
             return RedirectToAction("Index");
         }
 
