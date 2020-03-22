@@ -13,11 +13,18 @@ namespace AccessControlWebApi.Models
         public DbSet<Person> People { get; set; }
         public DbSet<Building> Buildings { get; set; }
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<PersonRoom> PersonRoom { get; set; }
         public AccessCtrlContext(DbContextOptions<AccessCtrlContext> options) : base(options)
         {
             Database.EnsureCreated();
         }
-
+        
+        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PersonRoom>().HasKey(pr => new { pr.PersonId, pr.RoomId });
+        }
+        
         public AccessCtrlContext():base()
         {
             

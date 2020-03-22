@@ -105,6 +105,38 @@ namespace AccessControlWebApi.Controllers
                 return NotFound();
             }
         }
+
+        [HttpGet("{id}/rooms")]
+        public async Task<ActionResult<IEnumerable<Room>>> GetRoomsOfPersonAccess(int id)
+        {
+            var user = await CheckAuthorization();
+            if (user == null) return Unauthorized();
+
+            var person = repo.GetPersonById(id);
+            if (person == null)
+            {
+                return NotFound();
+            }
+            return repo.GetRoomsOfPersonAccess(person.Id).ToList();
+        }
+
+        [HttpPost("{id}/rooms")]
+        public async Task<ActionResult> UpdatePersonAccess(int id, [FromBody]IEnumerable<int> roomsId)
+        {
+            var user = await CheckAuthorization();
+            if (user == null) return Unauthorized();
+            var hasRight = await CheckRights(user);
+            if (!hasRight) return Forbid();
+
+            var person = repo.GetPersonById(id);
+            if(person == null)
+            {
+                return NotFound();
+            }
+            repo.UpdatePersonAccess(id, roomsId);
+            return NoContent();
+        }
+
         private async Task<User> CheckAuthorization()
         {
             //var UserManager = HttpContext.GetOwinContext().GetUserManager<User>();

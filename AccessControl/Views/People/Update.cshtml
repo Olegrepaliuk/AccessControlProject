@@ -46,6 +46,13 @@
                     </div>
                 </div>
                 <input type="hidden" name="Id" value="@Model.Id" />
+                <div class="form-group">
+                    @foreach (var room in ViewBag.AllRooms)
+                    {
+                        <input type="checkbox" name="rooms" value="@room.Id"
+                               @(ViewBag.PersonRooms.Contains(room) ? "checked=\"checked\"" : "") />@room.Name <br />
+                    }
+                </div>
             </div>
             <!-- /.box-body -->
             <div class="box-footer">

@@ -145,6 +145,53 @@ namespace AccessControlWebApi.Models
 
         }
 
+        public IEnumerable<PersonRoom> GetPersonRoomsAccess(int personId)
+        {
+            return db.PersonRoom.Where(pr => pr.PersonId == personId);
+        }
+
+        public void UpdatePersonAccess(int id, IEnumerable<int> roomsId)
+        {
+            var setIds = roomsId.ToHashSet();
+            var pairs = GetPersonRoomsAccess(id);
+            foreach (var item in pairs)
+            {
+                if(!setIds.Contains(item.RoomId))
+                {
+                    var extraEntities = db.PersonRoom.Where(pr => (pr.PersonId == item.PersonId) && (pr.RoomId == item.RoomId));
+                    if(extraEntities.Count() > 0)
+                    {
+                        db.PersonRoom.RemoveRange(extraEntities);
+                        db.SaveChanges();
+                    }
+                    
+                }
+                else
+                {
+                    setIds.Remove(item.RoomId);
+                }
+                
+            }
+
+            foreach (var roomIdItem in setIds)
+            {
+                var personRoom = new PersonRoom(id, roomIdItem);
+                db.PersonRoom.Add(personRoom);
+                db.SaveChanges();
+            }
+        }
+
+        public IEnumerable<Room> GetRoomsOfPersonAccess(int personId)
+        {
+            List<Room> resultRooms = new List<Room>();
+            var personRooms = GetPersonRoomsAccess(personId);
+            foreach (var item in personRooms)
+            {
+                var room = db.Rooms.Find(item.RoomId);
+                if (room != null) resultRooms.Add(room);
+            }
+            return resultRooms;
+        }
         public IEnumerable<Room> GetRoomsOfBuilding(int id)
         {
             return db.Rooms.Include(r => r.Building).Where(r => r.BuildingId == id);

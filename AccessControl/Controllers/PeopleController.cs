@@ -32,8 +32,9 @@ namespace AccessControl.Controllers
             _rolemanager = rolemanager;
         }
 
+        private string baseAdressApi = "https://localhost:44330/api";
         private string baseAdress = "https://localhost:44330/api/people";
-
+        
         public IActionResult Privacy()
         {
             return View();
@@ -130,14 +131,43 @@ namespace AccessControl.Controllers
                 );
 
             var response = await client.SendAsync(message);
+
+
             if (response.IsSuccessStatusCode)
             {
-                var person = await response.Content.ReadAsAsync<Person>();
-                return View(person);
+                var allRoomsMessage = RequestBuider.GenerateHttpMessage
+                (
+                    method: HttpMethod.Get,
+                    uri: baseAdressApi + "/rooms",
+                    username: currUser.UserName,
+                    password: currUser.PasswordHash
+                );
+                var allRoomsResponse = await client.SendAsync(allRoomsMessage);
+
+                var pesonRoomsMessage = RequestBuider.GenerateHttpMessage
+                (
+                    method: HttpMethod.Get,
+                    uri: baseAdress + "/" + id + "/rooms",
+                    username: currUser.UserName,
+                    password: currUser.PasswordHash
+                );
+                var personRoomsResponse = await client.SendAsync(allRoomsMessage);
+                
+                if(allRoomsResponse.IsSuccessStatusCode&&personRoomsResponse.IsSuccessStatusCode)
+                {
+                    var person = await response.Content.ReadAsAsync<Person>();
+                    var personRooms = await personRoomsResponse.Content.ReadAsAsync<IEnumerable<Room>>();
+                    var allRooms = await allRoomsResponse.Content.ReadAsAsync<IEnumerable<Room>>();
+                    ViewBag.AllRooms = allRooms;
+                    ViewBag.PersonRooms = personRooms;
+                    return View(person);
+                }
+
             }
             return RedirectToAction("Index");
         }
 
+        /*
         [HttpPost]
         public async Task<IActionResult> Update(Person person)
         {
@@ -153,6 +183,13 @@ namespace AccessControl.Controllers
                 );
 
             var response = await client.SendAsync(message);
+            return RedirectToAction("Index");
+        }
+        */
+
+        [HttpPost]
+        public async Task<IActionResult> Update(Person person, List<int> rooms)
+        {
             return RedirectToAction("Index");
         }
 
