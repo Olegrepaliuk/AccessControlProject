@@ -162,7 +162,6 @@ namespace AccessControlWebApi.Models
                     if(extraEntities.Count() > 0)
                     {
                         db.PersonRoom.RemoveRange(extraEntities);
-                        db.SaveChanges();
                     }
                     
                 }
@@ -176,9 +175,9 @@ namespace AccessControlWebApi.Models
             foreach (var roomIdItem in setIds)
             {
                 var personRoom = new PersonRoom(id, roomIdItem);
-                db.PersonRoom.Add(personRoom);
-                db.SaveChanges();
+                db.PersonRoom.Add(personRoom);               
             }
+            db.SaveChanges();
         }
 
         public IEnumerable<Room> GetRoomsOfPersonAccess(int personId)
