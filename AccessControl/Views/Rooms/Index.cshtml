@@ -1,7 +1,92 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
-}
+﻿@model IEnumerable<AccessControlModels.Room>
+<section class="content-header">
+    <h1>
+        Rooms
+    </h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Manage rooms</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Number</th>
+                                <th>Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Number)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Type)</td>>
+                                    <td><a asp-action="Update" asp-controller="Rooms" asp-route-id="@item.Id">Update</a> | <a href="" onclick="Delete('@item.Id')">Delete</a></td>
+                                </tr>
+                            }
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
 
-<h2>Index</h2>
+<!-- DataTables -->
+<script src="~/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!-- page script -->
+<script>
+    $(function () {
+        $('#example1').DataTable();
+    });
+    function Delete(id) {
+        //event.preventDefault();
+        var txt;
+        var r = confirm("Are you sure you want to Delete?");
+        if (r == true) {
+
+            $.ajax(
+                {
+                    type: "DELETE",
+                    url: '@Url.Action("Delete", "People")',
+                    data: {
+                        id: id
+                    },
+                    error: function (result) {
+                        alert("Error");
+                    },
+                    success: function (result) {
+                        var res = JSON.parse(result.toLowerCase());
+                        if (res == true) {
+                            debugger;
+                            var baseUrl = "/People";
+                            window.location.reload();
+                        }
+                        else {
+                            alert("Error while deleting");
+                        }
+                    }
+                });
+        }
+        else {
+            event.preventDefault();
+        }
+    }
+</script>
+
 
