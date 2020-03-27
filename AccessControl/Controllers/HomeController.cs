@@ -58,6 +58,7 @@ namespace AccessControl.Controllers
 
         public async Task<IActionResult> Test2()
         {
+            ViewData["d"] = "dda";
             var req = new HttpRequestMessage(HttpMethod.Get, "https://login.microsoftonline.com/0475dfa7-xxxxxxxx-896cf5e31efc/oauth2/token");
             req.Headers.Add("Referer", "login.microsoftonline.com");
             req.Headers.Add("Accept", "application/x-www-form-urlencoded");

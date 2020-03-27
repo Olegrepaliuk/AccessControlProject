@@ -195,5 +195,14 @@ namespace AccessControlWebApi.Models
         {
             return db.Rooms.Include(r => r.Building).Where(r => r.BuildingId == id);
         }
+
+        public int FindLastLoggedPersonLocId(int personId)
+        {
+            var lastLoc = db.Relocations.Where(rel => rel.PersonId == personId)
+                                 .OrderByDescending(rel => rel.DateAndTime)
+                                 .FirstOrDefault()
+                                 .ToLoc;
+            return -1;
+        }
     }
 }
