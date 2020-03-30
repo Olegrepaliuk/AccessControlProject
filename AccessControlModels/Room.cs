@@ -30,6 +30,26 @@ namespace AccessControlModels
             return (this.Id == ((Room)obj).Id);
 
         }
+
+        public override string ToString()
+        {
+            string namePart = "";
+            string numberPart = "";
+            string roomTypePart = "";
+
+            if (Name != null) namePart = String.Format(" ({0})", Name);
+            if (Number != null) numberPart = "№"+Number.ToString();
+            switch (Type)
+            {
+                case RoomType.Ordinary:
+                    roomTypePart = "Ordinary room";
+                    break;
+                case RoomType.Hall:
+                    roomTypePart = "Hall";
+                    break;
+            }
+            return roomTypePart + numberPart + namePart;
+        }
     }
 
 

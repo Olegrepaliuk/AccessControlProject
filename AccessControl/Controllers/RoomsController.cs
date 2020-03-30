@@ -50,7 +50,23 @@ namespace AccessControl.Controllers
         }
         public async Task<IActionResult> Create()
         {
-            1
+            List<Room> allRooms = new List<Room>();
+            var currUser = await _userManager.GetUserAsync(User);
+            var message = RequestBuider.GenerateHttpMessage
+                (
+                    method: HttpMethod.Get,
+                    uri: baseAdress,
+                    username: currUser.UserName,
+                    password: currUser.PasswordHash
+                );
+
+            var response = await client.SendAsync(message);
+            if (response.IsSuccessStatusCode)
+            {
+                var rooms = await response.Content.ReadAsAsync<IEnumerable<Room>>();
+                allRooms = rooms.ToList();
+            }
+            ViewBag.AllRooms = allRooms;
             return View();
         }
 
