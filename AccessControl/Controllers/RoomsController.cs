@@ -48,5 +48,31 @@ namespace AccessControl.Controllers
             }
             return View(allRooms);
         }
+        public async Task<IActionResult> Create()
+        {
+            1
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(Room room)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Create");
+            }
+            
+            var currUser = await _userManager.GetUserAsync(User);
+            var message = RequestBuider.GenerateHttpMessageWithObj
+                (
+                    method: HttpMethod.Post,
+                    uri: baseAdress,
+                    username: currUser.UserName,
+                    password: currUser.PasswordHash,
+                    obj: room
+                );
+            var response = await client.SendAsync(message);
+            return RedirectToAction("Index");
+        }
     }
 }

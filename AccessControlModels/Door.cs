@@ -9,9 +9,21 @@ namespace AccessControlModels
     {
         public int Id { get; set; }
         public Room FirstLocation { get; set; }
+        public int? FirstLocationId { get; set; }
         public Room SecondLocation { get; set; }
-        public bool MainExit { get; set; }
-        public bool ExitToHall { get; set; }
+        public int? SecondLocationId { get; set; }
+        public bool? ExitToStreet { get; set; }
+        public bool? ExitToHall { get; set; }
+
+        public Door()
+        {
+
+        }
+        public Door(int? firstLocId, int? secLocId)
+        {
+            FirstLocationId = firstLocId;
+            SecondLocationId = secLocId;
+        }
 
     }
 }

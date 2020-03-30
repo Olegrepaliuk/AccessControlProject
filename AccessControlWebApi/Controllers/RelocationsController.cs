@@ -25,7 +25,10 @@ namespace AccessControlWebApi.Controllers
 
         public async Task<bool> MoveToOtherLoc(int personId, int toLocId, int realLocId)
         {
+            return false;
+            /*
             int lastLoggedLocId = repo.FindLastLoggedPersonLoc(personId);
+            */
         }
     }
 }

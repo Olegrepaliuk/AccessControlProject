@@ -15,6 +15,7 @@ namespace AccessControlWebApi.Models
         public DbSet<Room> Rooms { get; set; }
         public DbSet<PersonRoom> PersonRoom { get; set; }
         public DbSet<Relocation> Relocations { get; set; }
+        public DbSet<Door> Doors { get; set; }
         public AccessCtrlContext(DbContextOptions<AccessCtrlContext> options) : base(options)
         {
             Database.EnsureCreated();

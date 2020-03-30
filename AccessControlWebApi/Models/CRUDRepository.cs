@@ -64,7 +64,7 @@ namespace AccessControlWebApi.Models
         {
             //var person = db.People.Where(p => p.Id == id).FirstOrDefault();
             var person = db.People.Find(id);
-            if(person != null)
+            if (person != null)
             {
                 db.People.Remove(person);
                 db.SaveChanges();
@@ -74,14 +74,20 @@ namespace AccessControlWebApi.Models
             {
                 return "NotFound";
             }
-            
+
         }
-        
+
         public Room GetRoomById(int id)
         {
             return db.Rooms.Include(r => r.Building).Where(r => r.Id == id).FirstOrDefault();
             //return db.Rooms.Where(r => r.Id == id).FirstOrDefault();
         }
+
+        public void ConnectRooms(int id, int? connectedRoomId)
+        {
+            AddDoor(id, connectedRoomId);
+        }
+
         public void AddRoom(Room room)
         {
             db.Rooms.Add(room);
@@ -156,26 +162,26 @@ namespace AccessControlWebApi.Models
             var pairs = GetPersonRoomsAccess(id);
             foreach (var item in pairs)
             {
-                if(!setIds.Contains(item.RoomId))
+                if (!setIds.Contains(item.RoomId))
                 {
                     var extraEntities = db.PersonRoom.Where(pr => (pr.PersonId == item.PersonId) && (pr.RoomId == item.RoomId));
-                    if(extraEntities.Count() > 0)
+                    if (extraEntities.Count() > 0)
                     {
                         db.PersonRoom.RemoveRange(extraEntities);
                     }
-                    
+
                 }
                 else
                 {
                     setIds.Remove(item.RoomId);
                 }
-                
+
             }
 
             foreach (var roomIdItem in setIds)
             {
                 var personRoom = new PersonRoom(id, roomIdItem);
-                db.PersonRoom.Add(personRoom);               
+                db.PersonRoom.Add(personRoom);
             }
             db.SaveChanges();
         }
@@ -198,11 +204,19 @@ namespace AccessControlWebApi.Models
 
         public int FindLastLoggedPersonLocId(int personId)
         {
-            var lastLoc = db.Relocations.Where(rel => rel.PersonId == personId)
+            var lastLoc = db.Relocations
+                                 .Where(rel => rel.PersonId == personId)
                                  .OrderByDescending(rel => rel.DateAndTime)
                                  .FirstOrDefault()
                                  .ToLoc;
             return -1;
+        }
+
+        public void AddDoor(int? firstLocId, int? secLocId)
+        {
+            var door = new Door(firstLocId, secLocId);
+            db.Doors.Add(door);
+            db.SaveChanges();
         }
     }
 }

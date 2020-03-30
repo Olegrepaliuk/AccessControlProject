@@ -50,19 +50,14 @@ namespace AccessControlWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody]Room room)
+        public async Task<ActionResult> Post([FromBody]Room room, int? connectedRoomId)
         {
             var user = await CheckAuthorization();
             if (user == null) return Unauthorized();
             var hasRight = await CheckRights(user);
             if (!hasRight) return Forbid();
-            /*
-            var b = repo.GetBuildingById(1);
-            room.Building = b;
-
             repo.AddRoom(room);
-            */
-            //return CreatedAtAction(nameof(Get), new { id = person.Id }, person.Id);
+            repo.ConnectRooms(room.Id, connectedRoomId);
             return StatusCode(201);
         }
 
