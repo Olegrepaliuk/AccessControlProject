@@ -5,11 +5,13 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AccessControl.Models;
 using AccessControlModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccessControl.Controllers
 {
+    [Authorize]
     public class RoomsController : Controller
     {
         static HttpClient client;
@@ -48,6 +50,8 @@ namespace AccessControl.Controllers
             }
             return View(allRooms);
         }
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             List<Room> allRooms = new List<Room>();
@@ -70,6 +74,7 @@ namespace AccessControl.Controllers
             return View();
         }
 
+        /*
         [HttpPost]
         public async Task<IActionResult> Create(Room room)
         {
@@ -89,6 +94,32 @@ namespace AccessControl.Controllers
                 );
             var response = await client.SendAsync(message);
             return RedirectToAction("Index");
+        }
+        */
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Create(Room room, List<int> connRooms)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Create");
+            }
+
+            var data = new { Room = room, ConnRooms = connRooms};
+
+            var currUser = await _userManager.GetUserAsync(User);
+            var message = RequestBuider.GenerateHttpMessageWithObj
+                (
+                    method: HttpMethod.Post,
+                    uri: baseAdress+"/createandconnect",
+                    username: currUser.UserName,
+                    password: currUser.PasswordHash,
+                    obj: data
+                );
+            var response = await client.SendAsync(message);
+            return RedirectToAction("Index");
+
         }
     }
 }

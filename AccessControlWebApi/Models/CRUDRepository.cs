@@ -202,6 +202,23 @@ namespace AccessControlWebApi.Models
             return db.Rooms.Include(r => r.Building).Where(r => r.BuildingId == id);
         }
 
+        public void ConnectRoomWithOthers(int roomId, List<int> otherRoomsIds)
+        {
+            Door door;
+            if(otherRoomsIds.Contains(-1))
+            {
+                door = new Door(roomId, null);
+                db.Doors.Add(door);
+            }
+            var existingIds = db.Rooms.Where(r => otherRoomsIds.Contains(r.Id)).Select(r=> r.Id);
+            foreach (var item in existingIds)
+            {
+                door = new Door(roomId, item);
+                db.Doors.Add(door);
+            }
+            db.SaveChanges();
+        }
+
         public int FindLastLoggedPersonLocId(int personId)
         {
             var lastLoc = db.Relocations

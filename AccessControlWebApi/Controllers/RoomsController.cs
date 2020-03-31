@@ -7,6 +7,7 @@ using AccessControlWebApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace AccessControlWebApi.Controllers
 {
@@ -50,14 +51,33 @@ namespace AccessControlWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody]Room room, int? connectedRoomId)
+        public async Task<ActionResult> Post([FromBody] Room room)
         {
             var user = await CheckAuthorization();
             if (user == null) return Unauthorized();
             var hasRight = await CheckRights(user);
             if (!hasRight) return Forbid();
             repo.AddRoom(room);
-            repo.ConnectRooms(room.Id, connectedRoomId);
+            return StatusCode(201);
+        }
+
+        [HttpPost("createandconnect")]
+        public async Task<ActionResult> CreateAndConnect([FromBody] dynamic obj)
+        {
+            var user = await CheckAuthorization();
+            if (user == null) return Unauthorized();
+            var hasRight = await CheckRights(user);
+            if (!hasRight) return Forbid();
+
+            string roomJson = JsonConvert.SerializeObject(obj.Room);
+            Room room = JsonConvert.DeserializeObject<Room>(roomJson);
+
+            string roomsIdsJson = JsonConvert.SerializeObject(obj.ConnRooms);
+            List<int> roomsIds = JsonConvert.DeserializeObject<List<int>>(roomsIdsJson);
+
+            repo.AddRoom(room);
+            repo.ConnectRoomWithOthers(room.Id, roomsIds);
+
             return StatusCode(201);
         }
 
