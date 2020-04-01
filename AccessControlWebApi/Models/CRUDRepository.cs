@@ -219,14 +219,18 @@ namespace AccessControlWebApi.Models
             db.SaveChanges();
         }
 
-        public int FindLastLoggedPersonLocId(int personId)
+        public int? FindLastLoggedPersonLocId(int personId)
         {
             var lastLoc = db.Relocations
                                  .Where(rel => rel.PersonId == personId)
                                  .OrderByDescending(rel => rel.DateAndTime)
-                                 .FirstOrDefault()
-                                 .ToLoc;
-            return -1;
+                                 .FirstOrDefault();
+            if (lastLoc == null)
+            {
+                return -1;
+            }
+            return lastLoc.ToLocId;
+            
         }
 
         public void AddDoor(int? firstLocId, int? secLocId)

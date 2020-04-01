@@ -23,12 +23,16 @@ namespace AccessControlWebApi.Controllers
             _userManager = userManager;
         }
 
-        public async Task<bool> MoveToOtherLoc(int personId, int toLocId, int realLocId)
+        public async Task<bool> MoveToOtherLoc(int personId, int? toLocId, int? realLocId)
         {
-            return false;
-            /*
-            int lastLoggedLocId = repo.FindLastLoggedPersonLoc(personId);
-            */
+            
+            int? lastLoggedLocId = repo.FindLastLoggedPersonLocId(personId);
+            if ((lastLoggedLocId != realLocId) & lastLoggedLocId == -1) ;
+            {
+                //DoSmth
+            }
+            //repo.CheckDoorExits()
+            //repo.CheckAccess()
         }
     }
 }
