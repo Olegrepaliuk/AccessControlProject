@@ -18,14 +18,13 @@ namespace AccessControlWebApi.Controllers
     [ApiController]
     public class PeopleController : ControllerBase
     {
-        //private AccessCtrlContext db;
-        private CRUDRepository repo;
+        private ControlService controlService;
         private readonly UserManager<User> _userManager;
 
-        public PeopleController(AccessCtrlContext context, UserManager<User> userManager)
+        public PeopleController(ControlService service, UserManager<User> userManager)
         {
             //db = context;
-            repo = new CRUDRepository(context);
+            controlService = service;
             _userManager = userManager;
         }
         // GET api/people
@@ -34,7 +33,7 @@ namespace AccessControlWebApi.Controllers
         {
             var user = await CheckAuthorization();
             if (user == null) return Unauthorized();
-            List<Person> people = repo.People.ToList();
+            List<Person> people = controlService.GetAllPeople();
             return people;
         }
 
@@ -44,7 +43,7 @@ namespace AccessControlWebApi.Controllers
         {
             var user = await CheckAuthorization();
             if (user == null) return Unauthorized();
-            Person foundPerson = repo.GetPersonById(id);
+            Person foundPerson = controlService.GetPersonById(id);
             if(foundPerson == null)
             {
                 return NotFound();
@@ -63,7 +62,7 @@ namespace AccessControlWebApi.Controllers
             if (user == null) return Unauthorized();
             var hasRight = await CheckRights(user);
             if (!hasRight) return Forbid();
-            repo.AddPerson(person);
+            controlService.CreatePerson(person);
             //return CreatedAtAction(nameof(Get), new { id = person.Id }, person.Id);
             return StatusCode(201);
         }
@@ -82,7 +81,7 @@ namespace AccessControlWebApi.Controllers
             var hasRight = await CheckRights(user);
             if (!hasRight) return Forbid();
 
-            repo.PutPerson(person);
+            controlService.UpdatePerson(person);
 
             return NoContent();
         }
@@ -95,7 +94,7 @@ namespace AccessControlWebApi.Controllers
             if (user == null) return Unauthorized();
             var hasRight = await CheckRights(user);
             if (!hasRight) return Forbid();
-            var result = repo.DeletePerson(id);
+            var result = controlService.DeletePerson(id);
             if (result == "deleted")
             {
                 return NoContent();
@@ -112,12 +111,12 @@ namespace AccessControlWebApi.Controllers
             var user = await CheckAuthorization();
             if (user == null) return Unauthorized();
 
-            var person = repo.GetPersonById(id);
+            var person = controlService.GetPersonById(id);
             if (person == null)
             {
                 return NotFound();
             }
-            return repo.GetRoomsOfPersonAccess(person.Id).ToList();
+            return controlService.GetRoomsOfPersonAccess(person.Id).ToList();
         }
 
         [HttpPost("{id}/rooms")]
@@ -128,12 +127,12 @@ namespace AccessControlWebApi.Controllers
             var hasRight = await CheckRights(user);
             if (!hasRight) return Forbid();
 
-            var person = repo.GetPersonById(id);
+            var person = controlService.GetPersonById(id);
             if(person == null)
             {
                 return NotFound();
             }
-            repo.UpdatePersonAccess(id, roomsId);
+            controlService.UpdatePersonAccess(id, roomsId);
             return NoContent();
         }
 

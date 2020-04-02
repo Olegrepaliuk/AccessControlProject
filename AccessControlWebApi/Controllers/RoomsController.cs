@@ -15,12 +15,12 @@ namespace AccessControlWebApi.Controllers
     [ApiController]
     public class RoomsController : ControllerBase
     {
-        private CRUDRepository repo;
+        private ControlService controlService;
         private readonly UserManager<User> _userManager;
 
-        public RoomsController(AccessCtrlContext context, UserManager<User> userManager)
+        public RoomsController(ControlService service, UserManager<User> userManager)
         {
-            repo = new CRUDRepository(context);
+            controlService = service;
             _userManager = userManager;
         }
         // GET api/rooms
@@ -29,7 +29,7 @@ namespace AccessControlWebApi.Controllers
         {
             var user = await CheckAuthorization();
             if (user == null) return Unauthorized();
-            List<Room> rooms = repo.Rooms.ToList();
+            List<Room> rooms = controlService.GetAllRooms();
             return rooms;
         }
 
@@ -39,7 +39,7 @@ namespace AccessControlWebApi.Controllers
         {
             var user = await CheckAuthorization();
             if (user == null) return Unauthorized();
-            Room foundRoom = repo.GetRoomById(id);
+            Room foundRoom = controlService.GetRoomById(id);
             if (foundRoom == null)
             {
                 return NotFound();
@@ -57,7 +57,7 @@ namespace AccessControlWebApi.Controllers
             if (user == null) return Unauthorized();
             var hasRight = await CheckRights(user);
             if (!hasRight) return Forbid();
-            repo.AddRoom(room);
+            controlService.CreateRoom(room);
             return StatusCode(201);
         }
 
@@ -75,8 +75,8 @@ namespace AccessControlWebApi.Controllers
             string roomsIdsJson = JsonConvert.SerializeObject(obj.ConnRooms);
             List<int> roomsIds = JsonConvert.DeserializeObject<List<int>>(roomsIdsJson);
 
-            repo.AddRoom(room);
-            repo.ConnectRoomWithOthers(room.Id, roomsIds);
+            controlService.CreateRoom(room);
+            controlService.ConnectRoomWithOthers(room.Id, roomsIds);
 
             return StatusCode(201);
         }
@@ -95,7 +95,7 @@ namespace AccessControlWebApi.Controllers
             var hasRight = await CheckRights(user);
             if (!hasRight) return Forbid();
 
-            repo.PutRoom(room);
+            controlService.UpdateRoom(room);
 
             return NoContent();
         }
@@ -108,7 +108,7 @@ namespace AccessControlWebApi.Controllers
             if (user == null) return Unauthorized();
             var hasRight = await CheckRights(user);
             if (!hasRight) return Forbid();
-            var result = repo.DeleteRoom(id);
+            var result = controlService.DeleteRoom(id);
             if (result == "deleted")
             {
                 return NoContent();

@@ -40,6 +40,8 @@ namespace AccessControlWebApi
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<AppUsersContext>();
+            //services.AddTransient<TestService>();
+            //services.AddTransient<TestRepo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

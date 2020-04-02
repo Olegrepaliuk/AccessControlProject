@@ -14,25 +14,26 @@ namespace AccessControlWebApi.Controllers
     [ApiController]
     public class RelocationsController : ControllerBase
     {
-        private CRUDRepository repo;
+        private ControlService controlService;
         private readonly UserManager<User> _userManager;
 
-        public RelocationsController(AccessCtrlContext context, UserManager<User> userManager)
+        public RelocationsController(ControlService service, UserManager<User> userManager)
         {
-            repo = new CRUDRepository(context);
+            controlService = service;
             _userManager = userManager;
         }
 
         public async Task<bool> MoveToOtherLoc(int personId, int? toLocId, int? realLocId)
         {
             
-            int? lastLoggedLocId = repo.FindLastLoggedPersonLocId(personId);
+            int? lastLoggedLocId = controlService.FindLastLoggedPersonLocId(personId);
             if ((lastLoggedLocId != realLocId) & lastLoggedLocId == -1) ;
             {
                 //DoSmth
             }
             //repo.CheckDoorExits()
             //repo.CheckAccess()
+            return true;
         }
     }
 }

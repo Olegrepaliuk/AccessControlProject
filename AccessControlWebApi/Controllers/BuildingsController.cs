@@ -14,13 +14,13 @@ namespace AccessControlWebApi.Controllers
     [ApiController]
     public class BuildingsController : ControllerBase
     {
-        private CRUDRepository repo;
+        private ControlService controlService;
         private readonly UserManager<User> _userManager;
 
-        public BuildingsController(AccessCtrlContext context, UserManager<User> userManager)
+        public BuildingsController(ControlService service, UserManager<User> userManager)
         {
             //db = context;
-            repo = new CRUDRepository(context);
+            controlService = service;
             _userManager = userManager;
         }
 
@@ -30,7 +30,7 @@ namespace AccessControlWebApi.Controllers
         {
             var user = await CheckAuthorization();
             if (user == null) return Unauthorized();
-            List<Building> buildings = repo.Buildings.ToList();
+            List<Building> buildings = controlService.GetAllBuildings();
             return buildings;
         }
 
@@ -40,7 +40,7 @@ namespace AccessControlWebApi.Controllers
         {
             var user = await CheckAuthorization();
             if (user == null) return Unauthorized();
-            var foundBuilding = repo.GetBuildingById(id);
+            var foundBuilding = controlService.GetBuildingById(id);
             if (foundBuilding == null)
             {
                 return NotFound();
@@ -56,14 +56,14 @@ namespace AccessControlWebApi.Controllers
         {
             var user = await CheckAuthorization();
             if (user == null) return Unauthorized();
-            var foundBuilding = repo.GetBuildingById(id);
+            var foundBuilding = controlService.GetBuildingById(id);
             if (foundBuilding == null)
             {
                 return NotFound();
             }
             else
             {
-                var rooms = repo.GetRoomsOfBuilding(id).ToList();
+                var rooms = controlService.GetRoomsOfBuilding(id);
                 return rooms;
             }
         }
@@ -75,7 +75,7 @@ namespace AccessControlWebApi.Controllers
             if (user == null) return Unauthorized();
             var hasRight = await CheckRights(user);
             if (!hasRight) return Forbid();
-            repo.AddBuilding(building);
+            controlService.CreateBuilding(building);
             //return CreatedAtAction(nameof(Get), new { id = person.Id }, person.Id);
             return StatusCode(201);
         }
@@ -93,7 +93,7 @@ namespace AccessControlWebApi.Controllers
             var hasRight = await CheckRights(user);
             if (!hasRight) return Forbid();
 
-            repo.PutBuilding(building);
+            controlService.UpdateBuilding(building);
 
             return NoContent();
         }
@@ -106,7 +106,7 @@ namespace AccessControlWebApi.Controllers
             if (user == null) return Unauthorized();
             var hasRight = await CheckRights(user);
             if (!hasRight) return Forbid();
-            var result = repo.DeleteRoom(id);
+            var result = controlService.DeleteRoom(id);
             if (result == "deleted")
             {
                 return NoContent();

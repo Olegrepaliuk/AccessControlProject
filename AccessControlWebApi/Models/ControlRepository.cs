@@ -1,5 +1,4 @@
-﻿using AccessControl.Models;
-using AccessControlModels;
+﻿using AccessControlModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,15 +7,9 @@ using System.Threading.Tasks;
 
 namespace AccessControlWebApi.Models
 {
-    public class CRUDRepository
+    public class ControlRepository
     {
         private AccessCtrlContext db;
-
-        public CRUDRepository(AccessCtrlContext context)
-        {
-            db = context;
-        }
-
         public IEnumerable<Person> People
         {
             get
@@ -40,6 +33,10 @@ namespace AccessControlWebApi.Models
             {
                 return db.Buildings;
             }
+        }
+        public ControlRepository(AccessCtrlContext context)
+        {
+            db = context;
         }
 
         public void PutPerson(Person person)
@@ -82,12 +79,6 @@ namespace AccessControlWebApi.Models
             return db.Rooms.Include(r => r.Building).Where(r => r.Id == id).FirstOrDefault();
             //return db.Rooms.Where(r => r.Id == id).FirstOrDefault();
         }
-
-        public void ConnectRooms(int id, int? connectedRoomId)
-        {
-            AddDoor(id, connectedRoomId);
-        }
-
         public void AddRoom(Room room)
         {
             db.Rooms.Add(room);
@@ -114,7 +105,6 @@ namespace AccessControlWebApi.Models
             }
 
         }
-
         public void AddBuilding(Building building)
         {
             db.Buildings.Add(building);
@@ -151,93 +141,45 @@ namespace AccessControlWebApi.Models
 
         }
 
+        public void AddDoor(Door door)
+        {
+            db.Doors.Add(door);
+            db.SaveChanges();
+        }
+
+        public void AddPersonRoom(PersonRoom pr)
+        {
+            db.PersonRoom.Add(pr);
+            db.SaveChanges();
+        }
+
+        public Relocation FindLastPersonRelocation(int personId)
+        {
+            return db.Relocations
+                                 .Where(rel => rel.PersonId == personId)
+                                 .OrderByDescending(rel => rel.DateAndTime)
+                                 .FirstOrDefault();
+        }
+        public void DeletePersonRoomPairs(IEnumerable<PersonRoom> entities)
+        {
+            db.PersonRoom.RemoveRange(entities);
+            db.SaveChanges();
+        }
+        public IEnumerable<PersonRoom> FindPersonRoomPairs(int personId, int roomId)
+        {
+            return db.PersonRoom.Where(pr => (pr.PersonId == personId) && (pr.RoomId == roomId));
+        }
+        public IEnumerable<int> FindExistingRoomIds(List<int> roomsIds)
+        {
+            return db.Rooms.Where(r => roomsIds.Contains(r.Id)).Select(r => r.Id);
+        }
         public IEnumerable<PersonRoom> GetPersonRoomsAccess(int personId)
         {
             return db.PersonRoom.Where(pr => pr.PersonId == personId);
         }
-
-        public void UpdatePersonAccess(int id, IEnumerable<int> roomsId)
-        {
-            var setIds = roomsId.ToHashSet();
-            var pairs = GetPersonRoomsAccess(id);
-            foreach (var item in pairs)
-            {
-                if (!setIds.Contains(item.RoomId))
-                {
-                    var extraEntities = db.PersonRoom.Where(pr => (pr.PersonId == item.PersonId) && (pr.RoomId == item.RoomId));
-                    if (extraEntities.Count() > 0)
-                    {
-                        db.PersonRoom.RemoveRange(extraEntities);
-                    }
-
-                }
-                else
-                {
-                    setIds.Remove(item.RoomId);
-                }
-
-            }
-
-            foreach (var roomIdItem in setIds)
-            {
-                var personRoom = new PersonRoom(id, roomIdItem);
-                db.PersonRoom.Add(personRoom);
-            }
-            db.SaveChanges();
-        }
-
-        public IEnumerable<Room> GetRoomsOfPersonAccess(int personId)
-        {
-            List<Room> resultRooms = new List<Room>();
-            var personRooms = GetPersonRoomsAccess(personId);
-            foreach (var item in personRooms)
-            {
-                var room = db.Rooms.Find(item.RoomId);
-                if (room != null) resultRooms.Add(room);
-            }
-            return resultRooms;
-        }
         public IEnumerable<Room> GetRoomsOfBuilding(int id)
         {
             return db.Rooms.Include(r => r.Building).Where(r => r.BuildingId == id);
-        }
-
-        public void ConnectRoomWithOthers(int roomId, List<int> otherRoomsIds)
-        {
-            Door door;
-            if(otherRoomsIds.Contains(-1))
-            {
-                door = new Door(roomId, null);
-                db.Doors.Add(door);
-            }
-            var existingIds = db.Rooms.Where(r => otherRoomsIds.Contains(r.Id)).Select(r=> r.Id);
-            foreach (var item in existingIds)
-            {
-                door = new Door(roomId, item);
-                db.Doors.Add(door);
-            }
-            db.SaveChanges();
-        }
-
-        public int? FindLastLoggedPersonLocId(int personId)
-        {
-            var lastLoc = db.Relocations
-                                 .Where(rel => rel.PersonId == personId)
-                                 .OrderByDescending(rel => rel.DateAndTime)
-                                 .FirstOrDefault();
-            if (lastLoc == null)
-            {
-                return -1;
-            }
-            return lastLoc.ToLocId;
-            
-        }
-
-        public void AddDoor(int? firstLocId, int? secLocId)
-        {
-            var door = new Door(firstLocId, secLocId);
-            db.Doors.Add(door);
-            db.SaveChanges();
         }
     }
 }
