@@ -60,7 +60,7 @@ namespace AccessControl
             services.ConfigureApplicationCookie(options => 
             {
                 options.LoginPath = "/Account/Login";
-                options.AccessDeniedPath = "/Home/Error";
+                options.AccessDeniedPath = "/Home/Index";
             });
         }
 

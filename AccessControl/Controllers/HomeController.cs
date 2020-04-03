@@ -74,7 +74,6 @@ namespace AccessControl.Controllers
                 { "username", "xxxx@xxxxx.onmicrosoft.com" },
                 { "password", "xxxxxxxxxxxxx" }
             });
-
             HttpClient httpClient = new HttpClient();
             var resp = await httpClient.SendAsync(req);
             return View();

@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AccessControl.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class PeopleController : Controller
     {
         static HttpClient client;
@@ -68,6 +68,7 @@ namespace AccessControl.Controllers
             return View(allPeople);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         public async Task<bool> Delete(int id)
         {
@@ -91,12 +92,14 @@ namespace AccessControl.Controllers
             return false;
 
         }
-        
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(Person person)
         {
@@ -118,6 +121,7 @@ namespace AccessControl.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id)
         {
             //var response = await client.GetAsync($"api/people/{id}");
@@ -188,6 +192,7 @@ namespace AccessControl.Controllers
         }
         */
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Update(Person person, List<int> rooms)
         {

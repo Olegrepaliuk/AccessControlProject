@@ -161,7 +161,7 @@ namespace AccessControlWebApi.Models
         public Relocation FindLastPersonRelocation(int personId)
         {
             return db.Relocations
-                                 .Where(rel => rel.PersonId == personId)
+                                 .Where(rel => (rel.PersonId == personId)&(rel.Success == true))
                                  .OrderByDescending(rel => rel.DateAndTime)
                                  .FirstOrDefault();
         }
@@ -170,9 +170,17 @@ namespace AccessControlWebApi.Models
             db.PersonRoom.RemoveRange(entities);
             //db.SaveChanges();
         }
-        public IEnumerable<PersonRoom> FindPersonRoomPairs(int personId, int roomId)
+        public void DeletePersonRoomPair(PersonRoom personRoom)
         {
-            return db.PersonRoom.Where(pr => (pr.PersonId == personId) && (pr.RoomId == roomId));
+            db.PersonRoom.Remove(personRoom);
+        }
+        public PersonRoom FindPersonRoomPair(int personId, int? roomId)
+        {
+            return db.PersonRoom.Where(pr => (pr.PersonId == personId) && (pr.RoomId == roomId)).FirstOrDefault();
+        }
+        public void AddRelocation(Relocation relocation)
+        {
+            db.Relocations.Add(relocation);
         }
         public IEnumerable<int> FindExistingRoomIds(List<int> roomsIds)
         {
@@ -186,5 +194,6 @@ namespace AccessControlWebApi.Models
         {
             return db.Rooms.Include(r => r.Building).Where(r => r.BuildingId == id);
         }
+
     }
 }

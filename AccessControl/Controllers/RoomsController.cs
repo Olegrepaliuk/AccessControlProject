@@ -121,5 +121,10 @@ namespace AccessControl.Controllers
             return RedirectToAction("Index");
 
         }
+
+        public async Task<IActionResult> Update()
+        {
+            return null;
+        }
     }
 }

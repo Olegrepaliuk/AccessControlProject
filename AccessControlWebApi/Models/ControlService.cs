@@ -102,10 +102,10 @@ namespace AccessControlWebApi.Models
             {
                 if (!setIds.Contains(item.RoomId))
                 {
-                    var extraEntities = repo.FindPersonRoomPairs(item.PersonId, item.RoomId);
-                    if (extraEntities.Count() > 0)
+                    var extraEntity = repo.FindPersonRoomPair(item.PersonId, item.RoomId);
+                    if (extraEntity != null)
                     {
-                        repo.DeletePersonRoomPairs(extraEntities);
+                        repo.DeletePersonRoomPair(extraEntity);
                     }
 
                 }
@@ -176,6 +176,32 @@ namespace AccessControlWebApi.Models
             var door = new Door(firstLocId, secLocId);
             repo.AddDoor(door);
             repo.SaveChanges();
+        }
+
+        public bool TryMoveToOtherLoc(int personId, int? fromLocId, int? toLocId)
+        {
+            bool access;
+            var entity = repo.FindPersonRoomPair(personId, toLocId);
+            if(entity == null)
+            {
+                access = false;
+            }
+            else
+            {
+                access = true;
+            }
+            DateTime dateTime = DateTime.UtcNow;
+            var relocation = new Relocation
+            {
+                PersonId = personId,
+                FromLocId = fromLocId,
+                ToLocId = toLocId,
+                DateAndTime = dateTime,
+                Success = access
+            };
+            repo.AddRelocation(relocation);
+            repo.SaveChanges();
+            return access;
         }
     }
 }
