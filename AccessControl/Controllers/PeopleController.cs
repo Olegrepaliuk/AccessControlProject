@@ -236,6 +236,7 @@ namespace AccessControl.Controllers
             {
                 room = await response.Content.ReadAsAsync<Room>();
             }
+
             return View(room);
         }
 

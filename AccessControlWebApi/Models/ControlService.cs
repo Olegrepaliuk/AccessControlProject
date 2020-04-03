@@ -39,10 +39,7 @@ namespace AccessControlWebApi.Models
             return repo.DeletePerson(id);
         }
 
-        internal List<Building> GetAllBuildings()
-        {
-            throw new NotImplementedException();
-        }
+
         #endregion
 
         #region Room
@@ -69,6 +66,10 @@ namespace AccessControlWebApi.Models
         #endregion
 
         #region Building
+        public List<Building> GetAllBuildings()
+        {
+            throw new NotImplementedException();
+        }
         public Building GetBuildingById(int id)
         {
             throw new NotImplementedException();
@@ -120,7 +121,8 @@ namespace AccessControlWebApi.Models
                 var personRoom = new PersonRoom(id, roomIdItem);
                 repo.AddPersonRoom(personRoom);
             }
-            //db.SaveChanges();
+
+            repo.SaveChanges();
         }
 
 
@@ -142,7 +144,7 @@ namespace AccessControlWebApi.Models
         public void ConnectRoomWithOthers(int roomId, List<int> otherRoomsIds)
         {
             Door door;
-            if(otherRoomsIds.Contains(-1))
+            if (otherRoomsIds.Contains(-1))
             {
                 door = new Door(roomId, null);
                 repo.AddDoor(door);
@@ -153,7 +155,7 @@ namespace AccessControlWebApi.Models
                 door = new Door(roomId, item);
                 repo.AddDoor(door);
             }
-            //db.SaveChanges();
+            repo.SaveChanges();
         }
 
 
@@ -166,13 +168,14 @@ namespace AccessControlWebApi.Models
                 return -1;
             }
             return lastReloc.ToLocId;
-            
+
         }
 
         public void AddDoor(int? firstLocId, int? secLocId)
         {
             var door = new Door(firstLocId, secLocId);
             repo.AddDoor(door);
+            repo.SaveChanges();
         }
     }
 }

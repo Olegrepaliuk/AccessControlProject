@@ -39,6 +39,11 @@ namespace AccessControlWebApi.Models
             db = context;
         }
 
+        public void SaveChanges()
+        {
+            db.SaveChanges();
+        }
+
         public void PutPerson(Person person)
         {
             db.Entry(person).State = EntityState.Modified;
@@ -144,13 +149,13 @@ namespace AccessControlWebApi.Models
         public void AddDoor(Door door)
         {
             db.Doors.Add(door);
-            db.SaveChanges();
+            //db.SaveChanges();
         }
 
         public void AddPersonRoom(PersonRoom pr)
         {
             db.PersonRoom.Add(pr);
-            db.SaveChanges();
+            //db.SaveChanges();
         }
 
         public Relocation FindLastPersonRelocation(int personId)
@@ -163,7 +168,7 @@ namespace AccessControlWebApi.Models
         public void DeletePersonRoomPairs(IEnumerable<PersonRoom> entities)
         {
             db.PersonRoom.RemoveRange(entities);
-            db.SaveChanges();
+            //db.SaveChanges();
         }
         public IEnumerable<PersonRoom> FindPersonRoomPairs(int personId, int roomId)
         {
