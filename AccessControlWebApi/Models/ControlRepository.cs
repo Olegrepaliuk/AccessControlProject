@@ -186,6 +186,10 @@ namespace AccessControlWebApi.Models
         {
             return db.Rooms.Where(r => roomsIds.Contains(r.Id)).Select(r => r.Id);
         }
+        public IEnumerable<Person> FindExistingPeople(List<int> peopleIds)
+        {
+            return db.People.Where(p => peopleIds.Contains(p.Id));
+        }
         public IEnumerable<PersonRoom> GetPersonRoomsAccess(int personId)
         {
             return db.PersonRoom.Where(pr => pr.PersonId == personId);
@@ -194,6 +198,12 @@ namespace AccessControlWebApi.Models
         {
             return db.Rooms.Include(r => r.Building).Where(r => r.BuildingId == id);
         }
-
+        public IEnumerable<IGrouping<int, Relocation>> GetTodayRelocationsByPerson()
+        {
+            return db.Relocations.Include(rel => rel.Person)
+                                  .Where(rel => (rel.DateAndTime.Date == DateTime.UtcNow.Date)&rel.Success == true)
+                                  .OrderByDescending(rel => rel.DateAndTime)
+                                  .GroupBy(rel => rel.PersonId);
+        }
     }
 }
