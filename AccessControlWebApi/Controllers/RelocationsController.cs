@@ -12,10 +12,12 @@ namespace AccessControlWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [СustomAuthorization]
     public class RelocationsController : ControllerBase
     {
         private ControlService controlService;
         private readonly UserManager<User> _userManager;
+
 
         public RelocationsController(ControlService service, UserManager<User> userManager)
         {
@@ -23,12 +25,13 @@ namespace AccessControlWebApi.Controllers
             _userManager = userManager;
         }
 
+        [СustomAuthorization(OnlyAdmin = true)]
         public async Task<ActionResult<bool>> MoveToOtherLoc(int personId, int? toLocId, int? realLocId)
         {
-            var user = await CheckAuthorization();
-            if (user == null) return Unauthorized();
-            var hasRight = await CheckRights(user);
-            if (!hasRight) return Forbid();
+            //var user = await CheckAuthorization();
+            //if (user == null) return Unauthorized();
+            //var hasRight = await CheckRights(user);
+            //if (!hasRight) return Forbid();
             int? lastLoggedLocId = controlService.FindLastLoggedPersonLocId(personId);
             if ((lastLoggedLocId != realLocId) & lastLoggedLocId != -1)
             {
@@ -38,6 +41,7 @@ namespace AccessControlWebApi.Controllers
             
         }
 
+        /*
         private async Task<User> CheckAuthorization()
         {
             //var UserManager = HttpContext.GetOwinContext().GetUserManager<User>();
@@ -68,5 +72,6 @@ namespace AccessControlWebApi.Controllers
             var hasRight = await UsersInfo.CheckAdminRights(user, _userManager);
             return hasRight;
         }
+        */
     }
 }

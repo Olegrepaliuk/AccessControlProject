@@ -13,6 +13,7 @@ namespace AccessControlWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [СustomAuthorization]
     public class RoomsController : ControllerBase
     {
         private ControlService controlService;
@@ -27,8 +28,8 @@ namespace AccessControlWebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Room>>> GetAll()
         {
-            var user = await CheckAuthorization();
-            if (user == null) return Unauthorized();
+            //var user = await CheckAuthorization();
+            //if (user == null) return Unauthorized();
             List<Room> rooms = controlService.GetAllRooms();
             return rooms;
         }
@@ -37,8 +38,8 @@ namespace AccessControlWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Room>> Get(int id)
         {
-            var user = await CheckAuthorization();
-            if (user == null) return Unauthorized();
+            //var user = await CheckAuthorization();
+            //if (user == null) return Unauthorized();
             Room foundRoom = controlService.GetRoomById(id);
             if (foundRoom == null)
             {
@@ -51,23 +52,25 @@ namespace AccessControlWebApi.Controllers
         }
 
         [HttpPost]
+        [СustomAuthorization(OnlyAdmin = true)]
         public async Task<ActionResult> Post([FromBody] Room room)
         {
-            var user = await CheckAuthorization();
-            if (user == null) return Unauthorized();
-            var hasRight = await CheckRights(user);
-            if (!hasRight) return Forbid();
+            //var user = await CheckAuthorization();
+            //if (user == null) return Unauthorized();
+            //var hasRight = await CheckRights(user);
+            //if (!hasRight) return Forbid();
             controlService.CreateRoom(room);
             return StatusCode(201);
         }
 
         [HttpPost("createandconnect")]
+        [СustomAuthorization(OnlyAdmin = true)]
         public async Task<ActionResult> CreateAndConnect([FromBody] dynamic obj)
         {
-            var user = await CheckAuthorization();
-            if (user == null) return Unauthorized();
-            var hasRight = await CheckRights(user);
-            if (!hasRight) return Forbid();
+            //var user = await CheckAuthorization();
+            //if (user == null) return Unauthorized();
+            //var hasRight = await CheckRights(user);
+            //if (!hasRight) return Forbid();
 
             string roomJson = JsonConvert.SerializeObject(obj.Room);
             Room room = JsonConvert.DeserializeObject<Room>(roomJson);
@@ -83,6 +86,7 @@ namespace AccessControlWebApi.Controllers
 
         // PUT api/rooms/5
         [HttpPut("{id}")]
+        [СustomAuthorization(OnlyAdmin = true)]
         public async Task<ActionResult> Put(int id, [FromBody]Room room)
         {
             if (id != room.Id)
@@ -90,10 +94,10 @@ namespace AccessControlWebApi.Controllers
                 return BadRequest();
             }
 
-            var user = await CheckAuthorization();
-            if (user == null) return Unauthorized();
-            var hasRight = await CheckRights(user);
-            if (!hasRight) return Forbid();
+            //var user = await CheckAuthorization();
+            //if (user == null) return Unauthorized();
+            //var hasRight = await CheckRights(user);
+            //if (!hasRight) return Forbid();
 
             controlService.UpdateRoom(room);
 
@@ -102,12 +106,13 @@ namespace AccessControlWebApi.Controllers
 
         // DELETE api/rooms/5
         [HttpDelete("{id}")]
+        [СustomAuthorization(OnlyAdmin = true)]
         public async Task<ActionResult> Delete(int id)
         {
-            var user = await CheckAuthorization();
-            if (user == null) return Unauthorized();
-            var hasRight = await CheckRights(user);
-            if (!hasRight) return Forbid();
+            //var user = await CheckAuthorization();
+            //if (user == null) return Unauthorized();
+            //var hasRight = await CheckRights(user);
+            //if (!hasRight) return Forbid();
             var result = controlService.DeleteRoom(id);
             if (result == "deleted")
             {
@@ -119,6 +124,7 @@ namespace AccessControlWebApi.Controllers
             }
         }
 
+        /*
         private async Task<User> CheckAuthorization()
         {
             var req = Request;
@@ -148,5 +154,6 @@ namespace AccessControlWebApi.Controllers
             var hasRight = await UsersInfo.CheckAdminRights(user, _userManager);
             return hasRight;
         }
+        */
     }
 }

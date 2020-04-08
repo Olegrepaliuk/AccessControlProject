@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AccessControlWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AccessControlWebApi.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
+    [СustomAuthorization]
     public class ValuesController : ControllerBase
     {
         // GET api/values
@@ -39,6 +42,7 @@ namespace AccessControlWebApi.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
+        [СustomAuthorization(OnlyAdmin = true)]
         public string Delete(int id)
         {
             return "deleted";

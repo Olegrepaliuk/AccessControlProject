@@ -15,5 +15,6 @@ namespace AccessControlWebApi.Models
         {
             Database.EnsureCreated();
         }
+        
     }
 }

@@ -16,6 +16,7 @@ namespace AccessControlWebApi.Controllers
     //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
+    [СustomAuthorization]
     public class PeopleController : ControllerBase
     {
         private ControlService controlService;
@@ -31,8 +32,8 @@ namespace AccessControlWebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Person>>> GetAll()
         {
-            var user = await CheckAuthorization();
-            if (user == null) return Unauthorized();
+            //var user = await CheckAuthorization();
+            //if (user == null) return Unauthorized();
             List<Person> people = controlService.GetAllPeople();
             return people;
         }
@@ -41,8 +42,8 @@ namespace AccessControlWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Person>> Get(int id)
         {
-            var user = await CheckAuthorization();
-            if (user == null) return Unauthorized();
+            //var user = await CheckAuthorization();
+            //if (user == null) return Unauthorized();
             Person foundPerson = controlService.GetPersonById(id);
             if(foundPerson == null)
             {
@@ -56,12 +57,13 @@ namespace AccessControlWebApi.Controllers
 
         // POST api/people
         [HttpPost]
+        [СustomAuthorization(OnlyAdmin = true)]
         public async Task<ActionResult> Post([FromBody]Person person)
         {
-            var user = await CheckAuthorization();
-            if (user == null) return Unauthorized();
-            var hasRight = await CheckRights(user);
-            if (!hasRight) return Forbid();
+            //var user = await CheckAuthorization();
+            //if (user == null) return Unauthorized();
+            //var hasRight = await CheckRights(user);
+            //if (!hasRight) return Forbid();
             controlService.CreatePerson(person);
             //return CreatedAtAction(nameof(Get), new { id = person.Id }, person.Id);
             return StatusCode(201);
@@ -69,6 +71,7 @@ namespace AccessControlWebApi.Controllers
 
         // PUT api/people/5
         [HttpPut("{id}")]
+        [СustomAuthorization(OnlyAdmin = true)]
         public async Task<ActionResult> Put(int id, [FromBody]Person person)
         {
             if (id != person.Id)
@@ -76,10 +79,10 @@ namespace AccessControlWebApi.Controllers
                 return BadRequest();
             }
 
-            var user = await CheckAuthorization();
-            if (user == null) return Unauthorized();
-            var hasRight = await CheckRights(user);
-            if (!hasRight) return Forbid();
+            //var user = await CheckAuthorization();
+            //if (user == null) return Unauthorized();
+            //var hasRight = await CheckRights(user);
+            //if (!hasRight) return Forbid();
 
             controlService.UpdatePerson(person);
 
@@ -88,12 +91,14 @@ namespace AccessControlWebApi.Controllers
 
         // DELETE api/people/5
         [HttpDelete("{id}")]
+        [СustomAuthorization(OnlyAdmin = true)]
         public async Task<ActionResult> Delete(int id)
         {
-            var user = await CheckAuthorization();
-            if (user == null) return Unauthorized();
-            var hasRight = await CheckRights(user);
-            if (!hasRight) return Forbid();
+            //var user = await CheckAuthorization();
+            //if (user == null) return Unauthorized();
+            //var hasRight = await CheckRights(user);
+            //if (!hasRight) return Forbid();
+
             var result = controlService.DeletePerson(id);
             if (result == "deleted")
             {
@@ -108,8 +113,8 @@ namespace AccessControlWebApi.Controllers
         [HttpGet("{id}/rooms")]
         public async Task<ActionResult<IEnumerable<Room>>> GetRoomsOfPersonAccess(int id)
         {
-            var user = await CheckAuthorization();
-            if (user == null) return Unauthorized();
+            //var user = await CheckAuthorization();
+            //if (user == null) return Unauthorized();
 
             var person = controlService.GetPersonById(id);
             if (person == null)
@@ -120,12 +125,13 @@ namespace AccessControlWebApi.Controllers
         }
 
         [HttpPost("{id}/rooms")]
+        [СustomAuthorization(OnlyAdmin = true)]
         public async Task<ActionResult> UpdatePersonAccess(int id, [FromBody]IEnumerable<int> roomsId)
         {
-            var user = await CheckAuthorization();
-            if (user == null) return Unauthorized();
-            var hasRight = await CheckRights(user);
-            if (!hasRight) return Forbid();
+            //var user = await CheckAuthorization();
+            //if (user == null) return Unauthorized();
+            //var hasRight = await CheckRights(user);
+            //if (!hasRight) return Forbid();
 
             var person = controlService.GetPersonById(id);
             if(person == null)
@@ -136,6 +142,7 @@ namespace AccessControlWebApi.Controllers
             return NoContent();
         }
 
+        /*
         private async Task<User> CheckAuthorization()
         {
             //var UserManager = HttpContext.GetOwinContext().GetUserManager<User>();
@@ -166,6 +173,6 @@ namespace AccessControlWebApi.Controllers
             var hasRight = await UsersInfo.CheckAdminRights(user, _userManager);
             return hasRight;
         }
-
+        */
     }
 }
