@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace AccessControlWebApi.Models
 {
-    public class UsersRepository
+    public class UserRepository
     {
         private AppUsersContext db;
-        public UsersRepository(AppUsersContext context)
+        public UserRepository(AppUsersContext context)
         {
             db = context;
         }

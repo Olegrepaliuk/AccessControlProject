@@ -9,27 +9,42 @@ namespace AccessControlWebApi.Models
 {
     public class UserService
     {
-        private UsersRepository repo;
+        private UserRepository repo;
         private UserManager<User> userManager;
-        public UserService(UsersRepository repository, UserManager<User> manager)
+        public UserService(UserRepository repository, UserManager<User> manager)
         {
             repo = repository;
             userManager = manager;
         }
 
-        public User FindUser(string username, string password, bool hashed = false)
+        public  async Task<User> FindUserAsync(string username, string password, bool hash = true)
         {
-            /*
-            string hashedPass;
-            if(hashed == false)
+            var user = await userManager.FindByNameAsync(username);
+            bool successAuth = false;
+            if (user != null)
             {
-                userManager.PasswordHasher.HashPassword()
+                if (hash)
+                {
+                    successAuth = (password == user.PasswordHash);
+                }
+                else
+                {
+                    var result = userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+                    if (result == PasswordVerificationResult.Success) successAuth = true;
+                }
             }
-            return repo.GetUser(username, password);
-            var result = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
-            if (result == PasswordVerificationResult.Success) successAuth = true;
-            */
+            if (successAuth) return user;
             return null;
+        }
+
+        public async Task<bool> CheckAdminRights(User user)
+        {
+            var rolesList = await userManager.GetRolesAsync(user).ConfigureAwait(false);
+            foreach (var role in rolesList)
+            {
+                if (role.ToUpper() == "ADMIN") return true;
+            }
+            return false;
         }
     }
 

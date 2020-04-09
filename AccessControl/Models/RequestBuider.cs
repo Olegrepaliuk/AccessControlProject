@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace AccessControl.Models
         }
 
         public static HttpRequestMessage GenerateHttpMessageWithObj(HttpMethod method, string uri, string username, string password, object obj)
-        {
+        {           
             var httpRequestMessage = new HttpRequestMessage
             {
                 Method = method,

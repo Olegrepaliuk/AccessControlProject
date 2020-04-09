@@ -8,6 +8,7 @@ using AccessControl.Models;
 using System.Net.Http;
 using Microsoft.AspNetCore.Authorization;
 using AccessControlModels;
+using System.Net.Http.Headers;
 
 namespace AccessControl.Controllers
 {
@@ -63,7 +64,7 @@ namespace AccessControl.Controllers
             req.Headers.Add("Referer", "login.microsoftonline.com");
             req.Headers.Add("Accept", "application/x-www-form-urlencoded");
             req.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-
+            //req.Headers.Authorization = AuthenticationHeaderValue.;
             // This is the important part:
             req.Content = new FormUrlEncodedContent(new Dictionary<string, string>
             {

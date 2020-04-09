@@ -7,6 +7,7 @@ using AccessControl.ViewModels;
 using AccessControlModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Session;
 
 namespace AccessControl.Controllers
 {

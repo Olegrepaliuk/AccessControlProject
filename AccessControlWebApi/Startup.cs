@@ -42,6 +42,8 @@ namespace AccessControlWebApi
                 .AddEntityFrameworkStores<AppUsersContext>();
             services.AddScoped<ControlService>();
             services.AddScoped<ControlRepository>();
+            services.AddScoped<UserService>();
+            services.AddScoped<UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

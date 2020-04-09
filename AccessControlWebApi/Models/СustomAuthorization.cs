@@ -20,7 +20,7 @@ namespace AccessControlWebApi.Models
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var _userManager = context.HttpContext.RequestServices.GetService<UserManager<User>>();
+            var userService = context.HttpContext.RequestServices.GetService<UserService>();
             var req = context.HttpContext.Request;
             if (!req.Headers.ContainsKey("username"))
             {
@@ -45,12 +45,12 @@ namespace AccessControlWebApi.Models
                 Unauthorize(context);
                 return;
             }
-            var retrievedUser = AsyncHelper.RunSync<User>(() => UsersInfo.FindUser(req.Headers["username"], password, _userManager, passhashed.Value));
+            var retrievedUser = AsyncHelper.RunSync<User>(() => userService.FindUserAsync(req.Headers["username"], password, passhashed.Value));
             if (retrievedUser != null)
             {
                 if (OnlyAdmin)
                 {
-                    bool access = AsyncHelper.RunSync<bool>(() => UsersInfo.CheckAdminRights(retrievedUser, _userManager));
+                    bool access = AsyncHelper.RunSync<bool>(() => userService.CheckAdminRights(retrievedUser));
                     if (!access)
                     {
                         Unauthorize(context);
