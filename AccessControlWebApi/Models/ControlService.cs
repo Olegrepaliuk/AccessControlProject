@@ -204,7 +204,7 @@ namespace AccessControlWebApi.Models
             return access;
         }
         
-        public List<Person> GetPeopleOnWork()
+        public List<Person> GetPeopleInsideNow()
         {
             var peopleIds = new List<int>();
             var relocByPerson = repo.GetTodayRelocationsByPerson();
@@ -217,5 +217,16 @@ namespace AccessControlWebApi.Models
             }
             return repo.FindExistingPeople(peopleIds).ToList();
         }
+
+        public bool CheckIfPersonInsideNow(int personId)
+        {
+
+        }
+
+        public object GetVisitsNuber(int personId, int daysAmt)
+        {
+
+        }
+
     }
 }

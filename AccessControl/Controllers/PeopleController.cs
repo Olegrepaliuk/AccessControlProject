@@ -69,7 +69,7 @@ namespace AccessControl.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete]
+        [HttpPost]
         public async Task<bool> Delete(int id)
         {
             //var response = await client.DeleteAsync($"api/people/{id}");

@@ -24,6 +24,10 @@ namespace AccessControl.Controllers
         static HttpClient client;
         public IActionResult Index()
         {
+            ViewBag.AllPeopleCount = 120;
+            ViewBag.InBuildNow = 67;
+            ViewBag.Test1 = 48;
+            ViewBag.Test2 = 21;
             return View();
         }
 
