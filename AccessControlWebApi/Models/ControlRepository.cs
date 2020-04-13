@@ -78,6 +78,10 @@ namespace AccessControlWebApi.Models
             }
 
         }
+        public int CountPeople()
+        {
+            return db.People.Count();
+        }
 
         public Room GetRoomById(int id)
         {
@@ -201,9 +205,23 @@ namespace AccessControlWebApi.Models
         public IEnumerable<IGrouping<int, Relocation>> GetTodayRelocationsByPerson()
         {
             return db.Relocations.Include(rel => rel.Person)
-                                  .Where(rel => (rel.DateAndTime.Date == DateTime.UtcNow.Date)&rel.Success == true)
+                                  .Where(rel => (rel.DateAndTime.Date == DateTime.UtcNow.Date)&&rel.Success == true)
                                   .OrderByDescending(rel => rel.DateAndTime)
                                   .GroupBy(rel => rel.PersonId);
+        }
+        public IEnumerable<Relocation> GetTodayRelocationsOfPerson(int personId)
+        {
+            return db.Relocations.Include(rel => rel.Person)
+                                  .Where(rel => (rel.DateAndTime.Date == DateTime.UtcNow.Date) && rel.Success == true && rel.PersonId == personId)
+                                  .OrderByDescending(rel => rel.DateAndTime);
+        }
+        public IEnumerable<IGrouping<DateTime, Relocation>> GetRelocOfPersonByTimePeriod(int personId, DateTime startDate, DateTime endDate)
+        {
+            return db.Relocations.Include(rel => rel.Person)
+                                  .Where(rel => rel.PersonId == personId && rel.Success == true)
+                                  .Where(rel => (rel.DateAndTime >= startDate) && (rel.DateAndTime <= endDate))
+                                  .OrderByDescending(rel => rel.DateAndTime)
+                                  .GroupBy(rel => rel.DateAndTime.Date);
         }
     }
 }

@@ -23,6 +23,8 @@ namespace AccessControl.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _rolemanager;
 
+        private string baseAdressApi = "https://localhost:44330/api";
+        private string baseAdress = "https://localhost:44330/api/people";
         public PeopleController(HttpClient cl, UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> rolemanager)
         {
             //client.BaseAddress = new Uri("https://localhost:44330/");
@@ -31,9 +33,6 @@ namespace AccessControl.Controllers
             _signInManager = signInManager;
             _rolemanager = rolemanager;
         }
-
-        private string baseAdressApi = "https://localhost:44330/api";
-        private string baseAdress = "https://localhost:44330/api/people";
         
         public IActionResult Privacy()
         {

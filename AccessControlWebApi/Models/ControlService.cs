@@ -39,6 +39,10 @@ namespace AccessControlWebApi.Models
             return repo.DeletePerson(id);
         }
 
+        public int CountAllPeople()
+        {
+            return repo.CountPeople();
+        }
 
         #endregion
 
@@ -218,14 +222,27 @@ namespace AccessControlWebApi.Models
             return repo.FindExistingPeople(peopleIds).ToList();
         }
 
-        public bool CheckIfPersonInsideNow(int personId)
+        public int CountPeopleInsideNow()
         {
-
+            return GetPeopleInsideNow().Count;
         }
 
-        public object GetVisitsNuber(int personId, int daysAmt)
+        public bool CheckIfPersonInsideNow(int personId)
         {
+            var relocations = repo.GetTodayRelocationsOfPerson(personId);
+            if(relocations.Count() > 0)
+            {
+                if (relocations.First().ToLoc != null) return true;
+            }
+            return false;
+        }
 
+        public int CountDaysWithVisiting(int personId, int daysAmt)
+        {
+            DateTime endDate = DateTime.UtcNow;
+            DateTime startDate = endDate.AddDays(-daysAmt);
+            var relocations = repo.GetRelocOfPersonByTimePeriod(personId, startDate, endDate);
+            return relocations.Count();
         }
 
     }

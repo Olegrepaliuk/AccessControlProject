@@ -9,23 +9,44 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Authorization;
 using AccessControlModels;
 using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Identity;
 
 namespace AccessControl.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
-        public HomeController(HttpClient cl)
+        private UserManager<User> _userManager;
+        private string baseAdress = "https://localhost:44330/api/stats";
+        public HomeController(HttpClient cl, UserManager<User> userManager)
         {
-            //client.BaseAddress = new Uri("https://localhost:44330/");
-            //client.BaseAddress = new Uri("http://localhost:6666/");
             client = cl;
+            _userManager = userManager;
         }
         static HttpClient client;
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            ViewBag.AllPeopleCount = 120;
-            ViewBag.InBuildNow = 67;
+            var currUser = await _userManager.GetUserAsync(User);
+            var message = RequestBuider.GenerateHttpMessage
+                (
+                    method: HttpMethod.Get,
+                    uri: baseAdress,
+                    username: currUser.UserName,
+                    password: currUser.PasswordHash
+                );
+
+            var response = await client.SendAsync(message);
+            int? amtPeopleInside = null;
+            int? amtAllPeople = null;
+            if (response.IsSuccessStatusCode)
+            {
+                var stats = await response.Content.ReadAsAsync<dynamic>();
+                amtPeopleInside = stats.AmountPeopleInside;
+                amtAllPeople = stats.AmountOfPeople;
+            }
+
+            ViewBag.AllPeopleCount = amtAllPeople;
+            ViewBag.InBuildNow = amtPeopleInside;
             ViewBag.Test1 = 48;
             ViewBag.Test2 = 21;
             return View();
