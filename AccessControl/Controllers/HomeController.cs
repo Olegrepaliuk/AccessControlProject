@@ -41,8 +41,8 @@ namespace AccessControl.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var stats = await response.Content.ReadAsAsync<dynamic>();
-                amtPeopleInside = stats.AmountPeopleInside;
-                amtAllPeople = stats.AmountOfPeople;
+                amtPeopleInside = stats.amountPeopleInside;
+                amtAllPeople = stats.amountOfPeople;
             }
 
             ViewBag.AllPeopleCount = amtAllPeople;

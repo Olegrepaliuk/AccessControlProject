@@ -223,5 +223,10 @@ namespace AccessControlWebApi.Models
                                   .OrderByDescending(rel => rel.DateAndTime)
                                   .GroupBy(rel => rel.DateAndTime.Date);
         }
+
+        public IEnumerable<Door> GetDoorsOfRoom(int roomId)
+        {
+            return db.Doors.Where(rel => rel.FirstLocationId == roomId || rel.SecondLocationId == roomId);
+        }
     }
 }

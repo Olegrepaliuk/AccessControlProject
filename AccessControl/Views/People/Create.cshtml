@@ -1,4 +1,6 @@
-﻿<!-- Content Header (Page header) -->
+﻿@model AccessControlModels.Person
+<!-- Content Header (Page header) -->
+
 <section class="content-header">
     <h1>
         People
@@ -18,8 +20,10 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" name="Name" placeholder="Name">
+                        <input type="text" class="form-control" name="Name" placeholder="Name" asp-for="Name">
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
+
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
@@ -42,7 +46,8 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">Card valid til</label>
                     <div class="col-sm-10">
-                        <input type="datetime" class="form-control" name="CardValidTil" placeholder="CardValidTil">
+                        <input type="datetime" class="form-control" name="CardValidTil" placeholder="CardValidTil" asp-for="CardValidTil">
+                        <span asp-validation-for="CardValidTil" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -58,4 +63,8 @@
     </div>
     <!-- /.box -->
 </section>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>
+
+
 
