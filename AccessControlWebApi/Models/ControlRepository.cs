@@ -228,5 +228,12 @@ namespace AccessControlWebApi.Models
         {
             return db.Doors.Where(rel => rel.FirstLocationId == roomId || rel.SecondLocationId == roomId);
         }
+
+        public IEnumerable<Room> GetNeighbourRooms(int roomId)
+        {
+            return db.Doors.Where(rel => rel.FirstLocationId == roomId)
+                    .Select(rel => rel.SecondLocation)
+                    .Union(db.Doors.Where(rel => rel.SecondLocationId == roomId).Select(rel => rel.FirstLocation));
+        }
     }
 }

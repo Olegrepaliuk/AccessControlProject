@@ -144,25 +144,22 @@ namespace AccessControlWebApi.Models
                 {
                     roomToCheckId = item.SecondLocationId;
                 }
-                List<int> waysWithoutThisRoom = new List<int>();
+                int waysWithoutThisRoom = 0;
                 List<List<int>> allWays = FindAllWaysToHall();
                 foreach (var wayItem in allWays)
                 {
                     if(!wayItem.Contains(id))
                     {
-                        waysWithoutThisRoom.Add(wayItem);
+                        waysWithoutThisRoom++;
                     }
                     
                 }
-                if(waysWithoutThisRoom.Count == 0)
+                if(waysWithoutThisRoom == 0)
                 {
                     return false;
                 }
-                else
-                {
-                    return true;
-                }
             }
+            return true;
         }
 
         private List<List<int>> FindAllWaysToHall()

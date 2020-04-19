@@ -29,7 +29,7 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr>
+                                <tr id="@item.Id">
                                     <td>@Html.DisplayFor(modelItem => item.Id)</td>
                                     <td>@Html.DisplayFor(modelItem => item.Name)</td>
                                     <td>@Html.DisplayFor(modelItem => item.Phone)</td>
@@ -79,6 +79,7 @@
                         if (res == true) {
                             debugger;
                             var baseUrl = "/People";
+                            $('table #' + id).remove();
                             window.location.reload();
                         }
                         else {
