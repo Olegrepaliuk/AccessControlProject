@@ -9,38 +9,61 @@ namespace AccessControlWebApi.Models
     public class WayFinder
     {
         private HashSet<int> Visited;
-        private List<List<int>> Ways;
+        private HashSet<int> CurrentWay;
+        private List<HashSet<int>> Ways;
         private ControlRepository repo;
-        public void Find(int id, int deleteRoomId)
-        {
-            
 
-        }
-        private Room Search(int id)
+        public WayFinder()
         {
-            if (Visited.Contains(id))
-            {
-                return null;
-            }
-            Visited.Add(id);
+            Visited = new HashSet<int>();
+            CurrentWay = new HashSet<int>();
+            Ways = new List<HashSet<int>>();
+        }
+        public bool DeleteAbility(int id, int deleteRoomId)
+        {
+            CurrentWay.Clear();
+            Visited.Clear();
+            Ways.Clear();
             var room = repo.GetRoomById(id);
+            Search(room);
+            return Check(deleteRoomId);
+        }
+        private void Search(Room room)
+        {
+            if (Visited.Contains(room.Id))
+            {
+                return;
+            }
+            Visited.Add(room.Id);
+            CurrentWay.Add(room.Id);
             if(room.Type == RoomType.Hall)
             {
-                return room;
+                Ways.Add(new HashSet<int>(CurrentWay));
+                return;
             }
             else
             {
-                List<Room> neighbourRooms = repo.GetNeighbourRooms(id).ToList();
+                List<Room> neighbourRooms = repo.GetNeighbourRooms(room.Id).ToList();
                 foreach (var item in neighbourRooms)
                 {
-                    var result = Search(item.Id);
-                    if(result != null)
-                    {
-
-                    }
+                    Search(item);                   
                 }
             }
+            CurrentWay.Remove(room.Id);
+        }
 
+        private bool Check(int idToRemove)
+        {
+            int otherWaysCounter = 0;
+            foreach (var item in Ways)
+            {
+                if(!item.Contains(idToRemove))
+                {
+                    otherWaysCounter++;
+                }
+            }
+            if (otherWaysCounter == 0) return false;
+            return true;
         }
     }
 }

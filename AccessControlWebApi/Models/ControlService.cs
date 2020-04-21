@@ -131,6 +131,7 @@ namespace AccessControlWebApi.Models
 
         public bool TryDeleteRoom(int id)
         {
+            /*
             var connectedDoors = repo.GetDoorsOfRoom(id);
             List<int> connectedRoomsIds = new List<int>();
             foreach (var item in connectedDoors)
@@ -159,6 +160,15 @@ namespace AccessControlWebApi.Models
                     return false;
                 }
             }
+            return true;
+            */
+            List<Room> neighbourRooms = repo.GetNeighbourRooms(id).ToList();
+            WayFinder finder = new WayFinder();
+            foreach (var item in neighbourRooms)
+            {
+                if (!finder.DeleteAbility(item.Id, id)) return false;
+            }
+            repo.DeleteRoom(id);
             return true;
         }
 
