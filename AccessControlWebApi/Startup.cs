@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AccessControl.Models;
 using AccessControlModels;
 using AccessControlWebApi.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -15,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AccessControlWebApi
 {
@@ -44,6 +47,28 @@ namespace AccessControlWebApi
             services.AddScoped<ControlRepository>();
             services.AddScoped<UserService>();
             services.AddScoped<UserRepository>();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = AuthOptions.ISSUER,
+                    ValidateAudience = true,
+                    ValidAudience = AuthOptions.AUDIENCE,
+                    ValidateLifetime = false,
+                    IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                    ValidateIssuerSigningKey = true,
+                };
+            });
+            services.AddAuthentication(SetAuthenticationOptions);
+        }
+        private static void SetAuthenticationOptions(AuthenticationOptions options)
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,9 +84,7 @@ namespace AccessControlWebApi
                 app.UseHsts();
             }
 
-            //app.UseAuthentication();   how 
-            //app.UseAuthorization();
-
+            app.UseAuthentication();          
             app.UseHttpsRedirection();
             app.UseMvc();
         }
