@@ -163,10 +163,11 @@ namespace AccessControlWebApi.Models
             return true;
             */
             List<Room> neighbourRooms = repo.GetNeighbourRooms(id).ToList();
-            WayFinder finder = new WayFinder();
+            WayFinder finder = new WayFinder(repo);
+            finder.RoomIdToDelete = id;
             foreach (var item in neighbourRooms)
             {
-                if (!finder.DeleteAbility(item.Id, id)) return false;
+                if (!finder.DeleteAbility(item.Id)) return false;
             }
             repo.DeleteRoom(id);
             return true;
