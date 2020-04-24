@@ -27,7 +27,7 @@ namespace AccessControl.Controllers
         public async Task<IActionResult> Index()
         {
             string passHash = Request.Cookies["passhash"];
-            var message = RequestBuider.GenerateHttpMessage
+            var message = RequestBuilder.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: baseAdress,

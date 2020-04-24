@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AccessControl.Models
 {
-    public class RequestBuider
+    public class RequestBuilder
     {
         public static HttpRequestMessage GenerateHttpMessage(HttpMethod method, string uri, string username, string password)
         {
@@ -41,9 +41,7 @@ namespace AccessControl.Models
             },
             Content = new StringContent(JsonConvert.SerializeObject(obj))
             };
-            int a = 10;
             httpRequestMessage.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json;charset=utf-8");
-            //httpRequestMessage.Content.Headers.ContentType = "application/json;charset=utf-8";
             return httpRequestMessage;
         }
     }

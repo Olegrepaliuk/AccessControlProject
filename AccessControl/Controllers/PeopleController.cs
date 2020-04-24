@@ -39,7 +39,7 @@ namespace AccessControl.Controllers
         public async Task<IActionResult> Index()
         {
             List<Person> allPeople = new List<Person>();
-            var message = RequestBuider.GenerateHttpMessage
+            var message = RequestBuilder.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: baseAdress,
@@ -60,7 +60,7 @@ namespace AccessControl.Controllers
         [HttpPost]
         public async Task<bool> Delete(int id)
         {
-            var message = RequestBuider.GenerateHttpMessage
+            var message = RequestBuilder.GenerateHttpMessage
                 (
                     method: HttpMethod.Delete,
                     uri: baseAdress+"/"+id,
@@ -92,7 +92,7 @@ namespace AccessControl.Controllers
             {
                 return RedirectToAction("Create");
             }
-            var message = RequestBuider.GenerateHttpMessageWithObj
+            var message = RequestBuilder.GenerateHttpMessageWithObj
                 (
                     method: HttpMethod.Post,
                     uri: baseAdress,
@@ -107,7 +107,7 @@ namespace AccessControl.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id)
         {
-            var message = RequestBuider.GenerateHttpMessage
+            var message = RequestBuilder.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: baseAdress + "/" + id,
@@ -120,7 +120,7 @@ namespace AccessControl.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                var allRoomsMessage = RequestBuider.GenerateHttpMessage
+                var allRoomsMessage = RequestBuilder.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: baseAdressApi + "/rooms",
@@ -129,7 +129,7 @@ namespace AccessControl.Controllers
                 );
                 var allRoomsResponse = await client.SendAsync(allRoomsMessage);
 
-                var pesonRoomsMessage = RequestBuider.GenerateHttpMessage
+                var pesonRoomsMessage = RequestBuilder.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: baseAdress + "/" + id + "/rooms",
@@ -176,7 +176,7 @@ namespace AccessControl.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(Person person, List<int> rooms)
         {
-            var message = RequestBuider.GenerateHttpMessageWithObj
+            var message = RequestBuilder.GenerateHttpMessageWithObj
                 (
                     method: HttpMethod.Put,
                     uri: baseAdress + "/" + person.Id,
@@ -187,7 +187,7 @@ namespace AccessControl.Controllers
 
             var response = await client.SendAsync(message);
 
-            var roomsMessage = RequestBuider.GenerateHttpMessageWithObj
+            var roomsMessage = RequestBuilder.GenerateHttpMessageWithObj
             (
                 method: HttpMethod.Post,
                 uri: baseAdress + "/" + person.Id+"/rooms",
@@ -204,7 +204,7 @@ namespace AccessControl.Controllers
         public async Task<IActionResult> Test()
         {
             Room room = new Room();
-            var message = RequestBuider.GenerateHttpMessage
+            var message = RequestBuilder.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: "https://localhost:44330/api/rooms/1",

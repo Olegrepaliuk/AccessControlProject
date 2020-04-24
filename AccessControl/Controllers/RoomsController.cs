@@ -23,7 +23,7 @@ namespace AccessControl.Controllers
         public async Task<IActionResult> Index()
         {
             List<Room> allRooms = new List<Room>();
-            var message = RequestBuider.GenerateHttpMessage
+            var message = RequestBuilder.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: baseAdress,
@@ -44,7 +44,7 @@ namespace AccessControl.Controllers
         public async Task<IActionResult> Create()
         {
             List<Room> allRooms = new List<Room>();
-            var message = RequestBuider.GenerateHttpMessage
+            var message = RequestBuilder.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: baseAdress,
@@ -95,7 +95,7 @@ namespace AccessControl.Controllers
             }
 
             var data = new { Room = room, ConnRooms = connRooms};
-            var message = RequestBuider.GenerateHttpMessageWithObj
+            var message = RequestBuilder.GenerateHttpMessageWithObj
                 (
                     method: HttpMethod.Post,
                     uri: baseAdress+"/createandconnect",

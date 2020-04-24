@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AccessControl.Models;
 using AccessControl.ViewModels;
 using AccessControlModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +21,13 @@ namespace AccessControl.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _rolemanager;
-
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> rolemanager)
+        private AccountService _accountService;
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> rolemanager, AccountService accountService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _rolemanager = rolemanager;
+            _accountService = accountService;
         }
 
         public IActionResult Index()
@@ -38,7 +42,7 @@ namespace AccessControl.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        private async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -76,6 +80,18 @@ namespace AccessControl.Controllers
         {
             if (ModelState.IsValid)
             {
+                var token =  await _accountService.GetAuthenticationToken(model.Email, model.Password);
+                if(!string.IsNullOrEmpty(token))
+                {
+                    var claims = _accountService.GetClaimsPrincipal(token);
+                    ClaimsIdentity id = new ClaimsIdentity(claims.Claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Incorrect login or password");
+                }
+                /*
                 var result =
                     await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
@@ -103,6 +119,7 @@ namespace AccessControl.Controllers
                 {
                     ModelState.AddModelError("", "Incorrect login or password");
                 }
+                */
             }
             return View(model);
         }
@@ -112,11 +129,10 @@ namespace AccessControl.Controllers
         public async Task<IActionResult> Logout()
         {
             // deleting authentification cookies
-            await _signInManager.SignOutAsync();
-            var cc = HttpContext.Response.Cookies;
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            //await _signInManager.SignOutAsync();
             HttpContext.Response.Cookies.Delete("passhash");
             return RedirectToAction("Login");
-            //return RedirectToAction("Index", "Home");
         }
     }
 }
