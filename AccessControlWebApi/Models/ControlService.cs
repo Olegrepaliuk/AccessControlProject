@@ -131,37 +131,6 @@ namespace AccessControlWebApi.Models
 
         public bool TryDeleteRoom(int id)
         {
-            /*
-            var connectedDoors = repo.GetDoorsOfRoom(id);
-            List<int> connectedRoomsIds = new List<int>();
-            foreach (var item in connectedDoors)
-            {
-                int? roomToCheckId = null;
-                if(item.FirstLocationId != id)
-                {
-                    roomToCheckId = item.FirstLocationId;
-                }
-                else
-                {
-                    roomToCheckId = item.SecondLocationId;
-                }
-                int waysWithoutThisRoom = 0;
-                List<List<int>> allWays = FindAllWaysToHall();
-                foreach (var wayItem in allWays)
-                {
-                    if(!wayItem.Contains(id))
-                    {
-                        waysWithoutThisRoom++;
-                    }
-                    
-                }
-                if(waysWithoutThisRoom == 0)
-                {
-                    return false;
-                }
-            }
-            return true;
-            */
             List<Room> neighbourRooms = repo.GetNeighbourRooms(id).ToList();
             WayFinder finder = new WayFinder(repo);
             finder.RoomIdToDelete = id;
@@ -173,10 +142,6 @@ namespace AccessControlWebApi.Models
             return true;
         }
 
-        private List<List<int>> FindAllWaysToHall()
-        {
-            throw new NotImplementedException();
-        }
 
         public IEnumerable<Room> GetRoomsOfPersonAccess(int personId)
         {

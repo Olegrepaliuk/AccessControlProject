@@ -39,7 +39,7 @@ namespace AccessControl.Controllers
                     method: HttpMethod.Get,
                     uri: baseAdress,
                     username: currUser.UserName,
-                    password: currUser.PasswordHash
+                    password: Request.Cookies["passhash"]//Request.Cookies["passhash"] ?? currUser.PasswordHash
                 );
 
             var response = await client.SendAsync(message);
@@ -61,7 +61,7 @@ namespace AccessControl.Controllers
                     method: HttpMethod.Get,
                     uri: baseAdress,
                     username: currUser.UserName,
-                    password: currUser.PasswordHash
+                    password: Request.Cookies["passhash"]//currUser.PasswordHash
                 );
 
             var response = await client.SendAsync(message);
@@ -114,7 +114,7 @@ namespace AccessControl.Controllers
                     method: HttpMethod.Post,
                     uri: baseAdress+"/createandconnect",
                     username: currUser.UserName,
-                    password: currUser.PasswordHash,
+                    password: Request.Cookies["passhash"],//currUser.PasswordHash,
                     obj: data
                 );
             var response = await client.SendAsync(message);

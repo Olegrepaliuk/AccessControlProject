@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AccessControl.Models;
 using AccessControl.ViewModels;
 using AccessControlModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Session;
@@ -42,14 +43,13 @@ namespace AccessControl.Controllers
             if (ModelState.IsValid)
             {
                 User user = new User { Email = model.Email, UserName = model.Email, FullName = model.FullName};
-                // добавляем пользователя
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     var role = new IdentityRole();
                     role.Name = "Admin";
                     await _rolemanager.CreateAsync(role);
-                    await _userManager.AddToRolesAsync(user, new List<string>{"Admin"});
+                    //await _userManager.AddToRolesAsync(user, new List<string>{"Admin"});
                     await _signInManager.SignInAsync(user, false);// setting cookies
                     return RedirectToAction("Index", "Home");
                 }
@@ -80,6 +80,15 @@ namespace AccessControl.Controllers
                     await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
                 {
+                    var user = await _userManager.FindByNameAsync(model.Email);
+                    CookieOptions option = new CookieOptions()
+                    {
+                        Path = "/",
+                        HttpOnly = false,
+                        IsEssential = true, //<- there
+                        Expires = DateTime.Now.AddMonths(1),
+                    };
+                    HttpContext.Response.Cookies.Append("passhash", user.PasswordHash, option);
                     // check if URL belongs to app
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {
@@ -104,6 +113,8 @@ namespace AccessControl.Controllers
         {
             // deleting authentification cookies
             await _signInManager.SignOutAsync();
+            var cc = HttpContext.Response.Cookies;
+            HttpContext.Response.Cookies.Delete("passhash");
             return RedirectToAction("Login");
             //return RedirectToAction("Index", "Home");
         }

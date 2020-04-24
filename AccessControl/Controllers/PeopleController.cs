@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AccessControl.Models;
 using AccessControlModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,6 +48,10 @@ namespace AccessControl.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var cc = HttpContext.Request.Cookies;
+            string value = HttpContext.Request.Cookies["pass"];
+            string value2 = HttpContext.Request.Cookies["keyofcookie"];
+            string value3 = HttpContext.Request.Cookies["keyofcookie31323223"];
             List<Person> allPeople = new List<Person>();
             //var response = await Task.Run(()=>client.GetAsync($"api/people"));
             var currUser = await _userManager.GetUserAsync(User);
@@ -55,7 +60,7 @@ namespace AccessControl.Controllers
                     method: HttpMethod.Get,
                     uri: baseAdress,
                     username: currUser.UserName,
-                    password: currUser.PasswordHash
+                    password: Request.Cookies["passhash"] //?? currUser.PasswordHash
                 );
 
             var response = await client.SendAsync(message);
@@ -79,7 +84,7 @@ namespace AccessControl.Controllers
                     method: HttpMethod.Delete,
                     uri: baseAdress+"/"+id,
                     username: currUser.UserName,
-                    password: currUser.PasswordHash
+                    password: Request.Cookies["passhash"]//currUser.PasswordHash
                 );
 
             var response = await client.SendAsync(message);
@@ -113,7 +118,7 @@ namespace AccessControl.Controllers
                     method: HttpMethod.Post,
                     uri: baseAdress,
                     username: currUser.UserName,
-                    password: currUser.PasswordHash,
+                    password: Request.Cookies["passhash"],//currUser.PasswordHash,
                     obj: person
                 );
             var response = await client.SendAsync(message);
@@ -130,7 +135,7 @@ namespace AccessControl.Controllers
                     method: HttpMethod.Get,
                     uri: baseAdress + "/" + id,
                     username: currUser.UserName,
-                    password: currUser.PasswordHash
+                    password: Request.Cookies["passhash"]//currUser.PasswordHash
                 );
 
             var response = await client.SendAsync(message);
@@ -143,7 +148,7 @@ namespace AccessControl.Controllers
                     method: HttpMethod.Get,
                     uri: baseAdressApi + "/rooms",
                     username: currUser.UserName,
-                    password: currUser.PasswordHash
+                    password: Request.Cookies["passhash"]//currUser.PasswordHash
                 );
                 var allRoomsResponse = await client.SendAsync(allRoomsMessage);
 
@@ -152,7 +157,7 @@ namespace AccessControl.Controllers
                     method: HttpMethod.Get,
                     uri: baseAdress + "/" + id + "/rooms",
                     username: currUser.UserName,
-                    password: currUser.PasswordHash
+                    password: Request.Cookies["passhash"]//currUser.PasswordHash
                 );
                 var personRoomsResponse = await client.SendAsync(pesonRoomsMessage);
                 
@@ -202,7 +207,7 @@ namespace AccessControl.Controllers
                     method: HttpMethod.Put,
                     uri: baseAdress + "/" + person.Id,
                     username: currUser.UserName,
-                    password: currUser.PasswordHash,
+                    password: Request.Cookies["passhash"],//currUser.PasswordHash,
                     obj: person
                 );
 
@@ -213,7 +218,7 @@ namespace AccessControl.Controllers
                 method: HttpMethod.Post,
                 uri: baseAdress + "/" + person.Id+"/rooms",
                 username: currUser.UserName,
-                password: currUser.PasswordHash,
+                password: Request.Cookies["passhash"],//currUser.PasswordHash,
                 obj: rooms
             );
 

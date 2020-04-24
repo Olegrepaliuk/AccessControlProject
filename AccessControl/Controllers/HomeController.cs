@@ -10,29 +10,33 @@ using Microsoft.AspNetCore.Authorization;
 using AccessControlModels;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace AccessControl.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
+        //private readonly IHttpContextAccessor _httpContextAccessor;
         private UserManager<User> _userManager;
         private string baseAdress = "https://localhost:44330/api/stats";
-        public HomeController(HttpClient cl, UserManager<User> userManager)
+        public HomeController(HttpClient cl, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor)
         {
             client = cl;
             _userManager = userManager;
+            //this._httpContextAccessor = httpContextAccessor;
         }
         static HttpClient client;
         public async Task<IActionResult> Index()
         {
+            string passHash = Request.Cookies["passhash"];
             var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: baseAdress,
                     username: currUser.UserName,
-                    password: currUser.PasswordHash
+                    password: Request.Cookies["passhash"]//??currUser.PasswordHash
                 );
 
             var response = await client.SendAsync(message);
