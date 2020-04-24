@@ -14,32 +14,21 @@ namespace AccessControl.Controllers
     [Authorize]
     public class RoomsController : Controller
     {
-        static HttpClient client;
-
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-        private readonly RoleManager<IdentityRole> _rolemanager;
-
-        public RoomsController(HttpClient cl, UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> rolemanager)
+        private static HttpClient client;
+        private string baseAdress = "https://localhost:44330/api/rooms";
+        public RoomsController(HttpClient cl)
         {
             client = cl;
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _rolemanager = rolemanager;
         }
-
-        private string baseAdress = "https://localhost:44330/api/rooms";
-
         public async Task<IActionResult> Index()
         {
             List<Room> allRooms = new List<Room>();
-            var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: baseAdress,
-                    username: currUser.UserName,
-                    password: Request.Cookies["passhash"]//Request.Cookies["passhash"] ?? currUser.PasswordHash
+                    username: User.Identity.Name,
+                    password: Request.Cookies["passhash"]
                 );
 
             var response = await client.SendAsync(message);
@@ -55,13 +44,12 @@ namespace AccessControl.Controllers
         public async Task<IActionResult> Create()
         {
             List<Room> allRooms = new List<Room>();
-            var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: baseAdress,
-                    username: currUser.UserName,
-                    password: Request.Cookies["passhash"]//currUser.PasswordHash
+                    username: User.Identity.Name,
+                    password: Request.Cookies["passhash"]
                 );
 
             var response = await client.SendAsync(message);
@@ -107,14 +95,12 @@ namespace AccessControl.Controllers
             }
 
             var data = new { Room = room, ConnRooms = connRooms};
-
-            var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessageWithObj
                 (
                     method: HttpMethod.Post,
                     uri: baseAdress+"/createandconnect",
-                    username: currUser.UserName,
-                    password: Request.Cookies["passhash"],//currUser.PasswordHash,
+                    username: User.Identity.Name,
+                    password: Request.Cookies["passhash"],
                     obj: data
                 );
             var response = await client.SendAsync(message);

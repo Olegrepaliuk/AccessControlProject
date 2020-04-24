@@ -16,23 +16,13 @@ namespace AccessControl.Controllers
 {
     [Authorize]
     public class PeopleController : Controller
-    {
-        static HttpClient client;
-        //private static HttpClient client2 = new HttpClient();
-
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-        private readonly RoleManager<IdentityRole> _rolemanager;
-
+    {        
         private string baseAdressApi = "https://localhost:44330/api";
         private string baseAdress = "https://localhost:44330/api/people";
-        public PeopleController(HttpClient cl, UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> rolemanager)
+        private static HttpClient client;
+        public PeopleController(HttpClient cl)
         {
-            //client.BaseAddress = new Uri("https://localhost:44330/");
             client = cl;
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _rolemanager = rolemanager;
         }
         
         public IActionResult Privacy()
@@ -48,19 +38,13 @@ namespace AccessControl.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var cc = HttpContext.Request.Cookies;
-            string value = HttpContext.Request.Cookies["pass"];
-            string value2 = HttpContext.Request.Cookies["keyofcookie"];
-            string value3 = HttpContext.Request.Cookies["keyofcookie31323223"];
             List<Person> allPeople = new List<Person>();
-            //var response = await Task.Run(()=>client.GetAsync($"api/people"));
-            var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: baseAdress,
-                    username: currUser.UserName,
-                    password: Request.Cookies["passhash"] //?? currUser.PasswordHash
+                    username: User.Identity.Name,
+                    password: Request.Cookies["passhash"]
                 );
 
             var response = await client.SendAsync(message);
@@ -76,15 +60,12 @@ namespace AccessControl.Controllers
         [HttpPost]
         public async Task<bool> Delete(int id)
         {
-            //var response = await client.DeleteAsync($"api/people/{id}");
-
-            var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessage
                 (
                     method: HttpMethod.Delete,
                     uri: baseAdress+"/"+id,
-                    username: currUser.UserName,
-                    password: Request.Cookies["passhash"]//currUser.PasswordHash
+                    username: User.Identity.Name,
+                    password: Request.Cookies["passhash"]
                 );
 
             var response = await client.SendAsync(message);
@@ -111,14 +92,12 @@ namespace AccessControl.Controllers
             {
                 return RedirectToAction("Create");
             }
-            //var response = await client.PostAsJsonAsync($"api/people", person);
-            var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessageWithObj
                 (
                     method: HttpMethod.Post,
                     uri: baseAdress,
-                    username: currUser.UserName,
-                    password: Request.Cookies["passhash"],//currUser.PasswordHash,
+                    username: User.Identity.Name,
+                    password: Request.Cookies["passhash"],
                     obj: person
                 );
             var response = await client.SendAsync(message);
@@ -128,14 +107,12 @@ namespace AccessControl.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id)
         {
-            //var response = await client.GetAsync($"api/people/{id}");
-            var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: baseAdress + "/" + id,
-                    username: currUser.UserName,
-                    password: Request.Cookies["passhash"]//currUser.PasswordHash
+                    username: User.Identity.Name,
+                    password: Request.Cookies["passhash"]
                 );
 
             var response = await client.SendAsync(message);
@@ -147,8 +124,8 @@ namespace AccessControl.Controllers
                 (
                     method: HttpMethod.Get,
                     uri: baseAdressApi + "/rooms",
-                    username: currUser.UserName,
-                    password: Request.Cookies["passhash"]//currUser.PasswordHash
+                    username: User.Identity.Name,
+                    password: Request.Cookies["passhash"]
                 );
                 var allRoomsResponse = await client.SendAsync(allRoomsMessage);
 
@@ -156,8 +133,8 @@ namespace AccessControl.Controllers
                 (
                     method: HttpMethod.Get,
                     uri: baseAdress + "/" + id + "/rooms",
-                    username: currUser.UserName,
-                    password: Request.Cookies["passhash"]//currUser.PasswordHash
+                    username: User.Identity.Name,
+                    password: Request.Cookies["passhash"]
                 );
                 var personRoomsResponse = await client.SendAsync(pesonRoomsMessage);
                 
@@ -165,7 +142,6 @@ namespace AccessControl.Controllers
                 {
                     var person = await response.Content.ReadAsAsync<Person>();
                     var personRooms = await personRoomsResponse.Content.ReadAsAsync<IEnumerable<Room>>();
-                    //personRooms.Where(pr => pr.Id == id).
                     var allRooms = await allRoomsResponse.Content.ReadAsAsync<IEnumerable<Room>>();
                     ViewBag.AllRooms = allRooms;
                     ViewBag.PersonRooms = personRooms;
@@ -200,14 +176,12 @@ namespace AccessControl.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(Person person, List<int> rooms)
         {
-            //var response = await client.PutAsJsonAsync($"api/people/{person.Id}", person);
-            var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessageWithObj
                 (
                     method: HttpMethod.Put,
                     uri: baseAdress + "/" + person.Id,
-                    username: currUser.UserName,
-                    password: Request.Cookies["passhash"],//currUser.PasswordHash,
+                    username: User.Identity.Name,
+                    password: Request.Cookies["passhash"],
                     obj: person
                 );
 
@@ -217,8 +191,8 @@ namespace AccessControl.Controllers
             (
                 method: HttpMethod.Post,
                 uri: baseAdress + "/" + person.Id+"/rooms",
-                username: currUser.UserName,
-                password: Request.Cookies["passhash"],//currUser.PasswordHash,
+                username: User.Identity.Name,
+                password: Request.Cookies["passhash"],
                 obj: rooms
             );
 
@@ -230,14 +204,12 @@ namespace AccessControl.Controllers
         public async Task<IActionResult> Test()
         {
             Room room = new Room();
-            //var response = await Task.Run(()=>client.GetAsync($"api/people"));
-            var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: "https://localhost:44330/api/rooms/1",
-                    username: currUser.UserName,
-                    password: currUser.PasswordHash
+                    username: User.Identity.Name,
+                    password: Request.Cookies["passhash"]
                 );
 
             var response = await client.SendAsync(message);

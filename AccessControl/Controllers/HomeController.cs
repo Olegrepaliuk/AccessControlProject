@@ -17,26 +17,22 @@ namespace AccessControl.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        //private readonly IHttpContextAccessor _httpContextAccessor;
-        private UserManager<User> _userManager;
         private string baseAdress = "https://localhost:44330/api/stats";
-        public HomeController(HttpClient cl, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor)
+        private static HttpClient client;
+        public HomeController(HttpClient cl)
         {
             client = cl;
-            _userManager = userManager;
-            //this._httpContextAccessor = httpContextAccessor;
         }
-        static HttpClient client;
+        
         public async Task<IActionResult> Index()
         {
             string passHash = Request.Cookies["passhash"];
-            var currUser = await _userManager.GetUserAsync(User);
             var message = RequestBuider.GenerateHttpMessage
                 (
                     method: HttpMethod.Get,
                     uri: baseAdress,
-                    username: currUser.UserName,
-                    password: Request.Cookies["passhash"]//??currUser.PasswordHash
+                    username: User.Identity.Name,
+                    password: Request.Cookies["passhash"]
                 );
 
             var response = await client.SendAsync(message);
@@ -69,7 +65,6 @@ namespace AccessControl.Controllers
 
         public async Task<IActionResult> Test()
         {
-            //var response = await client.GetAsync($"api/values/5");
             var response = await client.GetAsync($"animals");
             if (response.IsSuccessStatusCode)
             {
