@@ -14,9 +14,9 @@ namespace AccessControl.Controllers
     public class UsersController : Controller
     {
         private readonly UserManager<User> _userManager;
-        public UsersController(UserManager<User> userManager)
+        public UsersController()
         {
-            _userManager = userManager;
+
         }
 
 

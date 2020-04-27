@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AccessControlModels;
 using AccessControlWebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ namespace AccessControlWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [СustomAuthorization]
+    [Authorize]
     public class RelocationsController : ControllerBase
     {
         private ControlService controlService;

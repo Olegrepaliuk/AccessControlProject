@@ -21,7 +21,7 @@ namespace AccessControlWebApi.Controllers
         {
             userService = service;
         }
-        [HttpPost]
+        [HttpPost("token")]
         public ActionResult<object> Token(dynamic obj)
         {
             string username = obj.username;
@@ -33,7 +33,6 @@ namespace AccessControlWebApi.Controllers
             }
 
             var now = DateTime.UtcNow;
-            // создаем JWT-токен
             var jwt = new JwtSecurityToken(
                     issuer: AuthOptions.ISSUER,
                     audience: AuthOptions.AUDIENCE,

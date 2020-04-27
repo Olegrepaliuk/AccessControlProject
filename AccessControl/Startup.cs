@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AccessControl.Models;
 using AccessControlModels;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -48,20 +49,13 @@ namespace AccessControl
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<User, IdentityRole>(opts => {
-                opts.Password.RequiredLength = 1;
-                opts.Password.RequireNonAlphanumeric = false;
-                opts.Password.RequireLowercase = false;
-                opts.Password.RequireUppercase = false;
-                opts.Password.RequireDigit = false;
-
-            })
-            .AddEntityFrameworkStores<ApplicationContext>();
-            services.ConfigureApplicationCookie(options => 
-            {
-                options.LoginPath = "/Account/Login";
-                options.AccessDeniedPath = "/Home/Index";
-            });
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+             .AddCookie(options =>
+             {
+                 options.LoginPath = "/Account/Login";
+                 options.AccessDeniedPath = "/Home/Index";
+             });
+            services.AddTransient<AccountService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,7 +76,7 @@ namespace AccessControl
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseAuthentication();    // подключение аутентификации
+            app.UseAuthentication(); 
             //app.UseAuthorization();
 
             app.UseMvc(routes =>

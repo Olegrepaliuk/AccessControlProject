@@ -16,7 +16,7 @@ namespace AccessControlWebApi.Controllers
     //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    [СustomAuthorization]
+    [Authorize]
     public class PeopleController : ControllerBase
     {
         private ControlService controlService;
@@ -53,7 +53,7 @@ namespace AccessControlWebApi.Controllers
 
         // POST api/people
         [HttpPost]
-        [СustomAuthorization(OnlyAdmin = true)]
+        [Authorize(Roles = "Admin")]
         public ActionResult Post([FromBody]Person person)
         {
             controlService.CreatePerson(person);
@@ -62,7 +62,7 @@ namespace AccessControlWebApi.Controllers
 
         // PUT api/people/5
         [HttpPut("{id}")]
-        [СustomAuthorization(OnlyAdmin = true)]
+        [Authorize(Roles = "Admin")]
         public ActionResult Put(int id, [FromBody]Person person)
         {
             if (id != person.Id)
@@ -75,7 +75,7 @@ namespace AccessControlWebApi.Controllers
 
         // DELETE api/people/5
         [HttpDelete("{id}")]
-        [СustomAuthorization(OnlyAdmin = true)]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             var result = controlService.DeletePerson(id);
@@ -101,7 +101,7 @@ namespace AccessControlWebApi.Controllers
         }
 
         [HttpPost("{id}/rooms")]
-        [СustomAuthorization(OnlyAdmin = true)]
+        [Authorize(Roles = "Admin")]
         public ActionResult UpdatePersonAccess(int id, [FromBody]IEnumerable<int> roomsId)
         {
             var person = controlService.GetPersonById(id);

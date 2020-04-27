@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AccessControlWebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,7 @@ namespace AccessControlWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [СustomAuthorization]
+    [Authorize]
     public class StatsController : ControllerBase
     {
         private ControlService controlService;

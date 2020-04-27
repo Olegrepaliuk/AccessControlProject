@@ -11,13 +11,14 @@ using AccessControlModels;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication;
 
 namespace AccessControl.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
-        private string baseAdress = "https://localhost:44330/api/stats";
+        private string baseAddress = "https://localhost:44330/api/stats";
         private static HttpClient client;
         public HomeController(HttpClient cl)
         {
@@ -26,16 +27,8 @@ namespace AccessControl.Controllers
         
         public async Task<IActionResult> Index()
         {
-            string passHash = Request.Cookies["passhash"];
-            var message = RequestBuilder.GenerateHttpMessage
-                (
-                    method: HttpMethod.Get,
-                    uri: baseAdress,
-                    username: User.Identity.Name,
-                    password: Request.Cookies["passhash"]
-                );
-
-            var response = await client.SendAsync(message);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+            var response = await client.GetAsync(baseAddress);
             int? amtPeopleInside = null;
             int? amtAllPeople = null;
             if (response.IsSuccessStatusCode)

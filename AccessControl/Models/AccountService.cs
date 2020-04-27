@@ -25,6 +25,7 @@ namespace AccessControl.Models
                 username = username,
                 password = password
             };
+            string address = $"{baseAddress}/token";
             var response = await client.PostAsJsonAsync($"{baseAddress}/token", user);
             if(response.IsSuccessStatusCode)
             {

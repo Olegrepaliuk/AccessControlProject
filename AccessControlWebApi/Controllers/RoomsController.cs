@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AccessControlModels;
 using AccessControlWebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ namespace AccessControlWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [СustomAuthorization]
+    [Authorize]
     public class RoomsController : ControllerBase
     {
         private ControlService controlService;
@@ -48,7 +49,7 @@ namespace AccessControlWebApi.Controllers
         }
 
         [HttpPost]
-        [СustomAuthorization(OnlyAdmin = true)]
+        [Authorize(Roles = "Admin")]
         public ActionResult Post([FromBody] Room room)
         {
             controlService.CreateRoom(room);
@@ -56,7 +57,7 @@ namespace AccessControlWebApi.Controllers
         }
 
         [HttpPost("createandconnect")]
-        [СustomAuthorization(OnlyAdmin = true)]
+        [Authorize(Roles = "Admin")]
         public ActionResult CreateAndConnect([FromBody] dynamic obj)
         {
             string roomJson = JsonConvert.SerializeObject(obj.Room);
@@ -73,7 +74,7 @@ namespace AccessControlWebApi.Controllers
 
         // PUT api/rooms/5
         [HttpPut("{id}")]
-        [СustomAuthorization(OnlyAdmin = true)]
+        [Authorize(Roles = "Admin")]
         public ActionResult Put(int id, [FromBody]Room room)
         {
             if (id != room.Id)
@@ -87,7 +88,7 @@ namespace AccessControlWebApi.Controllers
 
         // DELETE api/rooms/5
         [HttpDelete("{id}")]
-        [СustomAuthorization(OnlyAdmin = true)]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             /*

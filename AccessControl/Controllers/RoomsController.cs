@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AccessControl.Models;
 using AccessControlModels;
@@ -15,7 +16,7 @@ namespace AccessControl.Controllers
     public class RoomsController : Controller
     {
         private static HttpClient client;
-        private string baseAdress = "https://localhost:44330/api/rooms";
+        private string baseAddress = "https://localhost:44330/api/rooms";
         public RoomsController(HttpClient cl)
         {
             client = cl;
@@ -23,15 +24,8 @@ namespace AccessControl.Controllers
         public async Task<IActionResult> Index()
         {
             List<Room> allRooms = new List<Room>();
-            var message = RequestBuilder.GenerateHttpMessage
-                (
-                    method: HttpMethod.Get,
-                    uri: baseAdress,
-                    username: User.Identity.Name,
-                    password: Request.Cookies["passhash"]
-                );
-
-            var response = await client.SendAsync(message);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+            var response = await client.GetAsync(baseAddress);
             if (response.IsSuccessStatusCode)
             {
                 var rooms = await response.Content.ReadAsAsync<IEnumerable<Room>>();
@@ -44,15 +38,8 @@ namespace AccessControl.Controllers
         public async Task<IActionResult> Create()
         {
             List<Room> allRooms = new List<Room>();
-            var message = RequestBuilder.GenerateHttpMessage
-                (
-                    method: HttpMethod.Get,
-                    uri: baseAdress,
-                    username: User.Identity.Name,
-                    password: Request.Cookies["passhash"]
-                );
-
-            var response = await client.SendAsync(message);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+            var response = await client.GetAsync(baseAddress);
             if (response.IsSuccessStatusCode)
             {
                 var rooms = await response.Content.ReadAsAsync<IEnumerable<Room>>();
@@ -93,17 +80,9 @@ namespace AccessControl.Controllers
             {
                 return RedirectToAction("Create");
             }
-
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
             var data = new { Room = room, ConnRooms = connRooms};
-            var message = RequestBuilder.GenerateHttpMessageWithObj
-                (
-                    method: HttpMethod.Post,
-                    uri: baseAdress+"/createandconnect",
-                    username: User.Identity.Name,
-                    password: Request.Cookies["passhash"],
-                    obj: data
-                );
-            var response = await client.SendAsync(message);
+            var response = await client.PostAsJsonAsync($"{baseAddress}/createandconnect", data);
             return RedirectToAction("Index");
 
         }
