@@ -138,10 +138,18 @@ namespace AccessControlWebApi.Models
             {
                 if (!finder.DeleteAbility(item.Id)) return false;
             }
+            var peopleConnected = repo.FindPersonRoomPairs(id);
+            if (peopleConnected.Count() > 0) repo.DeletePersonRoomPairs(peopleConnected);
+            var dooorsWithConnectedRooms = repo.GetDoorsOfRoom(id);
+            if (dooorsWithConnectedRooms.Count() > 0) repo.DeleteDoors(dooorsWithConnectedRooms);
             repo.DeleteRoom(id);
             return true;
         }
 
+        public IEnumerable<Room> GetConnectedRooms(int roomId)
+        {
+            return repo.GetNeighbourRooms(roomId);
+        }
 
         public IEnumerable<Room> GetRoomsOfPersonAccess(int personId)
         {

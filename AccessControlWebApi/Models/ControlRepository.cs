@@ -182,6 +182,10 @@ namespace AccessControlWebApi.Models
         {
             return db.PersonRoom.Where(pr => (pr.PersonId == personId) && (pr.RoomId == roomId)).FirstOrDefault();
         }
+        public IEnumerable<PersonRoom> FindPersonRoomPairs(int roomId)
+        {
+            return db.PersonRoom.Where(pr => pr.RoomId == roomId);
+        }
         public void AddRelocation(Relocation relocation)
         {
             db.Relocations.Add(relocation);
@@ -228,7 +232,10 @@ namespace AccessControlWebApi.Models
         {
             return db.Doors.Where(rel => rel.FirstLocationId == roomId || rel.SecondLocationId == roomId);
         }
-
+        public void DeleteDoors(IEnumerable<Door> doors)
+        {
+            db.Doors.RemoveRange(doors);
+        }
         public IEnumerable<Room> GetNeighbourRooms(int roomId)
         {
             return db.Doors.Where(rel => rel.FirstLocationId == roomId)

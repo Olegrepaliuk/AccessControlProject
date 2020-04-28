@@ -110,5 +110,13 @@ namespace AccessControlWebApi.Controllers
                 
         }
 
+        [HttpGet("{id}/connectedrooms")]
+        public ActionResult<IEnumerable<Room>> GetConnectedRooms(int id)
+        {
+            var foundRoom = controlService.GetRoomById(id);
+            if (foundRoom == null) return NotFound();
+            return controlService.GetConnectedRooms(id).ToList();
+        }
+
     }
 }

@@ -87,9 +87,42 @@ namespace AccessControl.Controllers
 
         }
 
-        public async Task<IActionResult> Update()
+        [HttpGet]
+        public async Task<IActionResult> Update(int roomId)
         {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+            var response = await client.GetAsync($"{baseAddress}/{roomId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var allOtherRoomsResponse = await client.GetAsync($"{baseAddress}/rooms");
+                var connectedRoomsResponse = await client.GetAsync($"{baseAddress}/{roomId}/connectedrooms");
+                if (allOtherRoomsResponse.IsSuccessStatusCode && connectedRoomsResponse.IsSuccessStatusCode)
+                {
+                    var currentRoom = await response.Content.ReadAsAsync<Room>();
+                    var otherRooms = await allOtherRoomsResponse.Content.ReadAsAsync<List<Room>>();
+                    otherRooms.RemoveAll(room => room.Id == roomId);
+                    var connectedRooms = await connectedRoomsResponse.Content.ReadAsAsync<IEnumerable<Room>>();
+                    ViewBag.OtherRooms = otherRooms;
+                    ViewBag.ConnectedRooms = connectedRooms;
+                    return View(currentRoom);
+                }
+
+            }
+            return RedirectToAction("Index");
+        }
+        [Authorize(Roles="Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Update(Room room)
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
             return null;
+        }
+        [Authorize(Roles="Admin")]
+        public async Task<IActionResult> Delete(int roomId)
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+            var reponse = await client.DeleteAsync($"{baseAddress}/{roomId}");
+            return RedirectToAction("Index");
         }
     }
 }
