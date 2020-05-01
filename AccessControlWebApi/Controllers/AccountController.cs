@@ -21,6 +21,7 @@ namespace AccessControlWebApi.Controllers
         {
             userService = service;
         }
+        /*
         [HttpPost("token")]
         public ActionResult<object> Token(dynamic obj)
         {
@@ -50,7 +51,7 @@ namespace AccessControlWebApi.Controllers
 
             return response;
         }
-
+        */
         private ClaimsIdentity GetIdentity(string username, string password)
         {
             var user = AsyncHelper.RunSync<User>(() => userService.FindUserAsync(username, password, false));

@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccessControlModels", "Acce
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccessControlTests", "AccessControlTests\AccessControlTests.csproj", "{E656D003-09A2-4D83-AEB5-AC7B6C265E72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountsWebApi", "AccountsWebApi\AccountsWebApi.csproj", "{6B2AEBB8-DDDD-4113-94AB-A34D504A60B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountsWebApi", "AccountsWebApi\AccountsWebApi.csproj", "{6B2AEBB8-DDDD-4113-94AB-A34D504A60B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiGateway", "WebApiGateway\WebApiGateway.csproj", "{C79CC633-44DD-44C9-9CE6-3A4A6ED16A4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{6B2AEBB8-DDDD-4113-94AB-A34D504A60B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B2AEBB8-DDDD-4113-94AB-A34D504A60B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B2AEBB8-DDDD-4113-94AB-A34D504A60B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C79CC633-44DD-44C9-9CE6-3A4A6ED16A4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C79CC633-44DD-44C9-9CE6-3A4A6ED16A4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C79CC633-44DD-44C9-9CE6-3A4A6ED16A4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C79CC633-44DD-44C9-9CE6-3A4A6ED16A4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

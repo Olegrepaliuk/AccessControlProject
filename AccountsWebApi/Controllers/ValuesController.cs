@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AccountsWebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("identity/[controller]")]
     [ApiController]
     [Authorize]
     public class ValuesController : ControllerBase
@@ -19,8 +19,10 @@ namespace AccountsWebApi.Controllers
             return new string[] { "value1", "value2" };
         }
 
+
         // GET api/values/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult<string> Get(int id)
         {
             return "value";
