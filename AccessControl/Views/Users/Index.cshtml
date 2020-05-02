@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AccessControlModels.User>
+﻿@model IEnumerable<Tuple<AccessControlModels.User, string>>
 <section class="content-header">
     <h1>
         Users
@@ -10,7 +10,7 @@
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">Manage people</h3>
+                    <h3 class="box-title">Manage users</h3>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
@@ -20,17 +20,19 @@
                                 <th>Id</th>
                                 <th>Username</th>
                                 <th>First and last name</th>
+                                <th>Rights</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr>
-                                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.UserName)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.FullName)</td>
-                                    <td><a asp-action="Update" asp-controller="Users" asp-route-id="@item.Id">Update</a> | <a href="" onclick="Delete('@item.Id')">Delete</a></td>
-                                </tr>
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Item1.Id)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Item1.UserName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Item1.FullName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Item2)</td>
+                                <td><a asp-action="Update" asp-controller="Users" asp-route-id="@item.Item1.Id">Update</a> | <a href="" onclick="Delete('@item.Item1.Id')">Delete</a></td>
+                            </tr>
                             }
                     </table>
                 </div>

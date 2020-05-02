@@ -20,6 +20,8 @@ namespace AccountsWebApi.Controllers
         {
             userService = service;
         }
+
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Tuple<User, string>>>> GetAllUsersWithDefaultRole()
         {
             var usersWithRoles = await userService.GetAllUsersWithRole();
