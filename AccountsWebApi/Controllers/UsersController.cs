@@ -28,14 +28,22 @@ namespace AccountsWebApi.Controllers
             return usersWithRoles;
         }
         [HttpPost]
-        public ActionResult Create()
+        public ActionResult Create(dynamic userWithRole)
+        {
+            userService.CreateUserWithRole(userWithRole);
+            return StatusCode(201);
+        }
+
+        public ActionResult Update()
         {
             return null;
         }
 
-        public ActionResult Delete()
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(string id)
         {
-            return null;
+            await userService.DeleteUser(id);
+            return NoContent();
         }
 
     }

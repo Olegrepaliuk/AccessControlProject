@@ -5,10 +5,12 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AccessControl.Models;
+using AccessControl.ViewModels;
 using AccessControlModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 
 namespace AccessControl.Controllers
@@ -39,19 +41,36 @@ namespace AccessControl.Controllers
             return View(allUsersWithRoles);
         }
 
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Create(CreateUserViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var obj = new
+                {
+                    UserName = model.Email,
+                    FullName = model.FullName,
+                    Password = model.Password,
+                    Role = model.IsAdmin ? "Admin" : "User"
+                };
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+                var response = await client.PostAsJsonAsync(baseAddress, obj);
+                return RedirectToAction("Index");
+            }
+
+            return View(model);         
+        }
+
         [HttpPost]
         public async Task<ActionResult> Delete(string id)
         {
-            User user = await _userManager.FindByIdAsync(id);
-            if (user != null)
-            {
-                var listRoles = await _userManager.GetRolesAsync(user);
-                if (listRoles.Where(l => l.ToUpper() == "ADMIN").Count() == 0)
-                {
-                    IdentityResult result = await _userManager.DeleteAsync(user);
-                }
-                
-            }
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+            var response = await client.DeleteAsync($"{baseAddress}/{id}");
             return RedirectToAction("Index");
         }
     }

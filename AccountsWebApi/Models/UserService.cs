@@ -36,9 +36,24 @@ namespace AccountsWebApi.Models
             return null;
         }
 
-        internal IEnumerable<User> GetTest()
+        public async Task CreateUserWithRole(dynamic userWithRole)
         {
-            return userManager.Users;
+            string userName = userWithRole.UserName;
+            string fullName = userWithRole.FullName;
+            string password = userWithRole.Password;
+            string role = userWithRole.Role;
+            User user = new User { UserName = userName, FullName = fullName};
+            var result = await userManager.CreateAsync(user, password);
+            if (result.Succeeded)
+            {
+                await userManager.AddToRolesAsync(user, new List<string> {role});
+            }
+        }
+
+        public async Task DeleteUser(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            await userManager.DeleteAsync(user);
         }
 
         public async Task<bool> CheckAdminRights(User user)
@@ -63,5 +78,6 @@ namespace AccountsWebApi.Models
             }
             return usersWithRole;
         }
+
     }
 }
