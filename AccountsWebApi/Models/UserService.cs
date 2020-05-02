@@ -36,6 +36,11 @@ namespace AccountsWebApi.Models
             return null;
         }
 
+        internal IEnumerable<User> GetTest()
+        {
+            return userManager.Users;
+        }
+
         public async Task<bool> CheckAdminRights(User user)
         {
             var rolesList = await userManager.GetRolesAsync(user).ConfigureAwait(false);
@@ -44,6 +49,19 @@ namespace AccountsWebApi.Models
                 if (role.ToUpper() == "ADMIN") return true;
             }
             return false;
+        }
+        
+        public async Task<List<Tuple<User, string>>> GetAllUsersWithRole()
+        {
+            var usersWithRole = new List<Tuple<User, string>>();
+            var users = userManager.Users.ToList();
+            foreach(var user in users)
+            {
+                bool isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+                string role = isAdmin ? "Admin" : "User";
+                usersWithRole.Add(new Tuple<User, string>(user, role));
+            }
+            return usersWithRole;
         }
     }
 }
