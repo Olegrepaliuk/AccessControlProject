@@ -12,7 +12,7 @@ namespace AccessControl.Models
 {
     public class AccountService
     {
-        private string baseAddress = "https://localhost:44330/api/account";
+        private string baseAddress = "https://localhost:44381/identity/account";
         private static HttpClient client;
         public AccountService(HttpClient cl)
         {

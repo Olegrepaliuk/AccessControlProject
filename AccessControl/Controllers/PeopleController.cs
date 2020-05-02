@@ -18,8 +18,8 @@ namespace AccessControl.Controllers
     [Authorize]
     public class PeopleController : Controller
     {        
-        private string baseAddressApi = "https://localhost:44330/api";
-        private string baseAddress = "https://localhost:44330/api/people";
+        private string baseAddressApi = "https://localhost:44381/api";
+        private string baseAddress = "https://localhost:44381/api/people";
         private static HttpClient client;
         public PeopleController(HttpClient cl)
         {

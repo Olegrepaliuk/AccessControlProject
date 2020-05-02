@@ -18,7 +18,7 @@ namespace AccessControl.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private string baseAddress = "https://localhost:44330/api/stats";
+        private string baseAddress = "https://localhost:44381/api/stats";
         private static HttpClient client;
         public HomeController(HttpClient cl)
         {
