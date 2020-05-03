@@ -20,13 +20,10 @@ namespace AccessControlWebApi.Controllers
     public class PeopleController : ControllerBase
     {
         private ControlService controlService;
-        private readonly UserManager<User> _userManager;
 
-        public PeopleController(ControlService service, UserManager<User> userManager)
+        public PeopleController(ControlService service)
         {
-            //db = context;
             controlService = service;
-            _userManager = userManager;
         }
         // GET api/people
         [HttpGet]
@@ -113,5 +110,16 @@ namespace AccessControlWebApi.Controllers
             return NoContent();
         }
 
+        [HttpGet("inside")]
+        public ActionResult<IEnumerable<Person>> GetPeopleInsideNow()
+        {
+            return controlService.GetPeopleInsideNow();
+        }
+
+        [HttpGet("inside/idslist")]
+        public ActionResult<IEnumerable<int>> GetIdsPeopleInsideNow()
+        {
+            return controlService.GetPeopleIdsInsideNow();
+        }
     }
 }

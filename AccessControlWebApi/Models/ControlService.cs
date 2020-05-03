@@ -227,20 +227,26 @@ namespace AccessControlWebApi.Models
             repo.SaveChanges();
             return access;
         }
-        
-        public List<Person> GetPeopleInsideNow()
+ 
+        public List<int> GetPeopleIdsInsideNow()
         {
             var peopleIds = new List<int>();
             var relocByPerson = repo.GetTodayRelocationsByPerson();
             foreach (var group in relocByPerson)
             {
-                if(group.Count()>0&&group.First().ToLoc != null)
+                if (group.Count() > 0 && group.First().ToLoc != null)
                 {
                     peopleIds.Add(group.Key);
                 }
             }
+            return peopleIds;
+        }
+        public List<Person> GetPeopleInsideNow()
+        {
+            var peopleIds = GetPeopleIdsInsideNow();
             return repo.FindExistingPeople(peopleIds).ToList();
         }
+
 
         public int CountPeopleInsideNow()
         {

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace AccessControl.Controllers
 {
@@ -47,6 +48,15 @@ namespace AccessControl.Controllers
                 var people = await response.Content.ReadAsAsync<IEnumerable<Person>>();
                 allPeople = people.ToList(); 
             }
+            var peopleInsideIds = new HashSet<int>();
+            var peopleInsideResponse = await client.GetAsync($"{baseAddress}/inside/idslist");
+            if(peopleInsideResponse.IsSuccessStatusCode)
+            {
+                string json = await peopleInsideResponse.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<HashSet<int>>(json);
+                peopleInsideIds = result;
+            }
+            ViewBag.PeopleInsideIds = peopleInsideIds;
             return View(allPeople);
         }
 
