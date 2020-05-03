@@ -35,7 +35,14 @@ namespace AccountsWebApi
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<AppUsersContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("UsersConnection")));
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>(opts =>
+            {
+                opts.Password.RequiredLength = 1;
+                opts.Password.RequireNonAlphanumeric = false;
+                opts.Password.RequireLowercase = false;
+                opts.Password.RequireUppercase = false;
+                opts.Password.RequireDigit = false;
+            })
                 .AddEntityFrameworkStores<AppUsersContext>();
 
             services.AddScoped<UserService>();

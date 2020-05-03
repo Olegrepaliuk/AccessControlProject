@@ -66,11 +66,12 @@ namespace AccessControl.Controllers
             return View(model);         
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Delete(string id)
+        [HttpGet]
+        public async Task<ActionResult> Delete(Guid id)
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
-            var response = await client.DeleteAsync($"{baseAddress}/{id}");
+            string stringId = id.ToString();
+            var response = await client.DeleteAsync($"{baseAddress}/{stringId}");
             return RedirectToAction("Index");
         }
     }

@@ -28,9 +28,9 @@ namespace AccountsWebApi.Controllers
             return usersWithRoles;
         }
         [HttpPost]
-        public ActionResult Create(dynamic userWithRole)
+        public async Task<ActionResult> Create(dynamic userWithRole)
         {
-            userService.CreateUserWithRole(userWithRole);
+            await userService.CreateUserWithRole(userWithRole);
             return StatusCode(201);
         }
 

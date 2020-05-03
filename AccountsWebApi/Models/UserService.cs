@@ -43,11 +43,18 @@ namespace AccountsWebApi.Models
             string password = userWithRole.Password;
             string role = userWithRole.Role;
             User user = new User { UserName = userName, FullName = fullName};
-            var result = await userManager.CreateAsync(user, password);
-            if (result.Succeeded)
+            try
             {
-                await userManager.AddToRolesAsync(user, new List<string> {role});
+                var result = await userManager.CreateAsync(user, password);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRolesAsync(user, new List<string> { role });
+                }
             }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }            
         }
 
         public async Task DeleteUser(string id)
