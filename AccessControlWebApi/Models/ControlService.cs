@@ -129,6 +129,41 @@ namespace AccessControlWebApi.Models
             repo.SaveChanges();
         }
 
+        public void UpdateRoomConnections(int id, IEnumerable<int> roomsId)
+        {
+            var setIds = roomsId.ToHashSet();
+            var connected = repo.GetNeighbourRooms(id);
+            foreach (var item in connected)
+            {
+                if(item != null)
+                {
+                    if (!setIds.Contains(item.RoomId))
+                    {
+                        var extraEntity = repo.FindPersonRoomPair(item.PersonId, item.RoomId);
+                        if (extraEntity != null)
+                        {
+                            repo.DeletePersonRoomPair(extraEntity);
+                        }
+
+                    }
+                    else
+                    {
+                        setIds.Remove(item.RoomId);
+                    }
+                }
+
+
+            }
+
+            foreach (var roomIdItem in setIds)
+            {
+                var personRoom = new PersonRoom(id, roomIdItem);
+                repo.AddPersonRoom(personRoom);
+            }
+
+            repo.SaveChanges();
+        }
+
         public bool TryDeleteRoom(int id)
         {
             List<Room> neighbourRooms = repo.GetNeighbourRooms(id).ToList();

@@ -86,6 +86,19 @@ namespace AccessControlWebApi.Controllers
             return NoContent();
         }
 
+        [HttpPost("{id}/connectedrooms")]
+        [Authorize(Roles = "Admin")]
+        public ActionResult UpdateConnectedRooms(int id, [FromBody]IEnumerable<int> roomsId)
+        {
+            var room = controlService.GetRoomById(id);
+            if (room == null)
+            {
+                return NotFound();
+            }
+            controlService.UpdateRoomConnections(id, roomsId);
+            return NoContent();
+        }
+
         // DELETE api/rooms/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]

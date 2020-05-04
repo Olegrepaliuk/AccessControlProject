@@ -87,23 +87,39 @@ namespace AccessControl.Controllers
 
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Update(int roomId)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update(int id)
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
-            var response = await client.GetAsync($"{baseAddress}/{roomId}");
+            var response = await client.GetAsync($"{baseAddress}/{id}");
             if (response.IsSuccessStatusCode)
             {
-                var allOtherRoomsResponse = await client.GetAsync($"{baseAddress}/rooms");
-                var connectedRoomsResponse = await client.GetAsync($"{baseAddress}/{roomId}/connectedrooms");
+                var allOtherRoomsResponse = await client.GetAsync(baseAddress);
+                var connectedRoomsResponse = await client.GetAsync($"{baseAddress}/{id}/connectedrooms");
                 if (allOtherRoomsResponse.IsSuccessStatusCode && connectedRoomsResponse.IsSuccessStatusCode)
                 {
                     var currentRoom = await response.Content.ReadAsAsync<Room>();
                     var otherRooms = await allOtherRoomsResponse.Content.ReadAsAsync<List<Room>>();
-                    otherRooms.RemoveAll(room => room.Id == roomId);
+                    otherRooms.RemoveAll(room => room.Id == id);
                     var connectedRooms = await connectedRoomsResponse.Content.ReadAsAsync<IEnumerable<Room>>();
                     ViewBag.OtherRooms = otherRooms;
-                    ViewBag.ConnectedRooms = connectedRooms;
+                    if(connectedRooms != null)
+                    {
+                        var connectedRoomsIds = new HashSet<int>();
+                        foreach (var item in connectedRooms)
+                        {
+                            if(item != null)
+                            {
+                                connectedRoomsIds.Add(item.Id);
+                            }
+                            else
+                            {
+                                connectedRoomsIds.Add(-1);
+                            }
+                        }
+                        ViewBag.ConnectedRoomsIds = connectedRoomsIds;
+                    }
+                    
                     return View(currentRoom);
                 }
 
@@ -112,10 +128,13 @@ namespace AccessControl.Controllers
         }
         [Authorize(Roles="Admin")]
         [HttpPost]
-        public async Task<IActionResult> Update(Room room)
+        public async Task<IActionResult> Update(Room room, List<int> connRooms)
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
-            return null;
+            var response = await client.PutAsJsonAsync($"{baseAddress}/{room.Id}", room);
+            var roomsResponse = await client.PostAsJsonAsync($"{baseAddress}/{room.Id}/connectedrooms", connRooms);
+
+            return RedirectToAction("Index");
         }
         [Authorize(Roles="Admin")]
         public async Task<IActionResult> Delete(int roomId)

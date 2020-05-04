@@ -27,14 +27,15 @@
                     </div>
                 </div>
                 <input type="hidden" name="RoomType" value="0" />
+                <div class="form-group">
+                    @foreach (var room in ViewBag.AllRooms)
+                    {
+                        <input type="checkbox" name="connRooms" value="@room.Id" />@room.ToString() <br />
+                    }
+                    <input type="checkbox" name="connRooms" value="-1" />Outdoors<br />
+                </div>
             </div>
-            <div class="form-group">
-                @foreach (var room in ViewBag.AllRooms)
-                {
-                    <input type="checkbox" name="connRooms" value="@room.Id"/>@room.ToString() <br />
-                }
-                <input type="checkbox" name="connRooms" value="-1"/>Outdoors<br />
-            </div>
+
             <!-- /.box-body -->
             <div class="box-footer">
                 <!--

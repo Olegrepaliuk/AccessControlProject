@@ -1,4 +1,4 @@
-﻿@model  AccessControlModels.Room
+﻿@model AccessControlModels.Room
 <section class="content-header">
     <h1>
         Rooms
@@ -29,14 +29,25 @@
                 </div>
                 <input type="hidden" name="Type" value="@Model.Type" />
                 <input type="hidden" name="Id" value="@Model.Id" />
+                <div class="form-group">
+                    <div class="col-sm-10">
+                        @foreach (var room in ViewBag.OtherRooms)
+                        {
+                            <input type="checkbox" name="connRooms" value="@room.Id"
+                                   @(ViewBag.ConnectedRoomsIds.Contains(room.Id) ? "checked=\"checked\"" : "") />@room.ToString() <br />
+                            }
+                        <input type="checkbox" name="connRooms" value="-1"
+                               @(ViewBag.ConnectedRoomsIds.Contains(-1) ? "checked=\"checked\"" : "") />Outdoors<br />
+                    </div>
+                </div>
             </div>
-    <!-- /.box-body -->
-    <div class="box-footer">
-        <button type="submit" class="btn btn-default">Cancel</button>
-        <button type="submit" class="btn btn-info pull-right">Update</button>
-    </div>
-    <!-- /.box-footer -->
-    </form>
+
+            <!-- /.box-body -->
+            <div class="box-footer">
+                <button type="submit" class="btn btn-info pull-right">Update</button>
+            </div>
+            <!-- /.box-footer -->
+        </form>
     </div>
     <!-- /.box -->
 </section>
