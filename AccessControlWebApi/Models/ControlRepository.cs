@@ -242,5 +242,14 @@ namespace AccessControlWebApi.Models
                     .Select(rel => rel.SecondLocation)
                     .Union(db.Doors.Where(rel => rel.SecondLocationId == roomId).Select(rel => rel.FirstLocation));
         }
+
+        public IEnumerable<Relocation> GetAllRelocations()
+        {
+            return db.Relocations
+                .Include(rel => rel.FromLoc)
+                .Include(rel => rel.ToLoc)
+                .Include(rel => rel.Person)
+                .OrderByDescending(rel => rel.DateAndTime);
+        }
     }
 }

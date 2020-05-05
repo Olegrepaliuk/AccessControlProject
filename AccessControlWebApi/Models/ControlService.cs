@@ -131,6 +131,7 @@ namespace AccessControlWebApi.Models
 
         public void UpdateRoomConnections(int id, IEnumerable<int> roomsId)
         {
+            /*
             var setIds = roomsId.ToHashSet();
             var connected = repo.GetNeighbourRooms(id);
             foreach (var item in connected)
@@ -162,6 +163,7 @@ namespace AccessControlWebApi.Models
             }
 
             repo.SaveChanges();
+            */
         }
 
         public bool TryDeleteRoom(int id)
@@ -306,5 +308,9 @@ namespace AccessControlWebApi.Models
             return relocations.Count();
         }
 
+        public IEnumerable<Relocation> GetAllRelocations()
+        {
+            return repo.GetAllRelocations();
+        }
     }
 }

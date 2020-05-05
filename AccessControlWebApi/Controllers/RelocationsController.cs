@@ -26,7 +26,8 @@ namespace AccessControlWebApi.Controllers
             _userManager = userManager;
         }
 
-        [СustomAuthorization(OnlyAdmin = true)]
+        [HttpPost("move")]
+        [Authorize(Roles = "Admin")]
         public ActionResult<bool> MoveToOtherLoc(int personId, int? toLocId, int? realLocId)
         {
             int? lastLoggedLocId = controlService.FindLastLoggedPersonLocId(personId);
@@ -36,6 +37,12 @@ namespace AccessControlWebApi.Controllers
             }
             return controlService.TryMoveToOtherLoc(personId, realLocId, toLocId);
             
+        }
+
+        [HttpGet]
+        public ActionResult <IEnumerable<Relocation>> GetRelocationsHistory()
+        {
+            return controlService.GetAllRelocations().ToList();
         }
 
     }
