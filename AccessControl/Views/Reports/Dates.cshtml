@@ -1,7 +1,104 @@
-﻿
-@{
-    ViewData["Title"] = "Date";
-}
+﻿@model IEnumerable<IGrouping<DateTime, AccessControlModels.Relocation>>
 
-<h2>Date</h2>
+<section class="content-header">
+    <h1>
+        Daily report
+    </h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title"></h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Person</th>
+                                <th>Date and time</th>
+                                <th>Time</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var groupItem in Model)
+                            {
+                                foreach (var item in groupItem)
+                                {
+                                    <tr id="@item.Id">
+                                        <td>@(item.Person != null ? item.Person.Name : "Unknown")</td>
+                                        <td>@(item.DateAndTime.Date.ToString("dd.MM.yyyy"))</td>
+                                        <td>@(item.DateAndTime.TimeOfDay)</td>
+                                        <td>@(item.FromLoc != null ? item.FromLoc.ToString() : "Outdoors")</td>
+                                        <td>@(item.ToLoc != null ? item.ToLoc.ToString() : "Outdoors")</td>
+                                        <td>@(item.Success?"Access allowed":"Access denied")</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+
+<!-- DataTables -->
+<script src="~/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!--
+
+<script src="https://momentjs.com/downloads/moment.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.20/sorting/datetime-moment.js"></script>
+ -->
+<script>
+    //$.fn.dataTable.moment('Do, MM, YYYY');
+    $(document).ready(function () {
+        var groupColumn = 1;
+        var table = $('#example1').DataTable({
+            "columnDefs": [
+                { "visible": false, "targets": groupColumn }
+            ],
+            "displayLength": 25,
+            "drawCallback": function (settings) {
+                var api = this.api();
+                var rows = api.rows({ page: 'current' }).nodes();
+                var last = null;
+
+                api.column(groupColumn, { page: 'current' }).data().each(function (group, i) {
+                    if (last !== group) {
+                        $(rows).eq(i).before(
+                            '<tr class="group"><td colspan="5"><strong>' + group + '</strong></td></tr>'
+                        );
+
+                        last = group;
+                    }
+                });
+            }
+        });
+
+        /*
+        $('#example1 tbody').on('click', 'tr.group', function () {
+            var currentOrder = table.order()[0];
+            if (currentOrder[0] === groupColumn && currentOrder[1] === 'asc') {
+                table.order([groupColumn, 'desc']).draw();
+            }
+            else {
+                table.order([groupColumn, 'asc']).draw();
+            }
+        });
+        */
+    });
+</script>
+
 

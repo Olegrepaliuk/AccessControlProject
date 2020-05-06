@@ -15,7 +15,7 @@ namespace AccessControl.Controllers
     public class ReportsController : Controller
     {
         private static HttpClient client;
-        private string baseAddress = "https://localhost:44381/api/reports";
+        private string baseAddress = "https://localhost:44381/api/relocations";
         public ReportsController(HttpClient cl)
         {
             client = cl;
@@ -25,8 +25,8 @@ namespace AccessControl.Controllers
             return View();
         }
 
-        [HttpGet("Dates")]
-        public async Task<IActionResult> GetReportByDates()
+        [HttpGet]
+        public async Task<IActionResult> Dates()
         {
             var allGroupedRelocations= new List<IGrouping<DateTime, Relocation>>();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
@@ -35,7 +35,8 @@ namespace AccessControl.Controllers
             {
                 string json = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<IEnumerable<Relocation>>(json);
-                allGroupedRelocations = result.GroupBy(rel => rel.DateAndTime.Date).ToList();
+                allGroupedRelocations = result.GroupBy(rel => rel.DateAndTime.Date).OrderByDescending(rel => rel.Key).ToList();
+                //var sortedGroupedRelocations = allGroupedRelocations.OrderByDescending(sgr => sgr.Key).ToList();
             }
 
             return View(allGroupedRelocations);
@@ -45,7 +46,7 @@ namespace AccessControl.Controllers
         public async Task<IActionResult> People()
         {
             var allGroupedRelocations = new List<IGrouping<int, Relocation>>();
-            /*
+            
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
             var response = await client.GetAsync(baseAddress);
             if (response.IsSuccessStatusCode)
@@ -54,25 +55,40 @@ namespace AccessControl.Controllers
                 var result = JsonConvert.DeserializeObject<IEnumerable<Relocation>>(json);
                 allGroupedRelocations = result.GroupBy(rel => rel.PersonId).ToList();
             }
-            */
+            
             return View(allGroupedRelocations);
         }
 
-        [HttpGet("Rooms")]
-        public async Task<IActionResult> GetReportByRooms()
+        [HttpGet]
+        public async Task<IActionResult> RoomsEntering()
         {
-            var allGroupedRelocations = new List<IGrouping<Person, Relocation>>();
+            var allGroupedRelocations = new List<IGrouping<int?, Relocation>>();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
             var response = await client.GetAsync(baseAddress);
             if (response.IsSuccessStatusCode)
             {
                 string json = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<IEnumerable<Relocation>>(json);
-                //allGroupedRelocations = result.GroupBy(rel => rel.ToLocId).ToList();
+                allGroupedRelocations = result.GroupBy(rel => rel.ToLocId).ToList();
             }
 
             return View(allGroupedRelocations);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> RoomsLeaving()
+        {
+            var allGroupedRelocations = new List<IGrouping<int?, Relocation>>();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+            var response = await client.GetAsync(baseAddress);
+            if (response.IsSuccessStatusCode)
+            {
+                string json = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<IEnumerable<Relocation>>(json);
+                allGroupedRelocations = result.GroupBy(rel => rel.FromLocId).ToList();
+            }
+
+            return View(allGroupedRelocations);
+        }
     }
 }

@@ -26,13 +26,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td rowspan="2">Ячейка 1</td>
-                                <td>Ячейка 2</td>
-                            </tr>
-                            <tr>
-                                <td>Ячейка 3</td>
-                            </tr>
+                            @foreach (var groupItem in Model)
+                            {
+                                foreach (var item in groupItem)
+                                {
+                                    <tr id="@item.Id">
+                                        <td>@(item.Person!= null?item.Person.Name:"Unknown")</td>
+                                        <td>@(item.DateAndTime)</td>
+                                        <td>@(item.FromLoc != null?item.FromLoc.ToString():"Outdoors")</td>
+                                        <td>@(item.ToLoc != null?item.ToLoc.ToString():"Outdoors")</td>
+                                        <td>@(item.Success? "Access allowed":"Access denied")</td>
+                                    </tr>
+                                }
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -49,8 +55,41 @@
 <script src="~/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="~/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <script>
-        $(function () {
-            $('#example1').DataTable();
+    $(document).ready(function () {
+        var groupColumn = 0;
+        var table = $('#example1').DataTable({
+            "columnDefs": [
+                { "visible": false, "targets": groupColumn }
+            ],
+            "order": [[groupColumn, 'asc']],
+            "displayLength": 25,
+            "drawCallback": function (settings) {
+                var api = this.api();
+                var rows = api.rows({ page: 'current' }).nodes();
+                var last = null;
+
+                api.column(groupColumn, { page: 'current' }).data().each(function (group, i) {
+                    if (last !== group) {
+                        $(rows).eq(i).before(
+                            '<tr class="group"><td colspan="4"><strong>' + group + '</strong></td></tr>'
+                        );
+
+                        last = group;
+                    }
+                });
+            }
         });
+
+        // Order by the grouping
+        $('#example1 tbody').on('click', 'tr.group', function () {
+            var currentOrder = table.order()[0];
+            if (currentOrder[0] === groupColumn && currentOrder[1] === 'asc') {
+                table.order([groupColumn, 'desc']).draw();
+            }
+            else {
+                table.order([groupColumn, 'asc']).draw();
+            }
+        });
+    });
 </script>
 
