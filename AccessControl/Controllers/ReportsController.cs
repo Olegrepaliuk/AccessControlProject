@@ -36,7 +36,6 @@ namespace AccessControl.Controllers
                 string json = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<IEnumerable<Relocation>>(json);
                 allGroupedRelocations = result.GroupBy(rel => rel.DateAndTime.Date).OrderByDescending(rel => rel.Key).ToList();
-                //var sortedGroupedRelocations = allGroupedRelocations.OrderByDescending(sgr => sgr.Key).ToList();
             }
 
             return View(allGroupedRelocations);

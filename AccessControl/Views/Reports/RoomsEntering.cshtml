@@ -1,7 +1,97 @@
-﻿
-@{
-    ViewData["Title"] = "RoomsEntering";
-}
+﻿@model IEnumerable<IGrouping<int?, AccessControlModels.Relocation>>
 
-<h2>RoomsEntering</h2>
+<section class="content-header">
+    <h1>
+        Entering area report
+    </h1>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title"></h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Person</th>
+                                <th>Date and time</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var groupItem in Model)
+                            {
+                                foreach (var item in groupItem)
+                                {
+                                    <tr id="@item.Id">
+                                        <td>@(item.Person != null ? item.Person.Name : "Unknown")</td>
+                                        <td>@(item.DateAndTime)</td>
+                                        <td>@(item.FromLoc != null ? item.FromLoc.ToString() : "Outdoors")</td>
+                                        <td>@(item.ToLoc != null ? item.ToLoc.ToString() : "Outdoors")</td>
+                                        <td>@(item.Success ? "Access allowed" : "Access denied")</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+
+<!-- DataTables -->
+<script src="~/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var groupColumn = 3;
+        var table = $('#example1').DataTable({
+            "columnDefs": [
+                { "visible": false, "targets": groupColumn }
+            ],
+            "order": [[groupColumn, 'asc']],
+            "displayLength": 25,
+            "drawCallback": function (settings) {
+                var api = this.api();
+                var rows = api.rows({ page: 'current' }).nodes();
+                var last = null;
+
+                api.column(groupColumn, { page: 'current' }).data().each(function (group, i) {
+                    if (last !== group) {
+                        $(rows).eq(i).before(
+                            '<tr class="group"><td colspan="4"><strong>' + group + '</strong></td></tr>'
+                        );
+
+                        last = group;
+                    }
+                });
+            }
+        });
+
+        // Order by the grouping
+        $('#example1 tbody').on('click', 'tr.group', function () {
+            var currentOrder = table.order()[0];
+            if (currentOrder[0] === groupColumn && currentOrder[1] === 'asc') {
+                table.order([groupColumn, 'desc']).draw();
+            }
+            else {
+                table.order([groupColumn, 'asc']).draw();
+            }
+        });
+    });
+</script>
+
+
 
