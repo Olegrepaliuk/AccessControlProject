@@ -15,13 +15,9 @@ namespace AccessControlWebApi.Controllers
     public class BuildingsController : ControllerBase
     {
         private ControlService controlService;
-        private readonly UserManager<User> _userManager;
-
-        public BuildingsController(ControlService service, UserManager<User> userManager)
+        public BuildingsController(ControlService service)
         {
-            //db = context;
             controlService = service;
-            _userManager = userManager;
         }
 
         // GET api/buildings

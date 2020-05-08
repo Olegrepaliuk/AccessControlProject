@@ -17,13 +17,9 @@ namespace AccessControlWebApi.Controllers
     public class RelocationsController : ControllerBase
     {
         private ControlService controlService;
-        private readonly UserManager<User> _userManager;
-
-
-        public RelocationsController(ControlService service, UserManager<User> userManager)
+        public RelocationsController(ControlService service)
         {
             controlService = service;
-            _userManager = userManager;
         }
 
         [HttpPost("move")]

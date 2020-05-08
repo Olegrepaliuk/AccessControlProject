@@ -45,11 +45,6 @@ namespace AccessControl.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -69,32 +64,7 @@ namespace AccessControl.Controllers
             {
                 var s2 = await response2.Content.ReadAsAsync<IEnumerable<Person>>();
             }
-
-
             return View("Index");
-        }
-
-        public async Task<IActionResult> Test2()
-        {
-            ViewData["d"] = "dda";
-            var req = new HttpRequestMessage(HttpMethod.Get, "https://login.microsoftonline.com/0475dfa7-xxxxxxxx-896cf5e31efc/oauth2/token");
-            req.Headers.Add("Referer", "login.microsoftonline.com");
-            req.Headers.Add("Accept", "application/x-www-form-urlencoded");
-            req.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-            //req.Headers.Authorization = AuthenticationHeaderValue.;
-            // This is the important part:
-            req.Content = new FormUrlEncodedContent(new Dictionary<string, string>
-            {
-                { "grant_type", "password" },
-                { "client_id", "6e97fc60-xxxxxxxxx-a9bxxxxxb2d" },
-                { "client_secret", "4lSxxxxxxxxxxxmqF4Q" },
-                { "resource", "https://graph.microsoft.com" },
-                { "username", "xxxx@xxxxx.onmicrosoft.com" },
-                { "password", "xxxxxxxxxxxxx" }
-            });
-            HttpClient httpClient = new HttpClient();
-            var resp = await httpClient.SendAsync(req);
-            return View();
         }
     }
 }

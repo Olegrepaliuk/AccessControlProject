@@ -38,15 +38,8 @@ namespace AccessControlWebApi
             services.AddDbContext<AccessCtrlContext>(options => options.UseSqlServer(connection));
             //services.AddControllersWithViews();
 
-            services.AddDbContext<AppUsersContext>(options =>
-                 options.UseSqlServer(Configuration.GetConnectionString("UsersConnection")));
-
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<AppUsersContext>();
             services.AddScoped<ControlService>();
             services.AddScoped<ControlRepository>();
-            services.AddScoped<UserService>();
-            services.AddScoped<UserRepository>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

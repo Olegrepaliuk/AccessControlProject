@@ -18,12 +18,10 @@ namespace AccessControlWebApi.Controllers
     public class RoomsController : ControllerBase
     {
         private ControlService controlService;
-        private readonly UserManager<User> _userManager;
 
-        public RoomsController(ControlService service, UserManager<User> userManager)
+        public RoomsController(ControlService service)
         {
             controlService = service;
-            _userManager = userManager;
         }
         // GET api/rooms
         [HttpGet]
