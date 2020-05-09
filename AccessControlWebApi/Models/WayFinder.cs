@@ -10,27 +10,36 @@ namespace AccessControlWebApi.Models
         private HashSet<int> CurrentWay;
         private List<HashSet<int>> Ways;
         private ControlRepository repo;
-        public int RoomIdToDelete { get; set; }
+        private int _roomIdToDelete { get; set; }
 
-        public WayFinder(ControlRepository repository)
+        public WayFinder(ControlRepository repository, int roomIdToDelete)
         {
             Visited = new HashSet<int>();
             CurrentWay = new HashSet<int>();
             Ways = new List<HashSet<int>>();
             repo = repository;
+            _roomIdToDelete = roomIdToDelete;
         }
-        public bool DeleteAbility(int id)
+        public bool DeleteAbility()
         {
-            CurrentWay.Clear();
-            Visited.Clear();
-            Ways.Clear();
-            var room = repo.GetRoomById(id);
-            Search(room);
-            return Check(RoomIdToDelete);
+            List<Room> neighbourRooms = repo.GetNeighbourRooms(_roomIdToDelete).ToList();
+            foreach(var item in neighbourRooms)
+            {
+                CurrentWay.Clear();
+                Visited.Clear();
+                Ways.Clear();
+                if (item != null)
+                {
+                    Search(item);
+                    if (!Check()) return false;
+                }
+                    
+            }
+            return true;
         }
         private void Search(Room room)
         {
-            if (room==null||room.Id == RoomIdToDelete||Visited.Contains(room.Id))
+            if (room==null||room.Id == _roomIdToDelete||Visited.Contains(room.Id))
             {
                 return;
             }
@@ -51,12 +60,12 @@ namespace AccessControlWebApi.Models
             CurrentWay.Remove(room.Id);
         }
 
-        private bool Check(int idToRemove)
+        private bool Check()
         {
             int otherWaysCounter = 0;
             foreach (var item in Ways)
             {
-                if(!item.Contains(idToRemove))
+                if(!item.Contains(_roomIdToDelete))
                 {
                     otherWaysCounter++;
                 }

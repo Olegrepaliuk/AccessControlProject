@@ -52,7 +52,6 @@ namespace AccessControlWebApi.Models
 
         public Person GetPersonById(int id)
         {
-            //return db.People.Where(p => p.Id == id).FirstOrDefault();
             return db.People.Find(id);
         }
 
@@ -64,7 +63,6 @@ namespace AccessControlWebApi.Models
 
         public string DeletePerson(int id)
         {
-            //var person = db.People.Where(p => p.Id == id).FirstOrDefault();
             var person = db.People.Find(id);
             if (person != null)
             {
@@ -86,7 +84,6 @@ namespace AccessControlWebApi.Models
         public Room GetRoomById(int id)
         {
             return db.Rooms.Include(r => r.Building).Where(r => r.Id == id).FirstOrDefault();
-            //return db.Rooms.Where(r => r.Id == id).FirstOrDefault();
         }
         public void AddRoom(Room room)
         {
@@ -100,7 +97,6 @@ namespace AccessControlWebApi.Models
         }
         public string DeleteRoom(int id)
         {
-            //var room = db.Rooms.Where(r => r.Id == id).FirstOrDefault();
             var room = db.Rooms.Find(id);
             if (room != null)
             {
@@ -122,8 +118,6 @@ namespace AccessControlWebApi.Models
 
         public Building GetBuildingById(int id)
         {
-            //return db.Buildings.Include(b => b.Rooms).Where(b => b.Id ==id).FirstOrDefault();
-            //return db.Buildings.Where(b => b.Id == id).FirstOrDefault();
             return db.Buildings.Find(id);
         }
 
@@ -135,7 +129,6 @@ namespace AccessControlWebApi.Models
 
         public string DeleteBuilding(int id)
         {
-            //var building = db.Buildings.Where(b => b.Id == id).FirstOrDefault();
             var building = db.Buildings.Find(id);
             if (building != null)
             {
@@ -153,13 +146,19 @@ namespace AccessControlWebApi.Models
         public void AddDoor(Door door)
         {
             db.Doors.Add(door);
-            //db.SaveChanges();
         }
 
+        public void DeleteDoor(Door door)
+        {
+            db.Doors.Remove(door);
+        }
+        public void DeleteDoors(IEnumerable<Door> doors)
+        {
+            db.Doors.RemoveRange(doors);
+        }
         public void AddPersonRoom(PersonRoom pr)
         {
             db.PersonRoom.Add(pr);
-            //db.SaveChanges();
         }
 
         public Relocation FindLastPersonRelocation(int personId)
@@ -172,7 +171,6 @@ namespace AccessControlWebApi.Models
         public void DeletePersonRoomPairs(IEnumerable<PersonRoom> entities)
         {
             db.PersonRoom.RemoveRange(entities);
-            //db.SaveChanges();
         }
         public void DeletePersonRoomPair(PersonRoom personRoom)
         {
@@ -206,6 +204,12 @@ namespace AccessControlWebApi.Models
         {
             return db.Rooms.Include(r => r.Building).Where(r => r.BuildingId == id);
         }
+        public Door GetDoorOfRooms(int? firstRoomId, int? secondRoomId)
+        {
+            return db.Doors
+                    .Where(d => d.FirstLocationId == firstRoomId && d.SecondLocationId == secondRoomId)
+                    .Union(db.Doors.Where(d => d.SecondLocationId == firstRoomId && d.FirstLocationId == secondRoomId)).FirstOrDefault();
+        }
         public IEnumerable<IGrouping<int, Relocation>> GetTodayRelocationsByPerson()
         {
             return db.Relocations.Include(rel => rel.Person)
@@ -231,10 +235,6 @@ namespace AccessControlWebApi.Models
         public IEnumerable<Door> GetDoorsOfRoom(int roomId)
         {
             return db.Doors.Where(rel => rel.FirstLocationId == roomId || rel.SecondLocationId == roomId);
-        }
-        public void DeleteDoors(IEnumerable<Door> doors)
-        {
-            db.Doors.RemoveRange(doors);
         }
         public IEnumerable<Room> GetNeighbourRooms(int roomId)
         {

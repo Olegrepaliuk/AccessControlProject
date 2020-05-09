@@ -131,25 +131,39 @@ namespace AccessControlWebApi.Models
 
         public void UpdateRoomConnections(int id, IEnumerable<int> roomsId)
         {
-            /*
             var setIds = roomsId.ToHashSet();
             var connected = repo.GetNeighbourRooms(id);
             foreach (var item in connected)
             {
                 if(item != null)
-                {
-                    if (!setIds.Contains(item.RoomId))
+                {           
+                    if (!setIds.Contains(item.Id))
                     {
-                        var extraEntity = repo.FindPersonRoomPair(item.PersonId, item.RoomId);
+                        if (item.Type == RoomType.Hall) throw new Exception("Unable to disconnect room from hall");
+                        var finder = new WayFinder(repo, item.Id);
+                        var extraEntity = repo.FindRoom(item.Id);
+
                         if (extraEntity != null)
                         {
-                            repo.DeletePersonRoomPair(extraEntity);
+                            var door = repo.GetDoorOfRooms(item.Id, id);
+                            if (door != null) repo.DeleteDoor(door);
                         }
 
                     }
                     else
                     {
-                        setIds.Remove(item.RoomId);
+                        setIds.Remove(item.Id);
+                    }
+                }
+                else
+                {
+                    if(!setIds.Contains(-1))
+                    {
+                        var extraEntity = repo.GetDoorOfRooms(id, null);
+                    }
+                    else
+                    {
+                        setIds.Remove(-1);
                     }
                 }
 
@@ -163,18 +177,12 @@ namespace AccessControlWebApi.Models
             }
 
             repo.SaveChanges();
-            */
         }
 
         public bool TryDeleteRoom(int id)
         {
-            List<Room> neighbourRooms = repo.GetNeighbourRooms(id).ToList();
-            WayFinder finder = new WayFinder(repo);
-            finder.RoomIdToDelete = id;
-            foreach (var item in neighbourRooms)
-            {
-                if (!finder.DeleteAbility(item.Id)) return false;
-            }
+            WayFinder finder = new WayFinder(repo, id);
+            if (!finder.DeleteAbility()) return false;
             var peopleConnected = repo.FindPersonRoomPairs(id);
             if (peopleConnected.Count() > 0) repo.DeletePersonRoomPairs(peopleConnected);
             var dooorsWithConnectedRooms = repo.GetDoorsOfRoom(id);
