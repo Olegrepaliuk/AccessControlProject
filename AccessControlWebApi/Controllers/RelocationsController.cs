@@ -39,9 +39,9 @@ namespace AccessControlWebApi.Controllers
 
         [HttpPost("move/{readerId}")]
         [Authorize(Roles = "Admin")]
-        public ActionResult<bool> MoveToOtherLoc(int readerId, [FromBody]int cardId)
+        public ActionResult<bool> MoveToOtherLoc(int readerId, [FromBody]string cardKey)
         {
-            return controlService.TryMoveToOtherLoc(cardId, readerId);
+            return controlService.TryMoveToOtherLoc(cardKey, readerId);
         }
 
         [HttpGet]

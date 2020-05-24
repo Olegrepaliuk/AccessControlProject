@@ -57,12 +57,12 @@ namespace AccessControlWebApi.Models
             return repo.GetRoomById(id);
         }
 
-        public ActionResult<bool> TryMoveToOtherLoc(int cardId, int readerId)
+        public ActionResult<bool> TryMoveToOtherLoc(string cardKey, int readerId)
         {
             bool access = true;
             var reader = repo.GetReaderById(readerId);
             if (reader == null) return false;
-            var person = repo.GetPersonByCardNum(cardId);
+            var person = repo.GetPersonByCardNum(cardKey);
             if (person == null) return false;
             if(reader.NextLocId != null)
             {
@@ -104,6 +104,10 @@ namespace AccessControlWebApi.Models
         {
             repo.AddReader(reader);
             repo.SaveChanges();
+        }
+        public void UpdateReader(Reader reader)
+        {
+            repo.PutReader(reader);
         }
         public string DeleteReader(int id)
         {

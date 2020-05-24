@@ -1,7 +1,48 @@
-﻿
-@{
-    ViewData["Title"] = "Create";
-}
+﻿<section class="content-header">
+    <h1>
+        Readers
+    </h1>
+</section>
+<!-- Main content -->
+<section class="content container-fluid">
+    <!-- Horizontal Form -->
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Add Reader</h3>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+        <form class="form-horizontal" method="post" action="Create">
+            <div class="box-body">
 
-<h2>Create</h2>
+                <h4>Current room</h4>
+                <div class="form-group">
+                    @foreach (var room in ViewBag.AllRooms)
+                    {
+                        <input type="radio" name="currentRoomId" value="@room.Id" />@room.ToString() <br />
+                    }
+                    <input type="radio" name="currentRoomId" value="-1" />Outdoors<br />
+                </div>
+                <h4>Next room</h4>
+                <div class="form-group">
+                    @foreach (var room in ViewBag.AllRooms)
+                    {
+                        <input type="radio" name="nextRoomId" value="@room.Id" />@room.ToString() <br />
+                    }
+                    <input type="radio" name="nextRoomId" value="-1" />Outdoors<br />
+                </div>
+            </div>
+
+            <!-- /.box-body -->
+            <div class="box-footer">
+                <!--
+                       <button onclick="window.history.back()">Cancel</button>
+                -->
+                <button type="submit" class="btn btn-info pull-right">Create</button>
+            </div>
+            <!-- /.box-footer -->
+        </form>
+    </div>
+    <!-- /.box -->
+</section>
 

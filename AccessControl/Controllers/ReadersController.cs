@@ -14,6 +14,7 @@ namespace AccessControl.Controllers
     public class ReadersController : Controller
     {
         private string baseAddress = "https://localhost:44381/api/readers";
+        private string baseAddressApi = "https://localhost:44381/api";
         private static HttpClient client;
         public ReadersController(HttpClient cl)
         {
@@ -45,21 +46,68 @@ namespace AccessControl.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
+            var allRooms = new List<Room>();
+            var allRoomsResponse = await client.GetAsync($"{baseAddressApi}/rooms");
+            if (allRoomsResponse.IsSuccessStatusCode)
+            {
+                allRooms = await allRoomsResponse.Content.ReadAsAsync<List<Room>>();
+            }
+            ViewBag.AllRooms = allRooms;
             return View();
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Create(Reader reader)
+        public async Task<IActionResult> Create(Reader reader, int currentRoomId, int nextRoomId)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid||(currentRoomId == nextRoomId))
             {
                 return RedirectToAction("Create");
             }
+            if (currentRoomId != -1) reader.CurrentLocId = currentRoomId;
+            if (nextRoomId != -1) reader.NextLocId = nextRoomId;
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
             var response = await client.PostAsJsonAsync(baseAddress, reader);
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update(int id)
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+            var response = await client.GetAsync($"{baseAddress}/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var allRoomsResponse = await client.GetAsync($"{baseAddressApi}/rooms");
+                if (allRoomsResponse.IsSuccessStatusCode)
+                {
+                    var reader = await response.Content.ReadAsAsync<Reader>();
+                    var allRooms = await allRoomsResponse.Content.ReadAsAsync<IEnumerable<Room>>();
+                    ViewBag.AllRooms = allRooms;
+                    return View(reader);
+                }
+
+            }
+            return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Update(Reader reader, int currentRoomId, int nextRoomId)
+        {
+            if (!ModelState.IsValid || (currentRoomId == nextRoomId))
+            {
+                return RedirectToAction("Index");
+            }
+            reader.NextLocId = null;
+            reader.NextLoc = null;
+            reader.CurrentLoc = null;
+            reader.CurrentLocId = null;
+            if (currentRoomId != -1) reader.CurrentLocId = currentRoomId;
+            if (nextRoomId != -1) reader.NextLocId = nextRoomId;
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+            var response = await client.PutAsJsonAsync($"{baseAddress}/{reader.Id}", reader);
+            return RedirectToAction("Index");
+        }
     }
 }

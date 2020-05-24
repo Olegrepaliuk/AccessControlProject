@@ -1,0 +1,51 @@
+﻿@model AccessControlModels.Reader
+<section class="content-header">
+    <h1>
+        Readers
+    </h1>
+</section>
+<!-- Main content -->
+<section class="content container-fluid">
+    <!-- Horizontal Form -->
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Update Reader Info</h3>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+        <form class="form-horizontal" method="post" action="/Readers/Update">
+            <div class="box-body">
+                <div class="form-group">
+                    <h4>Current room</h4>
+                    @foreach (var room in ViewBag.AllRooms)
+                    {
+                        <input type="radio" name="currentRoomId" value="@room.Id"
+                               @(room.Id == Model.CurrentLocId ? "checked=\"checked\"" : "") />@room.ToString() <br />
+                        }
+                    <input type="radio" name="currentRoomId" value="-1"
+                           @(Model.CurrentLocId == null ? "checked=\"checked\"" : "") />Outdoors<br />
+                </div>
+                <h4>Next room</h4>
+                <div class="form-group">
+                    @foreach (var room in ViewBag.AllRooms)
+                    {
+                        <input type="radio" name="nextRoomId" value="@room.Id"
+                               @(room.Id == Model.NextLocId ? "checked=\"checked\"" : "") />@room.ToString() <br />
+                        }
+                    <input type="radio" name="nextRoomId" value="-1"
+                           @(Model.NextLocId == null ? "checked=\"checked\"" : "") />Outdoors<br />
+                </div>
+                <input type="hidden" name="Id" value="@Model.Id" />
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+                <button type="submit" class="btn btn-default">Cancel</button>
+                <button type="submit" class="btn btn-info pull-right">Update</button>
+            </div>
+            <!-- /.box-footer -->
+        </form>
+    </div>
+    <!-- /.box -->
+</section>
+
+

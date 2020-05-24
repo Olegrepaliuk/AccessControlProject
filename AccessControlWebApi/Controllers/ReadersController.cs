@@ -53,19 +53,19 @@ namespace AccessControlWebApi.Controllers
             return StatusCode(201);
         }
 
-        /*
+  
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public ActionResult Put(int id, [FromBody]Person person)
+        public ActionResult Put(int id, [FromBody]Reader reader)
         {
-            if (id != person.Id)
+            if (id != reader.Id)
             {
                 return BadRequest();
             }
-            controlService.UpdatePerson(person);
+            controlService.UpdateReader(reader);
             return NoContent();
         }
-        */
+
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]

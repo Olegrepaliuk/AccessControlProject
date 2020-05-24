@@ -51,14 +51,20 @@ namespace AccessControlWebApi.Models
             db.SaveChanges();
         }
 
+        public void PutReader(Reader reader)
+        {
+            db.Entry(reader).State = EntityState.Modified;
+            db.SaveChanges();
+        }
+
         public Person GetPersonById(int id)
         {
             return db.People.Find(id);
         }
 
-        public Person GetPersonByCardNum(int cardNum)
+        public Person GetPersonByCardNum(string cardKey)
         {
-            return db.People.FirstOrDefault(p => p.CardNum == cardNum);
+            return db.People.FirstOrDefault(p => p.CardKey == cardKey);
         }
 
         public void AddPerson(Person person)

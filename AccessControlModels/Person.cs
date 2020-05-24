@@ -12,13 +12,15 @@ namespace AccessControlModels
         public int Id { get; set; }
         [Required (ErrorMessage = "Name is required")]
         public string Name { get; set; }
+        [RegularExpression(@"^\+380\d{9}$", ErrorMessage = "Phone format: +380XXXXXXXXX")]
         public string Phone { get; set; }
+        [RegularExpression(@"^[A-Za-z]+[\.A-Za-z0-9_-]*@[A-Za-z]+\.[A-Za-z]+", ErrorMessage = "Please, check your email")]
         public string Email { get; set; }
         [Required]
         [FutureDateCorrectRange(ErrorMessage = "Date must be later")]
         public DateTime CardValidTil { get; set; }
         [Required]
-        public int CardNum { get; set; }
+        public string CardKey { get; set; }
 
         public Person()
         {
