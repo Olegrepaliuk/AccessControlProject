@@ -1,5 +1,6 @@
 ﻿using AccessControl.Models;
 using AccessControlModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -55,6 +56,36 @@ namespace AccessControlWebApi.Models
         {
             return repo.GetRoomById(id);
         }
+
+        public ActionResult<bool> TryMoveToOtherLoc(int cardId, int readerId)
+        {
+            bool access = true;
+            var reader = repo.GetReaderById(readerId);
+            if (reader == null) return false;
+            var person = repo.GetPersonByCardNum(cardId);
+            if (person == null) return false;
+            if(reader.NextLocId != null)
+            {
+                var entity = repo.FindPersonRoomPair(person.Id, reader.NextLocId);
+                if (entity == null)
+                {
+                    access = false;
+                }
+            }
+            DateTime dateTime = DateTime.UtcNow;
+            var relocation = new Relocation
+            {
+                PersonId = person.Id,
+                FromLocId = reader.CurrentLocId,
+                ToLocId = reader.NextLocId,
+                DateAndTime = dateTime,
+                Success = access
+            };
+            repo.AddRelocation(relocation);
+            repo.SaveChanges();
+            return access;
+        }
+
         public void CreateRoom(Room room)
         {
             repo.AddRoom(room);
@@ -68,7 +99,32 @@ namespace AccessControlWebApi.Models
             return repo.DeleteRoom(id);
         }
         #endregion
+        #region Reader
+        public void CreateReader(Reader reader)
+        {
+            repo.AddReader(reader);
+            repo.SaveChanges();
+        }
+        public string DeleteReader(int id)
+        {
+            var reader = repo.GetReaderById(id);
+            if(reader != null)
+            {
+                repo.DeleteReader(reader);
+                return "deleted";
+            }
+            return "NotFound";
+        }
 
+        public IEnumerable<Reader> GetAllReaders()
+        {
+            return repo.GetAllReaders();
+        }
+        public Reader GetReaderById(int id)
+        {
+            return repo.GetReaderById(id);
+        }
+        #endregion
         #region Building
         public List<Building> GetAllBuildings()
         {
@@ -141,7 +197,7 @@ namespace AccessControlWebApi.Models
                     {
                         if (item.Type == RoomType.Hall) throw new Exception("Unable to disconnect room from hall");
                         var finder = new WayFinder(repo, item.Id);
-                        var extraEntity = repo.FindRoom(item.Id);
+                        Room extraEntity = null; //= repo.FindRoom(item.Id);
 
                         if (extraEntity != null)
                         {
@@ -279,7 +335,7 @@ namespace AccessControlWebApi.Models
             var relocByPerson = repo.GetTodayRelocationsByPerson();
             foreach (var group in relocByPerson)
             {
-                if (group.Count() > 0 && group.First().ToLoc != null)
+                if (group.Count() > 0 && group.First().ToLocId != null)
                 {
                     peopleIds.Add(group.Key);
                 }

@@ -33,7 +33,7 @@
                                     <td>@Html.DisplayFor(modelItem => item.Item1.FullName)</td>
                                     <td>@Html.DisplayFor(modelItem => item.Item2)</td>
                                     <td>
-                                        <a asp-action="Update" asp-controller="Users" asp-route-id="@item.Item1.Id">Update</a> |@if (User.Identity.Name != item.Item1.UserName)
+                                        @if (User.Identity.Name != item.Item1.UserName)
                                         {<a asp-action="Delete" asp-controller="Users" asp-route-id="@item.Item1.Id">Delete</a>}
                                     </td>
                                 </tr>

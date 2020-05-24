@@ -14,8 +14,8 @@ namespace AccessControlModels
         public int? Number { get; set; }
         public RoomType Type { get; set; }
         
-        public Building Building { get; set; }
-        public int? BuildingId { get; set; }
+        //public Building Building { get; set; }
+        //public int? BuildingId { get; set; }
 
         public override bool Equals(object obj)
         {

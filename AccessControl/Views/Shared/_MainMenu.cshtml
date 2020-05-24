@@ -62,6 +62,21 @@
     </li>
     <li class="treeview">
         <a href="#">
+            <i class="fa fa-user"></i> <span>Readers</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            @if (ViewContext.HttpContext.User.IsInRole("Admin"))
+            {
+                <li><a href="/Readers/Create">Add New</a></li>
+            }
+            <li><a href="/Readers/Index">All Readers</a></li>
+        </ul>
+    </li>
+    <li class="treeview">
+        <a href="#">
             <i class="fa fa-user"></i> <span>Reports</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>

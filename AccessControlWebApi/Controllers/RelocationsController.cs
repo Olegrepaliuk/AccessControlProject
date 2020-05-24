@@ -22,6 +22,7 @@ namespace AccessControlWebApi.Controllers
             controlService = service;
         }
 
+        /*
         [HttpPost("move")]
         [Authorize(Roles = "Admin")]
         public ActionResult<bool> MoveToOtherLoc(int personId, int? toLocId, int? realLocId)
@@ -33,6 +34,14 @@ namespace AccessControlWebApi.Controllers
             }
             return controlService.TryMoveToOtherLoc(personId, realLocId, toLocId);
             
+        }
+        */
+
+        [HttpPost("move/{readerId}")]
+        [Authorize(Roles = "Admin")]
+        public ActionResult<bool> MoveToOtherLoc(int readerId, [FromBody]int cardId)
+        {
+            return controlService.TryMoveToOtherLoc(cardId, readerId);
         }
 
         [HttpGet]

@@ -1,7 +1,7 @@
 ﻿<section class="content-header">
     <h1>
         Home
-        <small>Optional description</small>
+        <small></small>
     </h1>
 </section>
 <!-- Main content -->
@@ -23,18 +23,18 @@
                 <div class="small-box bg-aqua">
                     <div class="inner">
                         <h3>@ViewBag.AllPeopleCount</h3>
-                        <p>People</p>
+                        <p>Registered People</p>
                     </div>
                     <div class="icon">
                         <i class="fa fa-users"></i>
                     </div>
-                    <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="/People" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
             <div class="col-lg-3 col-xs-6">
                 <!-- small box -->
-                <div class="small-box bg-green">
+                <div class="small-box bg-yellow">
                     <div class="inner">
                         <h3>@ViewBag.InBuildNow<sup style="font-size: 20px"></sup></h3>
                         <p>In the building now</p>
@@ -48,13 +48,13 @@
             <!-- ./col -->
             <div class="col-lg-3 col-xs-6">
                 <!-- small box -->
-                <div class="small-box bg-yellow">
+                <div class="small-box bg-green">
                     <div class="inner">
                         <h3>@ViewBag.Test1</h3>
-                        <p>Patients</p>
+                        <p>Successful enters today</p>
                     </div>
                     <div class="icon">
-                        <i class="ion ion-person"></i>
+                        <i class="fa fa-users"></i>
                     </div>
                     <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
@@ -65,10 +65,10 @@
                 <div class="small-box bg-red">
                     <div class="inner">
                         <h3>@ViewBag.Test2</h3>
-                        <p>This Month</p>
+                        <p>Failed enters today</p>
                     </div>
                     <div class="icon">
-                        <i class="ion ion-pie-graph"></i>
+                        <i class="fa fa-users"></i>
                     </div>
                     <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
@@ -84,7 +84,7 @@
                 <!-- DONUT CHART -->
                 <div class="box box-danger">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Donut Chart</h3>
+                        <h3 class="box-title">Attendance chart</h3>
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse">
                                 <i class="fa fa-minus"></i>
@@ -227,7 +227,6 @@
       resize: true,
       colors: ["#3c8dbc", "#f56954", "#00a65a"],
       data: [
-        {label: "Registered people", value: @ViewBag.AllPeopleCount},
         {label: "In the building now", value: @ViewBag.InBuildNow},
         {label: "Outdoors", value: @ViewBag.AllPeopleCount-@ViewBag.InBuildNow}
       ],

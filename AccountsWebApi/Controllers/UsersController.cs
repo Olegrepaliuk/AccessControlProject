@@ -27,6 +27,13 @@ namespace AccountsWebApi.Controllers
             var usersWithRoles = await userService.GetAllUsersWithRole();
             return usersWithRoles;
         }
+
+        [HttpGet("{id}")]
+        public async Task<IEnumerable<User>> GetUserById()
+        {
+            return null;
+        }
+
         [HttpPost]
         public async Task<ActionResult> Create(dynamic userWithRole)
         {

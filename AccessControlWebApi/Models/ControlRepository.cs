@@ -27,13 +27,14 @@ namespace AccessControlWebApi.Models
             }
         }
 
-        public IEnumerable<Building> Buildings
+        public IEnumerable<Reader> Readers
         {
             get
             {
-                return db.Buildings;
+                return db.Readers;
             }
         }
+
         public ControlRepository(AccessCtrlContext context)
         {
             db = context;
@@ -53,6 +54,11 @@ namespace AccessControlWebApi.Models
         public Person GetPersonById(int id)
         {
             return db.People.Find(id);
+        }
+
+        public Person GetPersonByCardNum(int cardNum)
+        {
+            return db.People.FirstOrDefault(p => p.CardNum == cardNum);
         }
 
         public void AddPerson(Person person)
@@ -76,15 +82,18 @@ namespace AccessControlWebApi.Models
             }
 
         }
+
+        public Room GetRoomById(int id)
+        {
+            return db.Rooms.Find(id);
+        }
+
+
         public int CountPeople()
         {
             return db.People.Count();
         }
 
-        public Room GetRoomById(int id)
-        {
-            return db.Rooms.Include(r => r.Building).Where(r => r.Id == id).FirstOrDefault();
-        }
         public void AddRoom(Room room)
         {
             db.Rooms.Add(room);
@@ -110,38 +119,13 @@ namespace AccessControlWebApi.Models
             }
 
         }
-        public void AddBuilding(Building building)
-        {
-            db.Buildings.Add(building);
-            db.SaveChanges();
-        }
-
-        public Building GetBuildingById(int id)
-        {
-            return db.Buildings.Find(id);
-        }
-
+ 
         public void PutBuilding(Building building)
         {
             db.Entry(building).State = EntityState.Modified;
             db.SaveChanges();
         }
 
-        public string DeleteBuilding(int id)
-        {
-            var building = db.Buildings.Find(id);
-            if (building != null)
-            {
-                db.Buildings.Remove(building);
-                db.SaveChanges();
-                return "deleted";
-            }
-            else
-            {
-                return "NotFound";
-            }
-
-        }
 
         public void AddDoor(Door door)
         {
@@ -159,6 +143,23 @@ namespace AccessControlWebApi.Models
         public void AddPersonRoom(PersonRoom pr)
         {
             db.PersonRoom.Add(pr);
+        }
+
+        public void AddReader(Reader reader)
+        {
+            db.Readers.Add(reader);
+        }
+        public void DeleteReader(Reader reader)
+        {
+            db.Readers.Remove(reader);
+        }
+        public Reader GetReaderById(int readerId)
+        {
+            return db.Readers.Include(r => r.CurrentLoc).Include(r => r.NextLoc).FirstOrDefault(r => r.Id == readerId);
+        }
+        public IEnumerable<Reader> GetAllReaders()
+        {
+            return db.Readers.Include(r => r.NextLoc).Include(r => r.CurrentLoc);
         }
 
         public Relocation FindLastPersonRelocation(int personId)
@@ -200,10 +201,7 @@ namespace AccessControlWebApi.Models
         {
             return db.PersonRoom.Where(pr => pr.PersonId == personId);
         }
-        public IEnumerable<Room> GetRoomsOfBuilding(int id)
-        {
-            return db.Rooms.Include(r => r.Building).Where(r => r.BuildingId == id);
-        }
+
         public Door GetDoorOfRooms(int? firstRoomId, int? secondRoomId)
         {
             return db.Doors
