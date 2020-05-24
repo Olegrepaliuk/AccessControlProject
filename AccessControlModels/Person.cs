@@ -12,6 +12,7 @@ namespace AccessControlModels
         public int Id { get; set; }
         [Required (ErrorMessage = "Name is required")]
         public string Name { get; set; }
+        public string Position { get; set; }
         [RegularExpression(@"^\+380\d{9}$", ErrorMessage = "Phone format: +380XXXXXXXXX")]
         public string Phone { get; set; }
         [RegularExpression(@"^[A-Za-z]+[\.A-Za-z0-9_-]*@[A-Za-z]+\.[A-Za-z]+", ErrorMessage = "Please, check your email")]

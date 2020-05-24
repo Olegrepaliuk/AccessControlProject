@@ -1,4 +1,5 @@
-﻿<section class="content-header">
+﻿@model AccessControlModels.Room
+<section class="content-header">
     <h1>
         Rooms
     </h1>
@@ -17,30 +18,32 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" name="Name" placeholder="Name">
+                        <input type="text" class="form-control" name="Name" placeholder="Name" asp-for="Name">
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">Number</label>
+                    <label for="inputEmail3" class="col-sm-2 control-label">Area value</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" name="Number" placeholder="Number">
+                        <input type="text" class="form-control" name="Area" placeholder="Area value" asp-for="Area">
+                        <span asp-validation-for="Area" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">Description</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="Description" placeholder="Description" asp-for="Description">
+                        <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                 </div>
                 <input type="hidden" name="RoomType" value="0" />
-                <div class="form-group">
-                    @foreach (var room in ViewBag.AllRooms)
-                    {
-                        <input type="checkbox" name="connRooms" value="@room.Id" />@room.ToString() <br />
-                    }
-                    <input type="checkbox" name="connRooms" value="-1" />Outdoors<br />
-                </div>
             </div>
 
             <!-- /.box-body -->
             <div class="box-footer">
                 <!--
-               <button onclick="window.history.back()">Cancel</button>
-        -->
+                       <button onclick="window.history.back()">Cancel</button>
+                -->
                 <button type="submit" class="btn btn-info pull-right">Create</button>
             </div>
             <!-- /.box-footer -->

@@ -16,6 +16,13 @@
         <form class="form-horizontal" method="post" action="/Readers/Update">
             <div class="box-body">
                 <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">Description</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="Description" placeholder="Description" asp-for="Description">
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
                     <h4>Current room</h4>
                     @foreach (var room in ViewBag.AllRooms)
                     {

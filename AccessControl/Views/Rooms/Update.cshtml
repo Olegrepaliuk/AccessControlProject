@@ -18,28 +18,26 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" name="Name" value="@Model.Name">
+                        <input type="text" class="form-control" name="Name" placeholder="Name" asp-for="Name">
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">Number</label>
+                    <label for="inputEmail3" class="col-sm-2 control-label">Area value</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" name="Number" placeholder="Number" value="@Model.Number">
+                        <input type="text" class="form-control" name="Area" placeholder="Area value" asp-for="Area">
+                        <span asp-validation-for="Area" class="text-danger"></span>
                     </div>
                 </div>
-                <input type="hidden" name="Type" value="@Model.Type" />
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">Description</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="Description" placeholder="Description" asp-for="Description">
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <input type="hidden" name="RoomType" value="@Model.Type" />
                 <input type="hidden" name="Id" value="@Model.Id" />
-                <div class="form-group">
-                    <div class="col-sm-10">
-                        @foreach (var room in ViewBag.OtherRooms)
-                        {
-                            <input type="checkbox" name="connRooms" value="@room.Id"
-                                   @(ViewBag.ConnectedRoomsIds.Contains(room.Id) ? "checked=\"checked\"" : "") />@room.ToString() <br />
-                            }
-                        <input type="checkbox" name="connRooms" value="-1"
-                               @(ViewBag.ConnectedRoomsIds.Contains(-1) ? "checked=\"checked\"" : "") />Outdoors<br />
-                    </div>
-                </div>
             </div>
 
             <!-- /.box-body -->

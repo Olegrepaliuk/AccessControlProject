@@ -49,29 +49,21 @@ namespace AccessControl.Controllers
             return View();
         }
 
-        /*
+  
         [HttpPost]
         public async Task<IActionResult> Create(Room room)
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Create");
+                return View(room);
             }
-            
-            var currUser = await _userManager.GetUserAsync(User);
-            var message = RequestBuider.GenerateHttpMessageWithObj
-                (
-                    method: HttpMethod.Post,
-                    uri: baseAdress,
-                    username: currUser.UserName,
-                    password: currUser.PasswordHash,
-                    obj: room
-                );
-            var response = await client.SendAsync(message);
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+            var response = await client.PostAsJsonAsync($"{baseAddress}", room);
             return RedirectToAction("Index");
         }
-        */
 
+        /*
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(Room room, List<int> connRooms)
@@ -134,6 +126,24 @@ namespace AccessControl.Controllers
             var response = await client.PutAsJsonAsync($"{baseAddress}/{room.Id}", room);
             var roomsResponse = await client.PostAsJsonAsync($"{baseAddress}/{room.Id}/connectedrooms", connRooms);
 
+            return RedirectToAction("Index");
+        }
+        */
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update(int id)
+        {
+            return null;
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Update(Room room)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(room);
+            }
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+            var response = await client.PutAsJsonAsync($"{baseAddress}/{room.Id}", room);
             return RedirectToAction("Index");
         }
         [Authorize(Roles="Admin")]

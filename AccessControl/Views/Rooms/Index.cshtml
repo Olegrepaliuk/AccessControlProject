@@ -27,13 +27,14 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr>
-                                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.Number)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.Type)</td>>
-                                    <td><a asp-action="Update" asp-controller="Rooms" asp-route-id="@item.Id">Update</a> | <a href="" onclick="Delete('@item.Id')">Delete</a></td>
-                                </tr>
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Area)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                                <td><a asp-action="Update" asp-controller="Rooms" asp-route-id="@item.Id">Update</a> | <a href="" onclick="Delete('@item.Id')">Delete</a></td>
+                            </tr>
                             }
                     </table>
                 </div>

@@ -7,6 +7,7 @@ namespace AccessControlModels
     public class Reader
     {
         public int Id { get; set; }
+        public string Description { get; set; }
         public Room CurrentLoc { get; set; }
         public int? CurrentLocId { get; set; }
         public Room NextLoc { get; set; }
@@ -19,6 +20,10 @@ namespace AccessControlModels
         {
             CurrentLocId = currentLocId;
             NextLocId = nextLocId;
+        }
+        public override string ToString()
+        {
+            return Convert.ToString(Id);
         }
     }
 }

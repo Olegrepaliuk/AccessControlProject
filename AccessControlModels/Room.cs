@@ -10,12 +10,11 @@ namespace AccessControlModels
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
-        public int? Number { get; set; }
-        public RoomType Type { get; set; }
-        
-        //public Building Building { get; set; }
-        //public int? BuildingId { get; set; }
+        public double Area { get; set; }
+        public string Description { get; set; }
+        public RoomType Type { get; set; }        
 
         public override bool Equals(object obj)
         {
@@ -33,26 +32,9 @@ namespace AccessControlModels
 
         public override string ToString()
         {
-            string namePart = "";
-            string numberPart = "";
-            string roomTypePart = "";
-
-            if (Name != null) namePart = String.Format(" ({0})", Name);
-            if (Number != null) numberPart = "№"+Number.ToString();
-            switch (Type)
-            {
-                case RoomType.Ordinary:
-                    roomTypePart = "Ordinary room";
-                    break;
-                case RoomType.Hall:
-                    roomTypePart = "Hall";
-                    break;
-            }
-            return roomTypePart + numberPart + namePart;
+            return this.Name;
         }
     }
-
-
 
     public enum RoomType
     {

@@ -86,7 +86,7 @@ namespace AccessControl.Controllers
         {
             if(!ModelState.IsValid)
             {
-                return RedirectToAction("Create");
+                return View(person);
             }
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
             var response = await client.PostAsJsonAsync(baseAddress, person);
@@ -140,6 +140,10 @@ namespace AccessControl.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(Person person, List<int> rooms)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(person);
+            }
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
             var response = await client.PutAsJsonAsync($"{baseAddress}/{person.Id}",person);
             var roomsResponse = await client.PostAsJsonAsync($"{baseAddress}/{person.Id}/rooms", rooms);

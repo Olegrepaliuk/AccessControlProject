@@ -18,10 +18,11 @@
                         <thead>
                             <tr>
                                 <th>Id</th>
-                                <th>Name</th>
+                                <th>Full name</th>
+                                <th>Position</th>
                                 <th>Phone</th>
                                 <th>Email</th>
-                                <th>CardNum</th>
+                                <th>Card key</th>
                                 <th>Card valid til</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -30,16 +31,17 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr id="@item.Id">
-                                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.Phone)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.CardKey)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.CardValidTil)</td>
-                                    <td>@(ViewBag.PeopleInsideIds.Contains(item.Id) ? "Inside" : "Outside")</td>
-                                    <td><a asp-action="Update" asp-controller="People" asp-route-id="@item.Id">Update</a> | <a href="" onclick="Delete('@item.Id')">Delete</a></td>
-                                </tr>
+                            <tr id="@item.Id">
+                                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Position)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Phone)</td>
+                                <td>@Html.DisplayFor(modelItem => item.CardKey)</td>
+                                <td>@Html.DisplayFor(modelItem => item.CardValidTil)</td>
+                                <td>@(ViewBag.PeopleInsideIds.Contains(item.Id) ? "Inside" : "Outside")</td>
+                                <td><a asp-action="Update" asp-controller="People" asp-route-id="@item.Id">Update</a> | <a href="" onclick="Delete('@item.Id')">Delete</a></td>
+                            </tr>
                             }
                         </tbody>
                     </table>
