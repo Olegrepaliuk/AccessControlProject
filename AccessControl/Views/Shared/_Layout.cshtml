@@ -15,8 +15,9 @@
     <!-- Ionicons -->
     <link rel="stylesheet" href="~/bower_components/Ionicons/css/ionicons.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="~/dist/css/AdminLTE.min.css">
-    <link rel="stylesheet" href="~/dist/css/skins/skin-blue.min.css">
+    <link rel="stylesheet" href="~/dist/css/AdminLTE.css">
+    <link rel="stylesheet" href="~/dist/css/skins/_all-skins.css">
+
     <!-- Google Font -->
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -25,7 +26,7 @@
     <script src="~/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/dist/js/adminlte.min.js"></script>
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-green sidebar-mini">
     <div class="wrapper">
         <!-- Main Header -->
         <header class="main-header">
@@ -103,21 +104,9 @@
                         <div class="pull-left info">
                             <p>@User.Identity.Name</p>
                             <!-- Status -->
-                            <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                         </div>
                     </div>
                     <!-- search form (Optional) -->
-
-                    <form action="#" method="get" class="sidebar-form">
-                        <div class="input-group">
-                            <input type="text" name="q" class="form-control" placeholder="Search...">
-                            <span class="input-group-btn">
-                                <button type="submit" name="search" id="search-btn" class="btn btn-flat">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                        </div>
-                    </form>
                     <!-- /.search form -->
                     <!-- Sidebar Menu -->
 
@@ -135,11 +124,10 @@
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
-        <!-- Main Footer -->
+        <!-- 
         <footer class="main-footer">
-            <!-- Default to the left -->
-
         </footer>
+        -->
     </div>
     <!-- ./wrapper -->
     <!-- REQUIRED JS SCRIPTS -->

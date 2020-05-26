@@ -39,8 +39,8 @@
                                 <td>@Html.DisplayFor(modelItem => item.Phone)</td>
                                 <td>@Html.DisplayFor(modelItem => item.CardKey)</td>
                                 <td>@Html.DisplayFor(modelItem => item.CardValidTil)</td>
-                                <td>@(ViewBag.PeopleInsideIds.Contains(item.Id) ? "Inside" : "Outside")</td>
-                                <td><a asp-action="Update" asp-controller="People" asp-route-id="@item.Id">Update</a> | <a asp-action="Delete" asp-controller="People" asp-route-id="@item.Id">Delete</a></td>
+                                <td>@(ViewBag.PeopleInsideIds.Contains(item.Id) ? "<span style=\"color:blue\">Inside</span>" : "Outside")</td>
+                                <td><a asp-action="Update" asp-controller="People" asp-route-id="@item.Id">Edit</a> | <a asp-action="Delete" asp-controller="People" asp-route-id="@item.Id">Delete</a></td>
                             </tr>
                             }
                         </tbody>

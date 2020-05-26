@@ -57,19 +57,23 @@
                         <span asp-validation-for="CardValidTil" class="text-danger"></span>
                     </div>
                 </div>
-                <input type="hidden" name="Id" value="@Model.Id" />
-                <div class="form-group">
-                    @foreach (var room in ViewBag.AllRooms)
-                    {
-                        <input type="checkbox" name="rooms" value="@room.Id"
-                               @(ViewBag.PersonRooms.Contains(room) ? "checked=\"checked\"" : "") />@room.Name <br />
-                        }
+
+
+                <div class="">
+                    <h4>Access allowed to following rooms</h4>
+                    <p>
+                        <input type="hidden" name="Id" value="@Model.Id" />
+                        @foreach (var room in ViewBag.AllRooms)
+                        {
+                            <input type="checkbox" name="rooms" value="@room.Id"
+                                   @(ViewBag.PersonRooms.Contains(room) ? "checked=\"checked\"" : "") />@room.Name <br />
+                            }
+                    </p>
                 </div>
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
-                <button type="submit" class="btn btn-default">Cancel</button>
-                <button type="submit" class="btn btn-info pull-right">Update</button>
+                <button type="submit" class="btn btn-info pull-left">Save</button>                
             </div>
             <!-- /.box-footer -->
         </form>

@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <h4>Current room</h4>
-                <div class="form-group">
+                <div class="">
                     @foreach (var room in ViewBag.AllRooms)
                     {
                         <input type="radio" name="currentRoomId" value="@room.Id" />@room.ToString() <br />
@@ -31,7 +31,7 @@
                     <input type="radio" name="currentRoomId" value="-1" />Outdoors<br />
                 </div>
                 <h4>Next room</h4>
-                <div class="form-group">
+                <div class="">
                     @foreach (var room in ViewBag.AllRooms)
                     {
                         <input type="radio" name="nextRoomId" value="@room.Id" />@room.ToString() <br />
@@ -45,7 +45,7 @@
                 <!--
                        <button onclick="window.history.back()">Cancel</button>
                 -->
-                <button type="submit" class="btn btn-info pull-right">Create</button>
+                <button type="submit" class="btn btn-info pull-left">Create</button>
             </div>
             <!-- /.box-footer -->
         </form>
