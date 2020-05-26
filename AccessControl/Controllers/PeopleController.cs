@@ -61,17 +61,11 @@ namespace AccessControl.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public async Task<bool> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
             var response = await client.DeleteAsync($"{baseAddress}/{id}");
-            if (response.IsSuccessStatusCode)
-            {
-                return true;
-            }
-            return false;
-
+            return RedirectToAction("Index");
         }
 
         [Authorize(Roles = "Admin")]

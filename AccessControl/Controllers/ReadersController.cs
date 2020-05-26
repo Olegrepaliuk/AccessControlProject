@@ -34,7 +34,6 @@ namespace AccessControl.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
@@ -60,6 +59,14 @@ namespace AccessControl.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Reader reader, int currentRoomId, int nextRoomId)
         {
+            if(currentRoomId == 0)
+            {
+                ModelState.AddModelError("CurrentRoomId", "Please choose current room");
+            }
+            if(nextRoomId == 0)
+            {
+                ModelState.AddModelError("NextRoomId", "Please choose next room");
+            }
             if (!ModelState.IsValid||(currentRoomId == nextRoomId))
             {
                 return RedirectToAction("Create");

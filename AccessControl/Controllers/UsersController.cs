@@ -20,7 +20,6 @@ namespace AccessControl.Controllers
     {
         private string baseAddress = "https://localhost:44381/identity/users";
         private HttpClient client;
-        private readonly UserManager<User> _userManager;
         public UsersController(HttpClient cl)
         {
             client = cl;

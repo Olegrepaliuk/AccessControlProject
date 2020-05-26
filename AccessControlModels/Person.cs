@@ -15,7 +15,7 @@ namespace AccessControlModels
         public string Position { get; set; }
         [RegularExpression(@"^\+380\d{9}$", ErrorMessage = "Phone format: +380XXXXXXXXX")]
         public string Phone { get; set; }
-        [RegularExpression(@"^[A-Za-z]+[\.A-Za-z0-9_-]*@[A-Za-z]+\.[A-Za-z]+", ErrorMessage = "Please, check your email")]
+        [RegularExpression(@"^[A-Za-z]+[\.A-Za-z0-9_-]*@[A-Za-z]+\.[A-Za-z]+", ErrorMessage = "Please enter a valid email address.")]
         public string Email { get; set; }
         [Required]
         [FutureDateCorrectRange(ErrorMessage = "Date must be later")]
