@@ -132,7 +132,14 @@ namespace AccessControl.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id)
         {
-            return null;
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+            var response = await client.GetAsync($"{baseAddress}/{id}");
+            if(response.IsSuccessStatusCode)
+            {
+                var currentRoom = await response.Content.ReadAsAsync<Room>();
+                return View(currentRoom);
+            }
+            return RedirectToAction("Index");
         }
         [Authorize(Roles = "Admin")]
         [HttpPost]

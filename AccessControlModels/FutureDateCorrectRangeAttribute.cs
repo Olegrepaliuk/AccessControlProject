@@ -15,7 +15,7 @@ namespace AccessControlModels
             {
                 return ValidationResult.Success;
             }
-            return new ValidationResult("Date is not later");
+            return new ValidationResult("Date must be later");
         }
     }
 }
