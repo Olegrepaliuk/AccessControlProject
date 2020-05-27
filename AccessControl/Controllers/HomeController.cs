@@ -31,17 +31,21 @@ namespace AccessControl.Controllers
             var response = await client.GetAsync(baseAddress);
             int? amtPeopleInside = null;
             int? amtAllPeople = null;
+            int? amtSuccessEnters = null;
+            int? amtFailedEnters = null;
             if (response.IsSuccessStatusCode)
             {
                 var stats = await response.Content.ReadAsAsync<dynamic>();
                 amtPeopleInside = stats.amountPeopleInside;
                 amtAllPeople = stats.amountOfPeople;
+                amtSuccessEnters = stats.successEntersToday;
+                amtFailedEnters = stats.failedEntersToday;
             }
 
             ViewBag.AllPeopleCount = amtAllPeople;
             ViewBag.InBuildNow = amtPeopleInside;
-            ViewBag.Test1 = 48;
-            ViewBag.Test2 = 21;
+            ViewBag.SuccessEnters = amtSuccessEnters;
+            ViewBag.FailedEnters = amtFailedEnters;
             return View();
         }
 

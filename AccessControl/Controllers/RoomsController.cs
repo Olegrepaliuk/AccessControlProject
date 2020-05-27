@@ -154,10 +154,10 @@ namespace AccessControl.Controllers
             return RedirectToAction("Index");
         }
         [Authorize(Roles="Admin")]
-        public async Task<IActionResult> Delete(int roomId)
+        public async Task<IActionResult> Delete(int id)
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
-            var reponse = await client.DeleteAsync($"{baseAddress}/{roomId}");
+            var reponse = await client.DeleteAsync($"{baseAddress}/{id}");
             return RedirectToAction("Index");
         }
     }

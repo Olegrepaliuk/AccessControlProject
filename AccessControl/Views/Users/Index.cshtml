@@ -17,7 +17,6 @@
                     <table id="users-table" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Id</th>
                                 <th>Username</th>
                                 <th>First and last name</th>
                                 <th>Rights</th>
@@ -28,7 +27,6 @@
                             @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td>@Html.DisplayFor(modelItem => item.Item1.Id)</td>
                                     <td>@Html.DisplayFor(modelItem => item.Item1.UserName)</td>
                                     <td>@Html.DisplayFor(modelItem => item.Item1.FullName)</td>
                                     <td>@Html.DisplayFor(modelItem => item.Item2)</td>

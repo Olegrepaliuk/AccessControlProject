@@ -102,7 +102,6 @@ namespace AccessControlWebApi.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
-            /*
             var result = controlService.DeleteRoom(id);
             if (result == "deleted")
             {
@@ -112,12 +111,12 @@ namespace AccessControlWebApi.Controllers
             {
                 return NotFound();
             }
-            */
+            /*
             var foundRoom = controlService.GetRoomById(id);
             if (foundRoom == null) return NotFound();
             bool successDeleted = controlService.TryDeleteRoom(id);
             return null;
-
+            */
                 
         }
 

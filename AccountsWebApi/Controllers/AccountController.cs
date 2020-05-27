@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AccessControlModels;
 using AccountsWebApi.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -49,6 +50,19 @@ namespace AccountsWebApi.Controllers
             };
 
             return response;
+        }
+        [HttpPost("changePassword")]
+        public async Task<ActionResult> ChangePassword(dynamic obj)
+        {
+            string userName = HttpContext.User.Identity.Name;
+            string oldPassword = obj.OldPassword;
+            string newPassword = obj.NewPassword;
+            var success = await userService.ChangeUserPasswordByName(userName, oldPassword, newPassword);
+            if(success)
+            {
+                return NoContent();
+            }
+            return BadRequest();
         }
         private ClaimsIdentity GetIdentity(string username, string password)
         {

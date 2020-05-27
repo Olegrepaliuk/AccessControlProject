@@ -39,9 +39,11 @@ namespace AccessControlWebApi.Controllers
 
         [HttpPost("move/{readerId}")]
         [Authorize(Roles = "Admin")]
-        public ActionResult<bool> MoveToOtherLoc(int readerId, [FromBody]string cardKey)
+        public ActionResult<object> MoveToOtherLoc(int readerId, [FromBody]dynamic obj)
         {
-            return controlService.TryMoveToOtherLoc(cardKey, readerId);
+            string cardKey = obj.cardKey;
+            var allowed = controlService.TryMoveToOtherLoc(cardKey, readerId);
+            return new { Allowed = allowed };
         }
 
         [HttpGet]

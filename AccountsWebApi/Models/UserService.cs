@@ -85,6 +85,33 @@ namespace AccountsWebApi.Models
             }
             return usersWithRole;
         }
-
+        public async Task<bool> ChangeUserPasswordByName(string userName, string oldPass, string newPass)
+        {
+            var user = await userManager.FindByNameAsync(userName);
+            if(user == null)
+            {
+                return false;
+            }
+            var result = await userManager.ChangePasswordAsync(user, oldPass, newPass);
+            if(result.Succeeded)
+            {
+                return true;
+            }
+            return false;
+        }
+        public async Task<bool> ChangeUserPassword(string userId, string oldPass, string newPass)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return false;
+            }
+            var result = await userManager.ChangePasswordAsync(user, oldPass, newPass);
+            if (result.Succeeded)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

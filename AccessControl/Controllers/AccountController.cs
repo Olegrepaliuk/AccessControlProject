@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AccessControl.Models;
@@ -8,6 +10,7 @@ using AccessControl.ViewModels;
 using AccessControlModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +20,13 @@ namespace AccessControl.Controllers
 {
     public class AccountController : Controller
     {
+        private string baseAddress = "https://localhost:44381/api/account/changePassword";
+        private static HttpClient client;
         private AccountService _accountService;
-        public AccountController(AccountService accountService)
+        public AccountController(AccountService accountService, HttpClient cl)
         {
             _accountService = accountService;
+            client = cl;
         }
 
         public IActionResult Index()
@@ -104,7 +110,27 @@ namespace AccessControl.Controllers
             }
             return View(model);
         }
+        [Authorize]
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var passwordData = new { OldPassword = model.OldPassword, NewPassword = model.NewPassword };
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+            var response = await client.PostAsJsonAsync(baseAddress, passwordData);
+            return RedirectToAction("Index");
+        }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()

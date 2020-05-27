@@ -24,10 +24,14 @@ namespace AccessControlWebApi.Controllers
         {
             int amountPeopleInside = controlService.CountPeopleInsideNow();
             int amountofPeople = controlService.CountAllPeople();
+            int successEntersToday = controlService.CountSuccessEntersToday();
+            int failedEntersToday = controlService.CountFailedEntersToday();
             return new
             {
                 AmountPeopleInside = amountPeopleInside,
-                AmountOfPeople = amountofPeople
+                AmountOfPeople = amountofPeople,
+                SuccessEntersToday = successEntersToday,
+                FailedEntersToday = failedEntersToday
             };
         }
     }

@@ -34,7 +34,7 @@
                                     <tr id="@item.Id">
                                         <td>@(item.Person != null ? item.Person.Name : "Unknown")</td>
                                         <td>@(item.DateAndTime.Date.ToString("dd.MM.yyyy"))</td>
-                                        <td>@(item.DateAndTime.TimeOfDay)</td>
+                                        <td>@(item.DateAndTime.ToString("HH:mm:ss"))</td>
                                         <td>@(item.FromLoc != null ? item.FromLoc.ToString() : "Outdoors")</td>
                                         <td>@(item.ToLoc != null ? item.ToLoc.ToString() : "Outdoors")</td>
                                         <td>@(item.Success?"Access allowed":"Access denied")</td>

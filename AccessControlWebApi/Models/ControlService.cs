@@ -37,7 +37,19 @@ namespace AccessControlWebApi.Models
         }
         public string DeletePerson(int id)
         {
-            return repo.DeletePerson(id);
+            var person = repo.GetPersonById(id);
+            if (person != null)
+            {
+                var personRoomPairs = repo.FindPersonRoomPairsByPersonId(id);
+                if (personRoomPairs.Count() > 0) repo.DeletePersonRoomPairs(personRoomPairs);
+                repo.DeletePerson(person);
+                repo.SaveChanges();
+                return "deleted";
+            }
+            else
+            {
+                return "NotFound";
+            }
         }
 
         public int CountAllPeople()
@@ -57,7 +69,7 @@ namespace AccessControlWebApi.Models
             return repo.GetRoomById(id);
         }
 
-        public ActionResult<bool> TryMoveToOtherLoc(string cardKey, int readerId)
+        public bool TryMoveToOtherLoc(string cardKey, int readerId)
         {
             bool access = true;
             var reader = repo.GetReaderById(readerId);
@@ -96,7 +108,18 @@ namespace AccessControlWebApi.Models
         }
         public string DeleteRoom(int id)
         {
-            return repo.DeleteRoom(id);
+            var room = repo.GetRoomById(id);
+            if(room != null)
+            {
+                var personRoomPairs = repo.FindPersonRoomPairsByRoomId(id);
+                if (personRoomPairs.Count() > 0) repo.DeletePersonRoomPairs(personRoomPairs);
+                var connectedReaders = repo.GetAllReadersByRoomId(id);
+                if (connectedReaders.Count() > 0) repo.DeleteReaderEntities(connectedReaders);
+                repo.DeleteRoom(room);                           
+                repo.SaveChanges();
+                return "deleted";
+            }
+            return "NotFound";
         }
         #endregion
         #region Reader
@@ -241,13 +264,15 @@ namespace AccessControlWebApi.Models
 
         public bool TryDeleteRoom(int id)
         {
+            /*
             WayFinder finder = new WayFinder(repo, id);
             if (!finder.DeleteAbility()) return false;
-            var peopleConnected = repo.FindPersonRoomPairs(id);
+            var peopleConnected = repo.FindPersonRoomPairsByPersonId(id);
             if (peopleConnected.Count() > 0) repo.DeletePersonRoomPairs(peopleConnected);
             var dooorsWithConnectedRooms = repo.GetDoorsOfRoom(id);
             if (dooorsWithConnectedRooms.Count() > 0) repo.DeleteDoors(dooorsWithConnectedRooms);
             repo.DeleteRoom(id);
+            */
             return true;
         }
 
@@ -375,7 +400,14 @@ namespace AccessControlWebApi.Models
             var relocations = repo.GetRelocOfPersonByTimePeriod(personId, startDate, endDate);
             return relocations.Count();
         }
-
+        public int CountSuccessEntersToday()
+        {
+            return repo.CountSuccessEntersToday();
+        }
+        public int CountFailedEntersToday()
+        {
+            return repo.CountFailedEntersToday();
+        }
         public IEnumerable<Relocation> GetAllRelocations()
         {
             return repo.GetAllRelocations();
