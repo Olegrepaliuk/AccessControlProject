@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AccessControlWebApi.Controllers
 {
-    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]

@@ -65,12 +65,18 @@ namespace AccessControlWebApi.Models
         public Person GetPersonByCardNum(string cardKey)
         {
             return db.People.FirstOrDefault(p => p.CardKey == cardKey);
-        }
+        } 
 
         public void AddPerson(Person person)
         {
             db.People.Add(person);
             db.SaveChanges();
+        }
+
+        public void AddPeople(IEnumerable<Person> people)
+        {
+            db.People.AddRange(people);
+            db.SaveChanges(); 
         }
 
         public void DeletePerson(Person person)
@@ -103,6 +109,11 @@ namespace AccessControlWebApi.Models
         public void AddRoom(Room room)
         {
             db.Rooms.Add(room);
+            db.SaveChanges();
+        }
+        public void AddRooms(IEnumerable<Room> rooms)
+        {
+            db.Rooms.AddRange(rooms);
             db.SaveChanges();
         }
         public void PutRoom(Room room)
@@ -153,6 +164,11 @@ namespace AccessControlWebApi.Models
         {
             db.Readers.Add(reader);
         }
+        public void AddReaders(IEnumerable<Reader> readers)
+        {
+            db.Readers.AddRange(readers);
+            db.SaveChanges();
+        }
         public void DeleteReader(Reader reader)
         {
             db.Readers.Remove(reader);
@@ -172,6 +188,11 @@ namespace AccessControlWebApi.Models
                                  .Where(rel => (rel.PersonId == personId)&(rel.Success == true))
                                  .OrderByDescending(rel => rel.DateAndTime)
                                  .FirstOrDefault();
+        }
+        public void AddPersonRoomPairs(IEnumerable<PersonRoom> entities)
+        {
+            db.PersonRoom.AddRange(entities);
+            db.SaveChanges();
         }
         public void DeletePersonRoomPairs(IEnumerable<PersonRoom> entities)
         {
@@ -196,6 +217,11 @@ namespace AccessControlWebApi.Models
         public void AddRelocation(Relocation relocation)
         {
             db.Relocations.Add(relocation);
+        }
+        public void AddRelocations(IEnumerable<Relocation> entities)
+        {
+            db.Relocations.AddRange(entities);
+            db.SaveChanges();
         }
         public IEnumerable<int> FindExistingRoomIds(List<int> roomsIds)
         {

@@ -73,5 +73,25 @@ namespace AccessControl.Controllers
             var response = await client.DeleteAsync($"{baseAddress}/{stringId}");
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<ActionResult> Update(string id)
+        {
+            ViewBag.UserId = id;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Update(EditUserViewModel model)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var data = new { NewPassword = model.NewPassword };
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
+            var response = await client.PostAsJsonAsync($"{baseAddress}/{model.UserId}", data);
+            return RedirectToAction("Index");
+        }
     }
 }

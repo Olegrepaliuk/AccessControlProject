@@ -57,10 +57,34 @@ namespace AccountsWebApi.Models
             }            
         }
 
+        public async Task UpdateUser(string newPassword, string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            if(user != null)
+            {
+                await userManager.RemovePasswordAsync(user);
+                await userManager.AddPasswordAsync(user, newPassword);
+            }
+            
+        }
+
         public async Task DeleteUser(string id)
         {
             var user = await userManager.FindByIdAsync(id);
             await userManager.DeleteAsync(user);
+        }
+
+        public async Task<Tuple<User, string>> GetUserByIdWithRole(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+            if(user != null)
+            {
+                bool isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+                string role = isAdmin ? "Admin" : "User";
+                var userWithRole = new Tuple<User, string>(user, role);
+                return userWithRole;
+            }
+            return null;
         }
 
         public async Task<bool> CheckAdminRights(User user)

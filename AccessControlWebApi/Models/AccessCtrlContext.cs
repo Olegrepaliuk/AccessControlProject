@@ -21,13 +21,13 @@ namespace AccessControlWebApi.Models
         {
             Database.EnsureCreated();
         }
-        
-        
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<PersonRoom>().HasKey(pr => new { pr.PersonId, pr.RoomId });
+            modelBuilder.Entity<PersonRoom>().HasKey(pr => new { pr.PersonId, pr.RoomId });           
         }
-        
+
         public AccessCtrlContext():base()
         {
             

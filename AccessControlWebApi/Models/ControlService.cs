@@ -412,5 +412,153 @@ namespace AccessControlWebApi.Models
         {
             return repo.GetAllRelocations();
         }
+        public void GenerateData()
+        {
+            var people = new Person[]
+            {
+                new Person{Name = "Ivan Prokopenko", CardKey = "ewr1", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Ihor Karavaev", CardKey = "ewr2", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Potap Pavlenko", CardKey = "ewr3", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Anna Melnyk", CardKey = "ewr4", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Serhii Kyrylenko", CardKey = "ewr5", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Anton Shevchenko", CardKey = "ewr6", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Ivan Bondarenko", CardKey = "ewr7", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Petro Koval", CardKey = "ewr8", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Pavlo Shevchenko", CardKey = "ewr9", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Ksenia Tkachuk", CardKey = "ewr10", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Viktor Moroz", CardKey = "ewr11", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Zlata Rudenko", CardKey = "ewr12", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Andrii Prokopenko", CardKey = "ewr13", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Oleksii Prokopenko", CardKey = "ewr14", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Viktoria Tkach", CardKey = "ewr15", CardValidTil=DateTime.Parse("24.03.2021")}
+            };
+            repo.AddPeople(people);
+
+            var rooms = new Room[]
+            {
+                new Room{Name = "Main hall", Type = RoomType.Hall, Area = 500},
+                new Room{Name = "Room 2", Type = RoomType.Ordinary, Area = 134},
+                new Room{Name = "Room 3", Type = RoomType.Ordinary, Area = 138},
+                new Room{Name = "Room 4", Type = RoomType.Ordinary, Area = 114},
+                new Room{Name = "Room 5", Type = RoomType.Ordinary, Area = 185},
+                new Room{Name = "Room 6", Type = RoomType.Ordinary, Area = 147},
+                new Room{Name = "Kitchen", Type = RoomType.Ordinary, Area = 192},
+                new Room{Name = "Stockroom", Type = RoomType.Ordinary, Area = 212},
+                new Room{Name = "Security room", Type = RoomType.Ordinary, Area = 115},
+                new Room{Name = "Server room", Type = RoomType.Ordinary, Area = 121}
+            };
+            repo.AddRooms(rooms);
+
+            var readers = new Reader[]
+            {
+                new Reader{CurrentLoc = rooms[0], NextLoc = rooms[1]},
+                new Reader{CurrentLoc = rooms[0], NextLoc = rooms[2]},
+                new Reader{CurrentLoc = rooms[0], NextLoc = rooms[4]},
+                new Reader{CurrentLocId = null, NextLoc = rooms[0]},
+                new Reader{CurrentLoc = rooms[0], NextLoc = rooms[3]},
+                new Reader{CurrentLoc = rooms[1], NextLoc = rooms[6]},
+                new Reader{CurrentLoc = rooms[0], NextLoc = rooms[5]},
+                new Reader{CurrentLoc = rooms[5], NextLoc = rooms[7]},
+                new Reader{CurrentLoc = rooms[7], NextLoc = rooms[9]},
+                new Reader{CurrentLoc = rooms[7], NextLoc = rooms[8]},
+
+                new Reader{CurrentLoc = rooms[1], NextLoc = rooms[0]},
+                new Reader{CurrentLoc = rooms[2], NextLoc = rooms[0]},
+                new Reader{CurrentLoc = rooms[4], NextLoc = rooms[0]},
+                new Reader{CurrentLoc = rooms[0], NextLocId = null},
+                new Reader{CurrentLoc = rooms[3], NextLoc = rooms[0]},
+                new Reader{CurrentLoc = rooms[6], NextLoc = rooms[1]},
+                new Reader{CurrentLoc = rooms[5], NextLoc = rooms[0]},
+                new Reader{CurrentLoc = rooms[7], NextLoc = rooms[5]},
+                new Reader{CurrentLoc = rooms[9], NextLoc = rooms[7]},
+                new Reader{CurrentLoc = rooms[8], NextLoc = rooms[7]}
+
+            };
+            repo.AddReaders(readers);
+            var personRoomPairs = new List<PersonRoom>();
+            foreach(var person in people)
+            {
+                for(int i = 0; i<7;i++)
+                {
+                    var pair = new PersonRoom(person.Id, rooms[i].Id);
+                    personRoomPairs.Add(pair);
+                }
+            }
+            personRoomPairs.Add(new PersonRoom(1, rooms[7].Id));
+            personRoomPairs.Add(new PersonRoom(2, rooms[7].Id));
+            personRoomPairs.Add(new PersonRoom(3, rooms[7].Id));
+            personRoomPairs.Add(new PersonRoom(1, rooms[8].Id));
+            personRoomPairs.Add(new PersonRoom(2, rooms[8].Id));
+            personRoomPairs.Add(new PersonRoom(1, rooms[9].Id));
+            repo.AddPersonRoomPairs(personRoomPairs);
+
+            var relocations = new List<Relocation>();
+            var rand = new Random();
+            
+            
+            foreach (var person in people)
+            {
+                var currentDate = DateTime.Now;
+                currentDate = currentDate.AddDays(-2);
+                int randMin;
+                int randSec;
+                for (int i = 0; i < 3; i++)
+                {
+                    string stringDate = currentDate.ToString("d");
+                    randMin = rand.Next(1, 59);
+                    randSec = rand.Next(1, 59);
+                    relocations.Add(
+                        new Relocation
+                        {
+                            FromLocId = null,
+                            ToLocId = rooms[0].Id,
+                            PersonId = person.Id,
+                            Success = true,
+                            DateAndTime = DateTime.Parse($"{stringDate} 10:{randMin}:{randSec}")
+                        });
+                    int secondRoomId = 0;
+                    if (person.Id % 3 == 0) secondRoomId = rooms[1].Id;
+                    if (person.Id % 3 == 1) secondRoomId = rooms[2].Id;
+                    if (person.Id % 3 == 2) secondRoomId = rooms[4].Id;
+                    randMin = rand.Next(1, 59);
+                    randSec = rand.Next(1, 59);
+                    relocations.Add(
+                        new Relocation
+                        {
+                            FromLocId = rooms[0].Id,
+                            ToLocId = secondRoomId,
+                            PersonId = person.Id,
+                            Success = true,
+                            DateAndTime = DateTime.Parse($"{stringDate} 11:{randMin}:{randSec}")
+                        });
+
+                    randMin = rand.Next(1, 59);
+                    randSec = rand.Next(1, 59);
+                    relocations.Add(
+                        new Relocation
+                        {
+                            FromLocId = secondRoomId,
+                            ToLocId = rooms[0].Id,
+                            PersonId = person.Id,
+                            Success = true,
+                            DateAndTime = DateTime.Parse($"{stringDate} 12:{randMin}:{randSec}")
+                        });
+                    randMin = rand.Next(1, 59);
+                    randSec = rand.Next(1, 59);
+                    relocations.Add(
+                        new Relocation
+                        {
+                            FromLocId = rooms[0].Id,
+                            ToLocId = null,
+                            PersonId = person.Id,
+                            Success = true,
+                            DateAndTime = DateTime.Parse($"{stringDate} 13:{randMin}:{randSec}")
+                        });
+                    currentDate = currentDate.AddDays(1);
+                }
+               
+            }
+            repo.AddRelocations(relocations);
+        }
     }
 }

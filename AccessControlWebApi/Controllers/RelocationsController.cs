@@ -51,6 +51,11 @@ namespace AccessControlWebApi.Controllers
         {
             return controlService.GetAllRelocations().ToList();
         }
-
+        [HttpGet("generate")]
+        public string GenerateData()
+        {
+            controlService.GenerateData();
+            return "generated";
+        }
     }
 }

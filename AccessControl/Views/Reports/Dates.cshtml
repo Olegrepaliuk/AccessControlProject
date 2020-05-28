@@ -29,6 +29,7 @@
                         <tbody>
                             @foreach (var groupItem in Model)
                             {
+                                /*<tr class="group"><td colspan="5"><strong>@groupItem.Key.ToString("d")</strong></td></tr>*/
                                 foreach (var item in groupItem)
                                 {
                                     <tr id="@item.Id">
@@ -37,7 +38,7 @@
                                         <td>@(item.DateAndTime.ToString("HH:mm:ss"))</td>
                                         <td>@(item.FromLoc != null ? item.FromLoc.ToString() : "Outdoors")</td>
                                         <td>@(item.ToLoc != null ? item.ToLoc.ToString() : "Outdoors")</td>
-                                        <td>@(item.Success?"Access allowed":"Access denied")</td>
+                                        <td>@(item.Success ? "Access allowed" : "Access denied")</td>
                                     </tr>
                                 }
                             }
@@ -62,13 +63,22 @@
 <script src="https://cdn.datatables.net/plug-ins/1.10.20/sorting/datetime-moment.js"></script>
  -->
 <script>
+    /*
+        $(function () {
+        $('#example1').DataTable();
+    });
+    */
     //$.fn.dataTable.moment('Do, MM, YYYY');
     $(document).ready(function () {
+
         var groupColumn = 1;
         var table = $('#example1').DataTable({
             "columnDefs": [
-                { "visible": false, "targets": groupColumn }
+                {"targets"  : 'no-sort', "orderable": false, "order": []},
+                { "visible": false, "targets": groupColumn, "orderable": false },
+                { "targets": 0, "orderable": false, "visible": true, "order":[] }
             ],
+            "order":[],
             "displayLength": 25,
             "drawCallback": function (settings) {
                 var api = this.api();
@@ -87,7 +97,7 @@
             }
         });
 
-        /*
+         /*
         $('#example1 tbody').on('click', 'tr.group', function () {
             var currentOrder = table.order()[0];
             if (currentOrder[0] === groupColumn && currentOrder[1] === 'asc') {

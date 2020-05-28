@@ -29,9 +29,10 @@ namespace AccountsWebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IEnumerable<User>> GetUserById()
+        public async Task<Tuple<User, string>> GetUserById(string id)
         {
-            return null;
+            var userWithRole = await userService.GetUserByIdWithRole(id);
+            return userWithRole;
         }
 
         [HttpPost]
@@ -41,9 +42,12 @@ namespace AccountsWebApi.Controllers
             return StatusCode(201);
         }
 
-        public ActionResult Update()
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update(string id, [FromBody]dynamic obj)
         {
-            return null;
+            string newPassword = obj.NewPassword;
+            await userService.UpdateUser(newPassword, id);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
