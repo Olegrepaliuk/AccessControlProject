@@ -115,6 +115,8 @@ namespace AccessControlWebApi.Models
                 if (personRoomPairs.Count() > 0) repo.DeletePersonRoomPairs(personRoomPairs);
                 var connectedReaders = repo.GetAllReadersByRoomId(id);
                 if (connectedReaders.Count() > 0) repo.DeleteReaderEntities(connectedReaders);
+                var relocations = repo.FindRelocationsByRoomId(id);
+                if (relocations.Count() > 0) repo.DeleteRelocationPairs(relocations);
                 repo.DeleteRoom(room);                           
                 repo.SaveChanges();
                 return "deleted";
@@ -418,7 +420,8 @@ namespace AccessControlWebApi.Models
             {
                 new Person{Name = "Ivan Prokopenko", CardKey = "ewr1", CardValidTil=DateTime.Parse("24.03.2021")},
                 new Person{Name = "Ihor Karavaev", CardKey = "ewr2", CardValidTil=DateTime.Parse("24.03.2021")},
-                new Person{Name = "Potap Pavlenko", CardKey = "ewr3", CardValidTil=DateTime.Parse("24.03.2021")},
+                new Person{Name = "Potap Pavlenko", CardKey = "ewr3", CardValidTil=DateTime.Parse("24.03.2021")}
+                /*
                 new Person{Name = "Anna Melnyk", CardKey = "ewr4", CardValidTil=DateTime.Parse("24.03.2021")},
                 new Person{Name = "Serhii Kyrylenko", CardKey = "ewr5", CardValidTil=DateTime.Parse("24.03.2021")},
                 new Person{Name = "Anton Shevchenko", CardKey = "ewr6", CardValidTil=DateTime.Parse("24.03.2021")},
@@ -431,6 +434,7 @@ namespace AccessControlWebApi.Models
                 new Person{Name = "Andrii Prokopenko", CardKey = "ewr13", CardValidTil=DateTime.Parse("24.03.2021")},
                 new Person{Name = "Oleksii Prokopenko", CardKey = "ewr14", CardValidTil=DateTime.Parse("24.03.2021")},
                 new Person{Name = "Viktoria Tkach", CardKey = "ewr15", CardValidTil=DateTime.Parse("24.03.2021")}
+                */
             };
             repo.AddPeople(people);
 
@@ -499,10 +503,10 @@ namespace AccessControlWebApi.Models
             foreach (var person in people)
             {
                 var currentDate = DateTime.Now;
-                currentDate = currentDate.AddDays(-2);
+                currentDate = currentDate.AddDays(-7);
                 int randMin;
                 int randSec;
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 1; i++)
                 {
                     string stringDate = currentDate.ToString("d");
                     randMin = rand.Next(1, 59);
@@ -516,6 +520,7 @@ namespace AccessControlWebApi.Models
                             Success = true,
                             DateAndTime = DateTime.Parse($"{stringDate} 10:{randMin}:{randSec}")
                         });
+ 
                     int secondRoomId = 0;
                     if (person.Id % 3 == 0) secondRoomId = rooms[1].Id;
                     if (person.Id % 3 == 1) secondRoomId = rooms[2].Id;
@@ -543,6 +548,7 @@ namespace AccessControlWebApi.Models
                             Success = true,
                             DateAndTime = DateTime.Parse($"{stringDate} 12:{randMin}:{randSec}")
                         });
+
                     randMin = rand.Next(1, 59);
                     randSec = rand.Next(1, 59);
                     relocations.Add(

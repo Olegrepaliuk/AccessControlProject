@@ -65,7 +65,7 @@ namespace AccessControlWebApi.Models
         public Person GetPersonByCardNum(string cardKey)
         {
             return db.People.FirstOrDefault(p => p.CardKey == cardKey);
-        } 
+        }
 
         public void AddPerson(Person person)
         {
@@ -76,7 +76,7 @@ namespace AccessControlWebApi.Models
         public void AddPeople(IEnumerable<Person> people)
         {
             db.People.AddRange(people);
-            db.SaveChanges(); 
+            db.SaveChanges();
         }
 
         public void DeletePerson(Person person)
@@ -125,7 +125,7 @@ namespace AccessControlWebApi.Models
         {
             db.Rooms.Remove(room);
         }
- 
+
         public void PutBuilding(Building building)
         {
             db.Entry(building).State = EntityState.Modified;
@@ -185,7 +185,7 @@ namespace AccessControlWebApi.Models
         public Relocation FindLastPersonRelocation(int personId)
         {
             return db.Relocations
-                                 .Where(rel => (rel.PersonId == personId)&(rel.Success == true))
+                                 .Where(rel => (rel.PersonId == personId) & (rel.Success == true))
                                  .OrderByDescending(rel => rel.DateAndTime)
                                  .FirstOrDefault();
         }
@@ -197,6 +197,14 @@ namespace AccessControlWebApi.Models
         public void DeletePersonRoomPairs(IEnumerable<PersonRoom> entities)
         {
             db.PersonRoom.RemoveRange(entities);
+        }
+        public void DeleteRelocationPairs(IEnumerable<Relocation> entities)
+        {
+            db.Relocations.RemoveRange(entities);
+        }
+        public IEnumerable<Relocation> FindRelocationsByRoomId(int roomId)
+        {
+            return db.Relocations.Where(r => r.ToLocId == roomId || r.FromLocId == roomId);
         }
         public void DeletePersonRoomPair(PersonRoom personRoom)
         {
