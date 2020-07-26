@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -22,9 +23,11 @@ namespace AccessControl.Controllers
         private string baseAddressApi = "https://localhost:44381/api";
         private string baseAddress = "https://localhost:44381/api/people";
         private static HttpClient client;
-        public PeopleController(HttpClient cl)
+        private FileService fService;
+        public PeopleController(HttpClient cl, FileService service)
         {
             client = cl;
+            fService = service;
         }
         
         public IActionResult Privacy()
@@ -124,6 +127,14 @@ namespace AccessControl.Controllers
             var roomsResponse = await client.PostAsJsonAsync($"{baseAddress}/{person.Id}/rooms", rooms);
 
             return RedirectToAction("Index");
+        }
+
+        public async Task<VirtualFileResult> Export()
+        {
+            string token = Request.Cookies["token"];
+            await fService.UpdatePeopleFile(token);
+            var filepath = Path.Combine("~/Files", "People.xlsx");
+            return File(filepath, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "People.xlsx");
         }
 
     }

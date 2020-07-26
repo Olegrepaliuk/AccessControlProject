@@ -43,6 +43,7 @@ namespace AccessControl
             client.BaseAddress = new Uri("https://localhost:44330/");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             services.AddSingleton<HttpClient>(client);
+            services.AddSingleton<FileService>();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
              .AddCookie(options =>
              {
