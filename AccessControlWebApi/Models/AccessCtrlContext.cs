@@ -11,7 +11,6 @@ namespace AccessControlWebApi.Models
     public class AccessCtrlContext : DbContext
     {
         public DbSet<Person> People { get; set; }
-        //public DbSet<Building> Buildings { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<PersonRoom> PersonRoom { get; set; }
         public DbSet<Relocation> Relocations { get; set; }

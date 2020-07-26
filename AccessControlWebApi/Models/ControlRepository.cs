@@ -126,12 +126,6 @@ namespace AccessControlWebApi.Models
             db.Rooms.Remove(room);
         }
 
-        public void PutBuilding(Building building)
-        {
-            db.Entry(building).State = EntityState.Modified;
-            db.SaveChanges();
-        }
-
 
         public void AddDoor(Door door)
         {

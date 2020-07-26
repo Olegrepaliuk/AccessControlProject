@@ -110,25 +110,6 @@ namespace AccessControl.Controllers
             return RedirectToAction("Index");
         }
 
-        /*
-        [HttpPost]
-        public async Task<IActionResult> Update(Person person)
-        {
-            //var response = await client.PutAsJsonAsync($"api/people/{person.Id}", person);
-            var currUser = await _userManager.GetUserAsync(User);
-            var message = RequestBuider.GenerateHttpMessageWithObj
-                (
-                    method: HttpMethod.Put,
-                    uri: baseAdress + "/" + person.Id,
-                    username: currUser.UserName,
-                    password: currUser.PasswordHash,
-                    obj: person
-                );
-
-            var response = await client.SendAsync(message);
-            return RedirectToAction("Index");
-        }
-        */
 
         [Authorize(Roles = "Admin")]
         [HttpPost]

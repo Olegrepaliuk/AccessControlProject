@@ -2471,7 +2471,6 @@
     <None Include="wwwroot\bower_components\jquery\src\var\toString.js" />
     <None Include="wwwroot\bower_components\jquery\src\wrap.js" />
     <None Include="wwwroot\bower_components\moment\CHANGELOG.md" />
-    <None Include="wwwroot\bower_components\moment\LICENSE" />
     <None Include="wwwroot\bower_components\moment\locale\af.js" />
     <None Include="wwwroot\bower_components\moment\locale\ar-dz.js" />
     <None Include="wwwroot\bower_components\moment\locale\ar-kw.js" />

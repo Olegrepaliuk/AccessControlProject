@@ -111,12 +111,7 @@ namespace AccessControlWebApi.Controllers
             {
                 return NotFound();
             }
-            /*
-            var foundRoom = controlService.GetRoomById(id);
-            if (foundRoom == null) return NotFound();
-            bool successDeleted = controlService.TryDeleteRoom(id);
-            return null;
-            */
+
                 
         }
 

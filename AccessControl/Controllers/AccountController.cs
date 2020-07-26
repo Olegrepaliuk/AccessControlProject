@@ -43,29 +43,6 @@ namespace AccessControl.Controllers
         [HttpPost]
         private async Task<IActionResult> Register(RegisterViewModel model)
         {
-            /*
-            if (ModelState.IsValid)
-            {
-                User user = new User { Email = model.Email, UserName = model.Email, FullName = model.FullName};
-                //var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    var role = new IdentityRole();
-                    role.Name = "Admin";
-                    //await _rolemanager.CreateAsync(role);
-                    await _userManager.AddToRolesAsync(user, new List<string>{"Admin"});
-                    await _signInManager.SignInAsync(user, false);// setting cookies
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                }
-            }
-            */
             return View(model);
         }
 

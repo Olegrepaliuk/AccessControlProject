@@ -22,20 +22,6 @@ namespace AccessControlWebApi.Controllers
             controlService = service;
         }
 
-        /*
-        [HttpPost("move")]
-        [Authorize(Roles = "Admin")]
-        public ActionResult<bool> MoveToOtherLoc(int personId, int? toLocId, int? realLocId)
-        {
-            int? lastLoggedLocId = controlService.FindLastLoggedPersonLocId(personId);
-            if ((lastLoggedLocId != realLocId) & lastLoggedLocId != -1)
-            {
-                //DoSmth
-            }
-            return controlService.TryMoveToOtherLoc(personId, realLocId, toLocId);
-            
-        }
-        */
 
         [HttpPost("move/{readerId}")]
         [Authorize(Roles = "Admin")]

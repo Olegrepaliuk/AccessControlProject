@@ -154,29 +154,6 @@ namespace AccessControlWebApi.Models
             return repo.GetReaderById(id);
         }
         #endregion
-        #region Building
-        public List<Building> GetAllBuildings()
-        {
-            throw new NotImplementedException();
-        }
-        public Building GetBuildingById(int id)
-        {
-            throw new NotImplementedException();
-        }
-        public List<Room> GetRoomsOfBuilding(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CreateBuilding(Building building)
-        {
-            throw new NotImplementedException();
-        }
-        public void UpdateBuilding(Building building)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
         public void ConnectRooms(int id, int? connectedRoomId)
         {
             AddDoor(id, connectedRoomId);
