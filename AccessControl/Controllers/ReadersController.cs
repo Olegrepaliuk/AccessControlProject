@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using AccessControl.Models;
 using AccessControlModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +18,11 @@ namespace AccessControl.Controllers
         private string baseAddress = "https://localhost:44381/api/readers";
         private string baseAddressApi = "https://localhost:44381/api";
         private static HttpClient client;
-        public ReadersController(HttpClient cl)
+        private FileService fileService;
+        public ReadersController(HttpClient cl, FileService service)
         {
             client = cl;
+            fileService = service;
         }
 
         public async Task<IActionResult> Index()
@@ -115,6 +119,14 @@ namespace AccessControl.Controllers
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
             var response = await client.PutAsJsonAsync($"{baseAddress}/{reader.Id}", reader);
             return RedirectToAction("Index");
+        }
+
+        public async Task<VirtualFileResult> Export()
+        {
+            string token = Request.Cookies["token"];
+            await fileService.UpdateReadersFile(token);
+            var filepath = Path.Combine("~/Files", "Readers.xlsx");
+            return File(filepath, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Readers.xlsx");
         }
     }
 }

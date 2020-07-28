@@ -23,11 +23,11 @@ namespace AccessControl.Controllers
         private string baseAddressApi = "https://localhost:44381/api";
         private string baseAddress = "https://localhost:44381/api/people";
         private static HttpClient client;
-        private FileService fService;
+        private FileService fileService;
         public PeopleController(HttpClient cl, FileService service)
         {
             client = cl;
-            fService = service;
+            fileService = service;
         }
         
         public IActionResult Privacy()
@@ -132,7 +132,7 @@ namespace AccessControl.Controllers
         public async Task<VirtualFileResult> Export()
         {
             string token = Request.Cookies["token"];
-            await fService.UpdatePeopleFile(token);
+            await fileService.UpdatePeopleFile(token);
             var filepath = Path.Combine("~/Files", "People.xlsx");
             return File(filepath, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "People.xlsx");
         }

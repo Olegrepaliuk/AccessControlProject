@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using AccessControl.Models;
 using AccessControlModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +18,11 @@ namespace AccessControl.Controllers
     {
         private static HttpClient client;
         private string baseAddress = "https://localhost:44381/api/relocations";
-        public ReportsController(HttpClient cl)
+        private FileService fileService;
+        public ReportsController(HttpClient cl, FileService service)
         {
             client = cl;
+            fileService = service;
         }
         public IActionResult Index()
         {
@@ -88,6 +92,13 @@ namespace AccessControl.Controllers
             }
 
             return View(allGroupedRelocations);
+        }
+        public async Task<VirtualFileResult> Export()
+        {
+            string token = Request.Cookies["token"];
+            await fileService.UpdateReportFile(token);
+            var filepath = Path.Combine("~/Files", "Report.xlsx");
+            return File(filepath, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Report.xlsx");
         }
     }
 }

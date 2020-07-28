@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -17,9 +18,11 @@ namespace AccessControl.Controllers
     {
         private static HttpClient client;
         private string baseAddress = "https://localhost:44381/api/rooms";
-        public RoomsController(HttpClient cl)
+        private FileService fileService;
+        public RoomsController(HttpClient cl, FileService service)
         {
             client = cl;
+            fileService = service;
         }
         public async Task<IActionResult> Index()
         {
@@ -93,6 +96,13 @@ namespace AccessControl.Controllers
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["token"]);
             var reponse = await client.DeleteAsync($"{baseAddress}/{id}");
             return RedirectToAction("Index");
+        }
+        public async Task<VirtualFileResult> Export()
+        {
+            string token = Request.Cookies["token"];
+            await fileService.UpdateRoomsFile(token);
+            var filepath = Path.Combine("~/Files", "Rooms.xlsx");
+            return File(filepath, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Rooms.xlsx");
         }
     }
 }

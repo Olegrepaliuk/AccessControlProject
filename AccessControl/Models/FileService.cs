@@ -1,5 +1,6 @@
 ﻿using AccessControlModels;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -150,6 +151,79 @@ namespace AccessControl.Models
                 FileInfo fi = new FileInfo("wwwroot/Files/Rooms.xlsx");
                 excelPackage.SaveAs(fi);
             }
+        }
+        public async Task UpdateReportFile(string token)
+        {
+            var client = new HttpClient();
+            List<Relocation> allRelocations = new List<Relocation>();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await client.GetAsync($"{baseAddress}/relocations");
+            if (response.IsSuccessStatusCode)
+            {
+                string json = await response.Content.ReadAsStringAsync();
+                allRelocations = JsonConvert.DeserializeObject<IEnumerable<Relocation>>(json).ToList();
+            }
+
+            using (ExcelPackage excelPackage = new ExcelPackage())
+            {
+                excelPackage.Workbook.Properties.Author = "Admin";
+                excelPackage.Workbook.Properties.Title = "Relocations";
+                excelPackage.Workbook.Properties.Subject = "History";
+                excelPackage.Workbook.Properties.Created = DateTime.Now;
+
+
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Sheet 1");
+
+                worksheet.Cells["A1"].Value = "Date";
+                worksheet.Cells["B1"].Value = "Time";
+                worksheet.Cells["C1"].Value = "Person";
+                worksheet.Cells["D1"].Value = "From";
+                worksheet.Cells["E1"].Value = "To";
+                worksheet.Cells["F1"].Value = "Status";
+
+                worksheet.Cells["A2:A"].Style.Numberformat.Format = DateTimeFormatInfo.CurrentInfo.ShortDatePattern;
+                worksheet.Cells["B2:B"].Style.Numberformat.Format = DateTimeFormatInfo.CurrentInfo.ShortTimePattern;
+
+                int i = 2;
+                foreach (var relocation in allRelocations)
+                {
+                    worksheet.Cells[i, 1].Value = relocation.DateAndTime.Date.ToString("dd.MM.yyyy");
+                    worksheet.Cells[i, 2].Value = relocation.DateAndTime.ToString("HH:mm:ss");
+                    worksheet.Cells[i, 3].Value = relocation.Person != null ? relocation.Person.Name : "Unknown";
+                    worksheet.Cells[i, 4].Value = relocation.FromLoc != null ? relocation.FromLoc.ToString() : "Outdoors";
+                    worksheet.Cells[i, 5].Value = relocation.ToLoc != null ? relocation.ToLoc.ToString() : "Outdoors";
+                    worksheet.Cells[i, 6].Value = relocation.Success ? "Access allowed" : "Access denied";
+                    i++;
+                }
+
+                FileInfo fi = new FileInfo("wwwroot/Files/Report.xlsx");
+                excelPackage.SaveAs(fi);
+            }
+        }
+        public async Task UpdateDatesReportFile(string token)
+        {
+            var client = new HttpClient();
+            var allGroupedRelocations = new List<IGrouping<DateTime, Relocation>>();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await client.GetAsync(baseAddress);
+            if (response.IsSuccessStatusCode)
+            {
+                string json = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<IEnumerable<Relocation>>(json);
+                allGroupedRelocations = result.GroupBy(rel => rel.DateAndTime.Date).OrderByDescending(rel => rel.Key).ToList();
+            }
+        }
+        public async Task UpdatePeopleReportFile(string token)
+        {
+
+        }
+        public async Task UpdateRoomsEnteringReportFile(string token)
+        {
+
+        }
+        public async Task UpdateRoomsLeavingReportFile(string token)
+        {
+
         }
     }
 }
